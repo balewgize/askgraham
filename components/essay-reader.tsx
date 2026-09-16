@@ -72,10 +72,12 @@ export default function EssayReader({
   essay,
   prev,
   next,
+  why,
 }: {
   essay: Essay;
   prev: IndexEntry | null;
   next: IndexEntry | null;
+  why?: string;
 }) {
   const router = useRouter();
   const [scale, setScale] = useState<FontScale>(getFontScale);
@@ -175,6 +177,13 @@ export default function EssayReader({
           </a>
         </div>
       </div>
+
+      {why && (
+        <div className="mb-6 max-w-[70ch] border-l-2 border-orange-500/60 pl-3">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400">Why read this</p>
+          <p className="mt-0.5 text-sm italic text-zinc-600 dark:text-zinc-300">{why}</p>
+        </div>
+      )}
 
       <article
         className={`max-w-[70ch] font-serif text-zinc-900 dark:text-zinc-100 ${SCALES[scale]} [&>p]:mb-[1.2em]`}

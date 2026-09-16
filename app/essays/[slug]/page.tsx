@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import EssayReader from "@/components/essay-reader";
 import { formatDateShort } from "@/lib/dates";
 import { getEssay, getPrevNext, getSlugs } from "@/lib/essays";
+import { getPhases } from "@/lib/phases";
 import { essayDescription, isoDate } from "@/lib/seo";
 import { SITE_KEYWORDS, SITE_NAME, SITE_URL } from "@/lib/site";
 
@@ -49,6 +50,8 @@ export default async function EssayPage({ params }: { params: Promise<{ slug: st
     notFound();
   }
   const { prev, next } = await getPrevNext(slug);
+  const phases = await getPhases();
+  const why = phases?.essays[slug]?.why;
 
   const description = essayDescription(essay);
   const url = `${SITE_URL}/essays/${essay.slug}`;
@@ -97,13 +100,13 @@ export default async function EssayPage({ params }: { params: Promise<{ slug: st
           {essay.title}
         </h1>
         <p className="mt-2 text-sm text-zinc-500">
-          {formatDateShort(essay.date)} · {essay.word_count.toLocaleString()} words · {essay.reading_time_min} min read ·{" "}
+          {formatDateShort(essay.date)} · {essay.reading_time_min} min read ·{" "}
           <a href={essay.url} target="_blank" rel="noopener noreferrer" className="underline hover:text-zinc-700 dark:hover:text-zinc-300">
             original ↗
           </a>
         </p>
       </header>
-      <EssayReader essay={essay} prev={prev} next={next} />
+      <EssayReader essay={essay} prev={prev} next={next} why={why} />
     </div>
   );
 }

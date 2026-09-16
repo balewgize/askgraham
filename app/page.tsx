@@ -20,7 +20,7 @@ export default async function Home() {
     : [];
   const essayPhases = classified
     ? Object.fromEntries(
-        Object.entries(phases.essays).map(([slug, v]) => [slug, { phases: v.phases, why: v.why }]),
+        Object.entries(phases.essays).map(([slug, v]) => [slug, { phases: v.phases }]),
       )
     : {};
 

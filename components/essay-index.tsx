@@ -6,7 +6,7 @@ import { formatDateShort } from "@/lib/dates";
 import type { IndexEntry } from "@/lib/essays";
 
 type Chip = { id: string; label: string };
-type EssayPhase = { phases: string[]; why: string };
+type EssayPhase = { phases: string[] };
 
 function yearOf(date: string | null): string {
   if (!date) return "Undated";
@@ -27,12 +27,15 @@ export default function EssayIndex({
 
   const counts = useMemo(() => {
     const m = new Map<string, number>();
-    for (const e of entries) for (const p of essayPhases[e.slug]?.phases ?? []) m.set(p, (m.get(p) ?? 0) + 1);
+    for (const e of entries) {
+      const primary = essayPhases[e.slug]?.phases[0];
+      if (primary) m.set(primary, (m.get(primary) ?? 0) + 1);
+    }
     return m;
   }, [entries, essayPhases]);
 
   const filtered = useMemo(
-    () => (active ? entries.filter((e) => essayPhases[e.slug]?.phases.includes(active)) : entries),
+    () => (active ? entries.filter((e) => essayPhases[e.slug]?.phases[0] === active) : entries),
     [active, entries, essayPhases],
   );
 
@@ -105,25 +108,19 @@ export default function EssayIndex({
             {year} · {groups.get(year)!.length}
           </h2>
           <ul>
-            {groups.get(year)!.map((e) => {
-              const why = active ? essayPhases[e.slug]?.why : undefined;
-              return (
-                <li key={e.slug}>
-                  <Link
-                    href={`/essays/${e.slug}`}
-                    className="flex items-baseline justify-between gap-3 rounded-lg px-2 py-2 hover:bg-black/5 dark:hover:bg-white/5"
-                  >
-                    <span className="min-w-0">
-                      <span className="block font-medium hover:underline">{e.title}</span>
-                      {why && <span className="mt-0.5 block text-xs text-zinc-500">{why}</span>}
-                    </span>
-                    <span className="shrink-0 text-xs text-zinc-500">
-                      {formatDateShort(e.date)} · {e.reading_time_min} min
-                    </span>
-                  </Link>
-                </li>
-              );
-            })}
+            {groups.get(year)!.map((e) => (
+              <li key={e.slug}>
+                <Link
+                  href={`/essays/${e.slug}`}
+                  className="flex items-baseline justify-between gap-3 rounded-lg px-2 py-2 hover:bg-black/5 dark:hover:bg-white/5"
+                >
+                  <span className="min-w-0 font-medium hover:underline">{e.title}</span>
+                  <span className="shrink-0 text-xs text-zinc-500">
+                    {formatDateShort(e.date)} · {e.reading_time_min} min
+                  </span>
+                </Link>
+              </li>
+            ))}
           </ul>
         </section>
       ))}

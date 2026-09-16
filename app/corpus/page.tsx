@@ -84,36 +84,27 @@ export default async function CorpusPage() {
       </Tool>
 
       <Tool
-        name="Claude"
-        blurb="Add the decade files as knowledge in a Claude Project. Start with the eras you care about most."
-      >
-        {bundles.map((f) => (
-          <FileRow key={f.path} file={f} />
-        ))}
-      </Tool>
-
-      <Tool
-        name="ChatGPT"
-        blurb="One file with the whole catalog — ideal for a Project or a Custom GPT, which takes up to 2M tokens of knowledge."
+        name="Claude / ChatGPT / Gemini"
+        blurb="One file with the whole catalog — add it as knowledge to a Claude Project, a ChatGPT Project/Custom GPT, or a Gemini Gem."
       >
         {all && <FileRow file={all} />}
       </Tool>
 
       <Tool
-        name="Notion & Obsidian"
+        name="Notion / Obsidian"
         blurb="Download any essay as markdown from its page, or take all of them as a zip."
       >
         {zip && <FileRow file={zip} />}
       </Tool>
 
       <Tool
-        name="Agents & scripts"
+        name="Agents / scripts"
         blurb="Newline-delimited JSON — one full essay per line, for embeddings or your own tooling."
       >
         {jsonl && <FileRow file={jsonl} />}
       </Tool>
 
-      <p className="mt-10 border-t border-black/10 pt-3 text-xs text-zinc-400 dark:border-white/10">
+      <p className="mt-10 border-t border-black/10 pt-3 text-sm text-zinc-500 dark:border-white/10 dark:text-zinc-400">
         Updated {manifest.generated.slice(0, 10)} · source:{" "}
         <a href={manifest.source} target="_blank" rel="noopener noreferrer" className="underline">
           paulgraham.com

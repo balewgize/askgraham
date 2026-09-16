@@ -115,20 +115,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           </div>
         </header>
         <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-6 sm:py-8">{children}</main>
-        <footer className="border-t border-black/10 py-4 text-center text-[11px] text-zinc-400 dark:border-white/10">
-          Personal learning tool · essays by Paul Graham (paulgraham.com) ·{" "}
-          <Link href="/corpus" className="underline">
-            export &amp; search
-          </Link>{" "}
-          ·{" "}
+        <footer className="border-t border-black/10 py-4 text-center text-sm text-zinc-500 dark:border-white/10 dark:text-zinc-400">
+          Personal learning tool · Essays by Paul Graham ·{" "}
           <a
-            href="https://github.com/balewgize/askgraham"
+            href="https://www.paulgraham.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 align-middle underline hover:text-zinc-600 dark:hover:text-zinc-200"
+            className="underline hover:text-zinc-600 dark:hover:text-zinc-200"
           >
-            <GitHubIcon size={12} />
-            GitHub
+            paulgraham.com
           </a>{" "}
           · {new Date().getFullYear()}
         </footer>
