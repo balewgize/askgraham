@@ -1,8 +1,15 @@
+import type { Metadata } from "next";
 import EssayIndex from "@/components/essay-index";
 import { getIndex } from "@/lib/essays";
 import { getPhases, getTaxonomy } from "@/lib/phases";
+import { SITE_DESCRIPTION, SITE_URL } from "@/lib/site";
 
 export const dynamic = "force-static";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+  openGraph: { url: SITE_URL, title: "Paul Graham's Essays — Full Text, Searchable & Filterable", description: SITE_DESCRIPTION },
+};
 
 export default async function Home() {
   const [index, taxonomy, phases] = await Promise.all([getIndex(), getTaxonomy(), getPhases()]);

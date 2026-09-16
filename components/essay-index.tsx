@@ -36,8 +36,6 @@ export default function EssayIndex({
     [active, entries, essayPhases],
   );
 
-  const totalMin = filtered.reduce((a, e) => a + e.reading_time_min, 0);
-
   const groups = new Map<string, IndexEntry[]>();
   for (const e of filtered) {
     const y = yearOf(e.date);
@@ -56,9 +54,6 @@ export default function EssayIndex({
         <h1 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl" style={{ fontFamily: "Georgia, serif" }}>
           Paul Graham&apos;s Essays
         </h1>
-        <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-          {filtered.length} essays · ~{Math.round(totalMin / 60)} hours of reading · newest first
-        </p>
         <p className="mt-1 hidden text-xs text-zinc-400 sm:block">
           Press <kbd className="rounded border border-black/10 px-1 dark:border-white/15">/</kbd> or{" "}
           <kbd className="rounded border border-black/10 px-1 dark:border-white/15">⌘K</kbd> to search ·{" "}

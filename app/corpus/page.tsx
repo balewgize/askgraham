@@ -5,9 +5,10 @@ import { formatBytes, getCorpusManifest, type CorpusFile } from "@/lib/corpus";
 export const dynamic = "force-static";
 
 export const metadata = {
-  title: "Take the essays anywhere — Ask Graham",
+  title: "Take the essays anywhere",
   description:
     "Download Paul Graham's essays as clean markdown and JSON, ready to import into NotebookLM, Claude, ChatGPT, Notion, or Obsidian.",
+  alternates: { canonical: "/corpus" },
 };
 
 function fmtInt(n: number) {
