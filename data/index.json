@@ -1,0 +1,1633 @@
+[
+  {
+    "slug": "greatwork",
+    "title": "How to Do Great Work",
+    "date": "July 2023",
+    "word_count": 10478,
+    "reading_time_min": 53
+  },
+  {
+    "slug": "kids",
+    "title": "Having Kids",
+    "date": "December 2019",
+    "word_count": 1521,
+    "reading_time_min": 8
+  },
+  {
+    "slug": "selfindulgence",
+    "title": "How to Lose Time and Money",
+    "date": "July 2010",
+    "word_count": 658,
+    "reading_time_min": 4
+  },
+  {
+    "slug": "powerful",
+    "title": "Making Startups Powerful",
+    "date": "September 2026",
+    "word_count": 2279,
+    "reading_time_min": 12
+  },
+  {
+    "slug": "prepare",
+    "title": "How Universities Should Prepare Founders",
+    "date": "August 2026",
+    "word_count": 2435,
+    "reading_time_min": 13
+  },
+  {
+    "slug": "earn",
+    "title": "How to Earn a Billion Dollars",
+    "date": "June 2026",
+    "word_count": 2333,
+    "reading_time_min": 12
+  },
+  {
+    "slug": "winc",
+    "title": "How to Convert Between Wealth and Income Tax",
+    "date": "May 2026",
+    "word_count": 515,
+    "reading_time_min": 3
+  },
+  {
+    "slug": "brandage",
+    "title": "The Brand Age",
+    "date": "March 2026",
+    "word_count": 6193,
+    "reading_time_min": 31
+  },
+  {
+    "slug": "field",
+    "title": "The Shape of the Essay Field",
+    "date": "June 2025",
+    "word_count": 755,
+    "reading_time_min": 4
+  },
+  {
+    "slug": "goodwriting",
+    "title": "Good Writing",
+    "date": "May 2025",
+    "word_count": 1433,
+    "reading_time_min": 8
+  },
+  {
+    "slug": "do",
+    "title": "What to Do",
+    "date": "March 2025",
+    "word_count": 1393,
+    "reading_time_min": 7
+  },
+  {
+    "slug": "woke",
+    "title": "The Origins of Wokeness",
+    "date": "January 2025",
+    "word_count": 4704,
+    "reading_time_min": 24
+  },
+  {
+    "slug": "writes",
+    "title": "Writes and Write-Nots",
+    "date": "October 2024",
+    "word_count": 538,
+    "reading_time_min": 3
+  },
+  {
+    "slug": "when",
+    "title": "When To Do What You Love",
+    "date": "September 2024",
+    "word_count": 1299,
+    "reading_time_min": 7
+  },
+  {
+    "slug": "foundermode",
+    "title": "Founder Mode",
+    "date": "September 2024",
+    "word_count": 1056,
+    "reading_time_min": 6
+  },
+  {
+    "slug": "persistence",
+    "title": "The Right Kind of Stubborn",
+    "date": "July 2024",
+    "word_count": 1606,
+    "reading_time_min": 9
+  },
+  {
+    "slug": "reddits",
+    "title": "The Reddits",
+    "date": "March 2024",
+    "word_count": 1166,
+    "reading_time_min": 6
+  },
+  {
+    "slug": "google",
+    "title": "How to Start Google",
+    "date": "March 2024",
+    "word_count": 2618,
+    "reading_time_min": 14
+  },
+  {
+    "slug": "best",
+    "title": "The Best Essay",
+    "date": "March 2024",
+    "word_count": 3675,
+    "reading_time_min": 19
+  },
+  {
+    "slug": "superlinear",
+    "title": "Superlinear Returns",
+    "date": "October 2023",
+    "word_count": 3463,
+    "reading_time_min": 18
+  },
+  {
+    "slug": "getideas",
+    "title": "How to Get New Ideas",
+    "date": "January 2023",
+    "word_count": 145,
+    "reading_time_min": 1
+  },
+  {
+    "slug": "read",
+    "title": "The Need to Read",
+    "date": "November 2022",
+    "word_count": 383,
+    "reading_time_min": 2
+  },
+  {
+    "slug": "want",
+    "title": "What You (Want to)* Want",
+    "date": "November 2022",
+    "word_count": 430,
+    "reading_time_min": 3
+  },
+  {
+    "slug": "alien",
+    "title": "Alien Truth",
+    "date": "October 2022",
+    "word_count": 664,
+    "reading_time_min": 4
+  },
+  {
+    "slug": "users",
+    "title": "What I've Learned from Users",
+    "date": "September 2022",
+    "word_count": 1975,
+    "reading_time_min": 10
+  },
+  {
+    "slug": "heresy",
+    "title": "Heresy",
+    "date": "April 2022",
+    "word_count": 1650,
+    "reading_time_min": 9
+  },
+  {
+    "slug": "words",
+    "title": "Putting Ideas into Words",
+    "date": "February 2022",
+    "word_count": 1043,
+    "reading_time_min": 6
+  },
+  {
+    "slug": "goodtaste",
+    "title": "Is There Such a Thing as Good Taste?",
+    "date": "November 2021",
+    "word_count": 1099,
+    "reading_time_min": 6
+  },
+  {
+    "slug": "smart",
+    "title": "Beyond Smart",
+    "date": "October 2021",
+    "word_count": 1149,
+    "reading_time_min": 6
+  },
+  {
+    "slug": "weird",
+    "title": "Weird Languages",
+    "date": "August 2021",
+    "word_count": 328,
+    "reading_time_min": 2
+  },
+  {
+    "slug": "hwh",
+    "title": "How to Work Hard",
+    "date": "June 2021",
+    "word_count": 2767,
+    "reading_time_min": 14
+  },
+  {
+    "slug": "own",
+    "title": "A Project of One's Own",
+    "date": "June 2021",
+    "word_count": 2056,
+    "reading_time_min": 11
+  },
+  {
+    "slug": "fn",
+    "title": "Fierce Nerds",
+    "date": "May 2021",
+    "word_count": 1020,
+    "reading_time_min": 6
+  },
+  {
+    "slug": "newideas",
+    "title": "Crazy New Ideas",
+    "date": "May 2021",
+    "word_count": 1131,
+    "reading_time_min": 6
+  },
+  {
+    "slug": "nft",
+    "title": "An NFT That Saves Lives",
+    "date": "May 2021",
+    "word_count": 312,
+    "reading_time_min": 2
+  },
+  {
+    "slug": "real",
+    "title": "The Real Reason to End the Death Penalty",
+    "date": "April 2021",
+    "word_count": 747,
+    "reading_time_min": 4
+  },
+  {
+    "slug": "richnow",
+    "title": "How People Get Rich Now",
+    "date": "April 2021",
+    "word_count": 1859,
+    "reading_time_min": 10
+  },
+  {
+    "slug": "simply",
+    "title": "Write Simply",
+    "date": "March 2021",
+    "word_count": 507,
+    "reading_time_min": 3
+  },
+  {
+    "slug": "donate",
+    "title": "Donate Unrestricted",
+    "date": "March 2021",
+    "word_count": 467,
+    "reading_time_min": 3
+  },
+  {
+    "slug": "worked",
+    "title": "What I Worked On",
+    "date": "February 2021",
+    "word_count": 12525,
+    "reading_time_min": 63
+  },
+  {
+    "slug": "earnest",
+    "title": "Earnestness",
+    "date": "December 2020",
+    "word_count": 1247,
+    "reading_time_min": 7
+  },
+  {
+    "slug": "ace",
+    "title": "Billionaires Build",
+    "date": "December 2020",
+    "word_count": 3222,
+    "reading_time_min": 17
+  },
+  {
+    "slug": "airbnbs",
+    "title": "The Airbnbs",
+    "date": "December 2020",
+    "word_count": 1100,
+    "reading_time_min": 6
+  },
+  {
+    "slug": "think",
+    "title": "How to Think for Yourself",
+    "date": "November 2020",
+    "word_count": 2781,
+    "reading_time_min": 14
+  },
+  {
+    "slug": "early",
+    "title": "Early Work",
+    "date": "October 2020",
+    "word_count": 2015,
+    "reading_time_min": 11
+  },
+  {
+    "slug": "wtax",
+    "title": "Modeling a Wealth Tax",
+    "date": "August 2020",
+    "word_count": 403,
+    "reading_time_min": 3
+  },
+  {
+    "slug": "conformism",
+    "title": "The Four Quadrants of Conformism",
+    "date": "July 2020",
+    "word_count": 1696,
+    "reading_time_min": 9
+  },
+  {
+    "slug": "orth",
+    "title": "Orthodox Privilege",
+    "date": "July 2020",
+    "word_count": 591,
+    "reading_time_min": 3
+  },
+  {
+    "slug": "cred",
+    "title": "Coronavirus and Credibility",
+    "date": "April 2020",
+    "word_count": 235,
+    "reading_time_min": 2
+  },
+  {
+    "slug": "useful",
+    "title": "How to Write Usefully",
+    "date": "February 2020",
+    "word_count": 2807,
+    "reading_time_min": 15
+  },
+  {
+    "slug": "noob",
+    "title": "Being a Noob",
+    "date": "January 2020",
+    "word_count": 371,
+    "reading_time_min": 2
+  },
+  {
+    "slug": "fh",
+    "title": "Haters",
+    "date": "January 2020",
+    "word_count": 1143,
+    "reading_time_min": 6
+  },
+  {
+    "slug": "mod",
+    "title": "The Two Kinds of Moderate",
+    "date": "December 2019",
+    "word_count": 534,
+    "reading_time_min": 3
+  },
+  {
+    "slug": "fp",
+    "title": "Fashionable Problems",
+    "date": "December 2019",
+    "word_count": 188,
+    "reading_time_min": 1
+  },
+  {
+    "slug": "lesson",
+    "title": "The Lesson to Unlearn",
+    "date": "December 2019",
+    "word_count": 3448,
+    "reading_time_min": 18
+  },
+  {
+    "slug": "nov",
+    "title": "Novelty and Heresy",
+    "date": "November 2019",
+    "word_count": 253,
+    "reading_time_min": 2
+  },
+  {
+    "slug": "genius",
+    "title": "The Bus Ticket Theory of Genius",
+    "date": "November 2019",
+    "word_count": 2033,
+    "reading_time_min": 11
+  },
+  {
+    "slug": "sun",
+    "title": "General and Surprising",
+    "date": "September 2017",
+    "word_count": 423,
+    "reading_time_min": 3
+  },
+  {
+    "slug": "pow",
+    "title": "Charisma / Power",
+    "date": "January 2017",
+    "word_count": 119,
+    "reading_time_min": 1
+  },
+  {
+    "slug": "disc",
+    "title": "The Risk of Discovery",
+    "date": "January 2017",
+    "word_count": 214,
+    "reading_time_min": 2
+  },
+  {
+    "slug": "pgh",
+    "title": "How to Make Pittsburgh a Startup Hub",
+    "date": "April 2016",
+    "word_count": 2610,
+    "reading_time_min": 14
+  },
+  {
+    "slug": "vb",
+    "title": "Life is Short",
+    "date": "January 2016",
+    "word_count": 1566,
+    "reading_time_min": 8
+  },
+  {
+    "slug": "ineq",
+    "title": "Economic Inequality",
+    "date": "January 2016",
+    "word_count": 2576,
+    "reading_time_min": 13
+  },
+  {
+    "slug": "re",
+    "title": "The Refragmentation",
+    "date": "January 2016",
+    "word_count": 5153,
+    "reading_time_min": 26
+  },
+  {
+    "slug": "jessica",
+    "title": "Jessica Livingston",
+    "date": "November 2015",
+    "word_count": 1663,
+    "reading_time_min": 9
+  },
+  {
+    "slug": "bias",
+    "title": "A Way to Detect Bias",
+    "date": "October 2015",
+    "word_count": 467,
+    "reading_time_min": 3
+  },
+  {
+    "slug": "talk",
+    "title": "Write Like You Talk",
+    "date": "October 2015",
+    "word_count": 694,
+    "reading_time_min": 4
+  },
+  {
+    "slug": "aord",
+    "title": "Default Alive or Default Dead?",
+    "date": "October 2015",
+    "word_count": 1221,
+    "reading_time_min": 7
+  },
+  {
+    "slug": "safe",
+    "title": "Why It's Safe for Founders to Be Nice",
+    "date": "August 2015",
+    "word_count": 585,
+    "reading_time_min": 3
+  },
+  {
+    "slug": "name",
+    "title": "Change Your Name",
+    "date": "August 2015",
+    "word_count": 628,
+    "reading_time_min": 4
+  },
+  {
+    "slug": "altair",
+    "title": "What Microsoft Is this the Altair Basic of?",
+    "date": "February 2015",
+    "word_count": 375,
+    "reading_time_min": 2
+  },
+  {
+    "slug": "ronco",
+    "title": "The Ronco Principle",
+    "date": "January 2015",
+    "word_count": 552,
+    "reading_time_min": 3
+  },
+  {
+    "slug": "work",
+    "title": "What Doesn't Seem Like Work?",
+    "date": "January 2015",
+    "word_count": 463,
+    "reading_time_min": 3
+  },
+  {
+    "slug": "corpdev",
+    "title": "Don't Talk to Corp Dev",
+    "date": "January 2015",
+    "word_count": 1118,
+    "reading_time_min": 6
+  },
+  {
+    "slug": "95",
+    "title": "Let the Other 95% of Great Programmers In",
+    "date": "December 2014",
+    "word_count": 670,
+    "reading_time_min": 4
+  },
+  {
+    "slug": "ecw",
+    "title": "How to Be an Expert in a Changing World",
+    "date": "December 2014",
+    "word_count": 908,
+    "reading_time_min": 5
+  },
+  {
+    "slug": "know",
+    "title": "How You Know",
+    "date": "December 2014",
+    "word_count": 631,
+    "reading_time_min": 4
+  },
+  {
+    "slug": "pinch",
+    "title": "The Fatal Pinch",
+    "date": "December 2014",
+    "word_count": 1351,
+    "reading_time_min": 7
+  },
+  {
+    "slug": "mean",
+    "title": "Mean People Fail",
+    "date": "November 2014",
+    "word_count": 922,
+    "reading_time_min": 5
+  },
+  {
+    "slug": "before",
+    "title": "Before the Startup",
+    "date": "October 2014",
+    "word_count": 4132,
+    "reading_time_min": 21
+  },
+  {
+    "slug": "fr",
+    "title": "How to Raise Money",
+    "date": "September 2013",
+    "word_count": 8852,
+    "reading_time_min": 45
+  },
+  {
+    "slug": "herd",
+    "title": "Investor Herd Dynamics",
+    "date": "August 2013",
+    "word_count": 926,
+    "reading_time_min": 5
+  },
+  {
+    "slug": "convince",
+    "title": "How to Convince Investors",
+    "date": "August 2013",
+    "word_count": 2804,
+    "reading_time_min": 15
+  },
+  {
+    "slug": "ds",
+    "title": "Do Things that Don't Scale",
+    "date": "July 2013",
+    "word_count": 3736,
+    "reading_time_min": 19
+  },
+  {
+    "slug": "invtrend",
+    "title": "Startup Investing Trends",
+    "date": "June 2013",
+    "word_count": 2510,
+    "reading_time_min": 13
+  },
+  {
+    "slug": "startupideas",
+    "title": "How to Get Startup Ideas",
+    "date": "November 2012",
+    "word_count": 6176,
+    "reading_time_min": 31
+  },
+  {
+    "slug": "hw",
+    "title": "The Hardware Renaissance",
+    "date": "October 2012",
+    "word_count": 366,
+    "reading_time_min": 2
+  },
+  {
+    "slug": "growth",
+    "title": "Startup = Growth",
+    "date": "September 2012",
+    "word_count": 4253,
+    "reading_time_min": 22
+  },
+  {
+    "slug": "swan",
+    "title": "Black Swan Farming",
+    "date": "September 2012",
+    "word_count": 1517,
+    "reading_time_min": 8
+  },
+  {
+    "slug": "todo",
+    "title": "The Top of My Todo List",
+    "date": "April 2012",
+    "word_count": 231,
+    "reading_time_min": 2
+  },
+  {
+    "slug": "speak",
+    "title": "Writing and Speaking",
+    "date": "March 2012",
+    "word_count": 979,
+    "reading_time_min": 5
+  },
+  {
+    "slug": "ycstart",
+    "title": "How Y Combinator Started",
+    "date": "March 2012",
+    "word_count": 1445,
+    "reading_time_min": 8
+  },
+  {
+    "slug": "property",
+    "title": "Defining Property",
+    "date": "March 2012",
+    "word_count": 816,
+    "reading_time_min": 5
+  },
+  {
+    "slug": "ambitious",
+    "title": "Frighteningly Ambitious Startup Ideas",
+    "date": "March 2012",
+    "word_count": 3580,
+    "reading_time_min": 18
+  },
+  {
+    "slug": "word",
+    "title": "A Word to the Resourceful",
+    "date": "January 2012",
+    "word_count": 596,
+    "reading_time_min": 3
+  },
+  {
+    "slug": "schlep",
+    "title": "Schlep Blindness",
+    "date": "January 2012",
+    "word_count": 816,
+    "reading_time_min": 5
+  },
+  {
+    "slug": "vw",
+    "title": "Snapshot: Viaweb, June 1998",
+    "date": "January 2012",
+    "word_count": 867,
+    "reading_time_min": 5
+  },
+  {
+    "slug": "hubs",
+    "title": "Why Startup Hubs Work",
+    "date": "October 2011",
+    "word_count": 1473,
+    "reading_time_min": 8
+  },
+  {
+    "slug": "patentpledge",
+    "title": "The Patent Pledge",
+    "date": "August 2011",
+    "word_count": 677,
+    "reading_time_min": 4
+  },
+  {
+    "slug": "airbnb",
+    "title": "Subject: Airbnb",
+    "date": "March 2011",
+    "word_count": 1363,
+    "reading_time_min": 7
+  },
+  {
+    "slug": "control",
+    "title": "Founder Control",
+    "date": "December 2010",
+    "word_count": 737,
+    "reading_time_min": 4
+  },
+  {
+    "slug": "tablets",
+    "title": "Tablets",
+    "date": "December 2010",
+    "word_count": 531,
+    "reading_time_min": 3
+  },
+  {
+    "slug": "founders",
+    "title": "What We Look for in Founders",
+    "date": "October 2010",
+    "word_count": 773,
+    "reading_time_min": 4
+  },
+  {
+    "slug": "superangels",
+    "title": "The New Funding Landscape",
+    "date": "October 2010",
+    "word_count": 3097,
+    "reading_time_min": 16
+  },
+  {
+    "slug": "seesv",
+    "title": "Where to See Silicon Valley",
+    "date": "October 2010",
+    "word_count": 989,
+    "reading_time_min": 5
+  },
+  {
+    "slug": "hiresfund",
+    "title": "High Resolution Fundraising",
+    "date": "September 2010",
+    "word_count": 676,
+    "reading_time_min": 4
+  },
+  {
+    "slug": "yahoo",
+    "title": "What Happened to Yahoo",
+    "date": "August 2010",
+    "word_count": 1935,
+    "reading_time_min": 10
+  },
+  {
+    "slug": "future",
+    "title": "The Future of Startup Funding",
+    "date": "August 2010",
+    "word_count": 3178,
+    "reading_time_min": 16
+  },
+  {
+    "slug": "addiction",
+    "title": "The Acceleration of Addictiveness",
+    "date": "July 2010",
+    "word_count": 958,
+    "reading_time_min": 5
+  },
+  {
+    "slug": "top",
+    "title": "The Top Idea in Your Mind",
+    "date": "July 2010",
+    "word_count": 1035,
+    "reading_time_min": 6
+  },
+  {
+    "slug": "organic",
+    "title": "Organic Startup Ideas",
+    "date": "April 2010",
+    "word_count": 875,
+    "reading_time_min": 5
+  },
+  {
+    "slug": "apple",
+    "title": "Apple's Mistake",
+    "date": "November 2009",
+    "word_count": 1966,
+    "reading_time_min": 10
+  },
+  {
+    "slug": "really",
+    "title": "What Startups Are Really Like",
+    "date": "October 2009",
+    "word_count": 4831,
+    "reading_time_min": 25
+  },
+  {
+    "slug": "discover",
+    "title": "Persuade xor Discover",
+    "date": "September 2009",
+    "word_count": 1099,
+    "reading_time_min": 6
+  },
+  {
+    "slug": "publishing",
+    "title": "Post-Medium Publishing",
+    "date": "September 2009",
+    "word_count": 1570,
+    "reading_time_min": 8
+  },
+  {
+    "slug": "nthings",
+    "title": "The List of N Things",
+    "date": "September 2009",
+    "word_count": 1352,
+    "reading_time_min": 7
+  },
+  {
+    "slug": "determination",
+    "title": "The Anatomy of Determination",
+    "date": "September 2009",
+    "word_count": 1320,
+    "reading_time_min": 7
+  },
+  {
+    "slug": "kate",
+    "title": "What Kate Saw in Silicon Valley",
+    "date": "August 2009",
+    "word_count": 811,
+    "reading_time_min": 5
+  },
+  {
+    "slug": "segway",
+    "title": "The Trouble with the Segway",
+    "date": "July 2009",
+    "word_count": 377,
+    "reading_time_min": 2
+  },
+  {
+    "slug": "ramenprofitable",
+    "title": "Ramen Profitable",
+    "date": "July 2009",
+    "word_count": 1426,
+    "reading_time_min": 8
+  },
+  {
+    "slug": "makersschedule",
+    "title": "Maker's Schedule, Manager's Schedule",
+    "date": "July 2009",
+    "word_count": 1112,
+    "reading_time_min": 6
+  },
+  {
+    "slug": "revolution",
+    "title": "A Local Revolution?",
+    "date": "April 2009",
+    "word_count": 1021,
+    "reading_time_min": 6
+  },
+  {
+    "slug": "twitter",
+    "title": "Why Twitter is a Big Deal",
+    "date": "April 2009",
+    "word_count": 145,
+    "reading_time_min": 1
+  },
+  {
+    "slug": "foundervisa",
+    "title": "The Founder Visa",
+    "date": "April 2009",
+    "word_count": 365,
+    "reading_time_min": 2
+  },
+  {
+    "slug": "5founders",
+    "title": "Five Founders",
+    "date": "April 2009",
+    "word_count": 755,
+    "reading_time_min": 4
+  },
+  {
+    "slug": "relres",
+    "title": "Relentlessly Resourceful",
+    "date": "March 2009",
+    "word_count": 783,
+    "reading_time_min": 4
+  },
+  {
+    "slug": "angelinvesting",
+    "title": "How to Be an Angel Investor",
+    "date": "March 2009",
+    "word_count": 2949,
+    "reading_time_min": 15
+  },
+  {
+    "slug": "convergence",
+    "title": "Why TV Lost",
+    "date": "March 2009",
+    "word_count": 1245,
+    "reading_time_min": 7
+  },
+  {
+    "slug": "maybe",
+    "title": "Can You Buy a Silicon Valley? Maybe.",
+    "date": "February 2009",
+    "word_count": 1746,
+    "reading_time_min": 9
+  },
+  {
+    "slug": "hackernews",
+    "title": "What I've Learned from Hacker News",
+    "date": "February 2009",
+    "word_count": 2355,
+    "reading_time_min": 12
+  },
+  {
+    "slug": "13sentences",
+    "title": "Startups in 13 Sentences",
+    "date": "February 2009",
+    "word_count": 1244,
+    "reading_time_min": 7
+  },
+  {
+    "slug": "identity",
+    "title": "Keep Your Identity Small",
+    "date": "February 2009",
+    "word_count": 689,
+    "reading_time_min": 4
+  },
+  {
+    "slug": "credentials",
+    "title": "After Credentials",
+    "date": "December 2008",
+    "word_count": 2261,
+    "reading_time_min": 12
+  },
+  {
+    "slug": "divergence",
+    "title": "Could VC be a Casualty of the Recession?",
+    "date": "December 2008",
+    "word_count": 1327,
+    "reading_time_min": 7
+  },
+  {
+    "slug": "highres",
+    "title": "The High-Res Society",
+    "date": "December 2008",
+    "word_count": 1397,
+    "reading_time_min": 7
+  },
+  {
+    "slug": "artistsship",
+    "title": "The Other Half of \"Artists Ship\"",
+    "date": "November 2008",
+    "word_count": 1307,
+    "reading_time_min": 7
+  },
+  {
+    "slug": "badeconomy",
+    "title": "Why to Start a Startup in a Bad Economy",
+    "date": "October 2008",
+    "word_count": 1096,
+    "reading_time_min": 6
+  },
+  {
+    "slug": "fundraising",
+    "title": "A Fundraising Survival Guide",
+    "date": "August 2008",
+    "word_count": 4428,
+    "reading_time_min": 23
+  },
+  {
+    "slug": "prcmc",
+    "title": "The Pooled-Risk Company Management Company",
+    "date": "July 2008",
+    "word_count": 1240,
+    "reading_time_min": 7
+  },
+  {
+    "slug": "cities",
+    "title": "Cities and Ambition",
+    "date": "May 2008",
+    "word_count": 3086,
+    "reading_time_min": 16
+  },
+  {
+    "slug": "distraction",
+    "title": "Disconnecting Distraction",
+    "date": "May 2008",
+    "word_count": 1144,
+    "reading_time_min": 6
+  },
+  {
+    "slug": "lies",
+    "title": "Lies We Tell Kids",
+    "date": "May 2008",
+    "word_count": 4584,
+    "reading_time_min": 23
+  },
+  {
+    "slug": "good",
+    "title": "Be Good",
+    "date": "April 2008",
+    "word_count": 2603,
+    "reading_time_min": 14
+  },
+  {
+    "slug": "googles",
+    "title": "Why There Aren't More Googles",
+    "date": "April 2008",
+    "word_count": 1266,
+    "reading_time_min": 7
+  },
+  {
+    "slug": "heroes",
+    "title": "Some Heroes",
+    "date": "April 2008",
+    "word_count": 2679,
+    "reading_time_min": 14
+  },
+  {
+    "slug": "disagree",
+    "title": "How to Disagree",
+    "date": "March 2008",
+    "word_count": 1484,
+    "reading_time_min": 8
+  },
+  {
+    "slug": "boss",
+    "title": "You Weren't Meant to Have a Boss",
+    "date": "March 2008",
+    "word_count": 2364,
+    "reading_time_min": 12
+  },
+  {
+    "slug": "ycombinator",
+    "title": "A New Venture Animal",
+    "date": "March 2008",
+    "word_count": 1971,
+    "reading_time_min": 10
+  },
+  {
+    "slug": "trolls",
+    "title": "Trolls",
+    "date": "February 2008",
+    "word_count": 835,
+    "reading_time_min": 5
+  },
+  {
+    "slug": "newthings",
+    "title": "Six Principles for Making New Things",
+    "date": "February 2008",
+    "word_count": 1165,
+    "reading_time_min": 6
+  },
+  {
+    "slug": "startuphubs",
+    "title": "Why to Move to a Startup Hub",
+    "date": "October 2007",
+    "word_count": 1356,
+    "reading_time_min": 7
+  },
+  {
+    "slug": "webstartups",
+    "title": "The Future of Web Startups",
+    "date": "October 2007",
+    "word_count": 3376,
+    "reading_time_min": 17
+  },
+  {
+    "slug": "philosophy",
+    "title": "How to Do Philosophy",
+    "date": "September 2007",
+    "word_count": 3727,
+    "reading_time_min": 19
+  },
+  {
+    "slug": "colleges",
+    "title": "News from the Front",
+    "date": "September 2007",
+    "word_count": 1865,
+    "reading_time_min": 10
+  },
+  {
+    "slug": "die",
+    "title": "How Not to Die",
+    "date": "August 2007",
+    "word_count": 1961,
+    "reading_time_min": 10
+  },
+  {
+    "slug": "head",
+    "title": "Holding a Program in One's Head",
+    "date": "August 2007",
+    "word_count": 1804,
+    "reading_time_min": 10
+  },
+  {
+    "slug": "stuff",
+    "title": "Stuff",
+    "date": "July 2007",
+    "word_count": 1244,
+    "reading_time_min": 7
+  },
+  {
+    "slug": "equity",
+    "title": "The Equity Equation",
+    "date": "July 2007",
+    "word_count": 1014,
+    "reading_time_min": 6
+  },
+  {
+    "slug": "unions",
+    "title": "An Alternative Theory of Unions",
+    "date": "May 2007",
+    "word_count": 513,
+    "reading_time_min": 3
+  },
+  {
+    "slug": "guidetoinvestors",
+    "title": "The Hacker's Guide to Investors",
+    "date": "April 2007",
+    "word_count": 6058,
+    "reading_time_min": 31
+  },
+  {
+    "slug": "judgement",
+    "title": "Two Kinds of Judgement",
+    "date": "April 2007",
+    "word_count": 738,
+    "reading_time_min": 4
+  },
+  {
+    "slug": "microsoft",
+    "title": "Microsoft is Dead",
+    "date": "April 2007",
+    "word_count": 1187,
+    "reading_time_min": 6
+  },
+  {
+    "slug": "notnot",
+    "title": "Why to Not Not Start a Startup",
+    "date": "March 2007",
+    "word_count": 6106,
+    "reading_time_min": 31
+  },
+  {
+    "slug": "wisdom",
+    "title": "Is It Worth Being Wise?",
+    "date": "February 2007",
+    "word_count": 2992,
+    "reading_time_min": 15
+  },
+  {
+    "slug": "foundersatwork",
+    "title": "Learning from Founders",
+    "date": "January 2007",
+    "word_count": 773,
+    "reading_time_min": 4
+  },
+  {
+    "slug": "goodart",
+    "title": "How Art Can Be Good",
+    "date": "December 2006",
+    "word_count": 3010,
+    "reading_time_min": 16
+  },
+  {
+    "slug": "startupmistakes",
+    "title": "The 18 Mistakes That Kill Startups",
+    "date": "October 2006",
+    "word_count": 4984,
+    "reading_time_min": 25
+  },
+  {
+    "slug": "mit",
+    "title": "A Student's Guide to Startups",
+    "date": "October 2006",
+    "word_count": 6194,
+    "reading_time_min": 31
+  },
+  {
+    "slug": "investors",
+    "title": "How to Present to Investors",
+    "date": "August 2006",
+    "word_count": 2806,
+    "reading_time_min": 15
+  },
+  {
+    "slug": "copy",
+    "title": "Copy What You Like",
+    "date": "July 2006",
+    "word_count": 935,
+    "reading_time_min": 5
+  },
+  {
+    "slug": "island",
+    "title": "The Island Test",
+    "date": "July 2006",
+    "word_count": 753,
+    "reading_time_min": 4
+  },
+  {
+    "slug": "marginal",
+    "title": "The Power of the Marginal",
+    "date": "June 2006",
+    "word_count": 5732,
+    "reading_time_min": 29
+  },
+  {
+    "slug": "america",
+    "title": "Why Startups Condense in America",
+    "date": "May 2006",
+    "word_count": 4327,
+    "reading_time_min": 22
+  },
+  {
+    "slug": "siliconvalley",
+    "title": "How to Be Silicon Valley",
+    "date": "May 2006",
+    "word_count": 3258,
+    "reading_time_min": 17
+  },
+  {
+    "slug": "startuplessons",
+    "title": "The Hardest Lessons for Startups to Learn",
+    "date": "April 2006",
+    "word_count": 4424,
+    "reading_time_min": 23
+  },
+  {
+    "slug": "randomness",
+    "title": "See Randomness",
+    "date": "April 2006",
+    "word_count": 586,
+    "reading_time_min": 3
+  },
+  {
+    "slug": "softwarepatents",
+    "title": "Are Software Patents Evil?",
+    "date": "March 2006",
+    "word_count": 4299,
+    "reading_time_min": 22
+  },
+  {
+    "slug": "6631327",
+    "title": "6,631,372",
+    "date": "March 2006",
+    "word_count": 691,
+    "reading_time_min": 4
+  },
+  {
+    "slug": "whyyc",
+    "title": "Why YC",
+    "date": "March 2006",
+    "word_count": 375,
+    "reading_time_min": 2
+  },
+  {
+    "slug": "love",
+    "title": "How to Do What You Love",
+    "date": "January 2006",
+    "word_count": 4321,
+    "reading_time_min": 22
+  },
+  {
+    "slug": "procrastination",
+    "title": "Good and Bad Procrastination",
+    "date": "December 2005",
+    "word_count": 1791,
+    "reading_time_min": 9
+  },
+  {
+    "slug": "web20",
+    "title": "Web 2.0",
+    "date": "November 2005",
+    "word_count": 3094,
+    "reading_time_min": 16
+  },
+  {
+    "slug": "startupfunding",
+    "title": "How to Fund a Startup",
+    "date": "November 2005",
+    "word_count": 8162,
+    "reading_time_min": 41
+  },
+  {
+    "slug": "vcsqueeze",
+    "title": "The Venture Capital Squeeze",
+    "date": "November 2005",
+    "word_count": 1550,
+    "reading_time_min": 8
+  },
+  {
+    "slug": "ideas",
+    "title": "Ideas for Startups",
+    "date": "October 2005",
+    "word_count": 3831,
+    "reading_time_min": 20
+  },
+  {
+    "slug": "sfp",
+    "title": "What I Did this Summer",
+    "date": "October 2005",
+    "word_count": 2511,
+    "reading_time_min": 13
+  },
+  {
+    "slug": "inequality",
+    "title": "Inequality and Risk",
+    "date": "August 2005",
+    "word_count": 2555,
+    "reading_time_min": 13
+  },
+  {
+    "slug": "ladder",
+    "title": "After the Ladder",
+    "date": "August 2005",
+    "word_count": 583,
+    "reading_time_min": 3
+  },
+  {
+    "slug": "opensource",
+    "title": "What Business Can Learn from Open Source",
+    "date": "August 2005",
+    "word_count": 4173,
+    "reading_time_min": 21
+  },
+  {
+    "slug": "hiring",
+    "title": "Hiring is Obsolete",
+    "date": "May 2005",
+    "word_count": 4662,
+    "reading_time_min": 24
+  },
+  {
+    "slug": "submarine",
+    "title": "The Submarine",
+    "date": "April 2005",
+    "word_count": 2008,
+    "reading_time_min": 11
+  },
+  {
+    "slug": "bronze",
+    "title": "Why Smart People Have Bad Ideas",
+    "date": "April 2005",
+    "word_count": 2807,
+    "reading_time_min": 15
+  },
+  {
+    "slug": "mac",
+    "title": "Return of the Mac",
+    "date": "March 2005",
+    "word_count": 930,
+    "reading_time_min": 5
+  },
+  {
+    "slug": "writing44",
+    "title": "Writing, Briefly",
+    "date": "March 2005",
+    "word_count": 457,
+    "reading_time_min": 3
+  },
+  {
+    "slug": "college",
+    "title": "Undergraduation",
+    "date": "March 2005",
+    "word_count": 3197,
+    "reading_time_min": 16
+  },
+  {
+    "slug": "venturecapital",
+    "title": "A Unified Theory of VC Suckage",
+    "date": "March 2005",
+    "word_count": 1326,
+    "reading_time_min": 7
+  },
+  {
+    "slug": "start",
+    "title": "How to Start a Startup",
+    "date": "March 2005",
+    "word_count": 9331,
+    "reading_time_min": 47
+  },
+  {
+    "slug": "hs",
+    "title": "What You'll Wish You'd Known",
+    "date": "January 2005",
+    "word_count": 4162,
+    "reading_time_min": 21
+  },
+  {
+    "slug": "usa",
+    "title": "Made in USA",
+    "date": "November 2004",
+    "word_count": 1768,
+    "reading_time_min": 9
+  },
+  {
+    "slug": "charisma",
+    "title": "It's Charisma, Stupid",
+    "date": "November 2004",
+    "word_count": 1262,
+    "reading_time_min": 7
+  },
+  {
+    "slug": "polls",
+    "title": "Bradley's Ghost",
+    "date": "November 2004",
+    "word_count": 617,
+    "reading_time_min": 4
+  },
+  {
+    "slug": "laundry",
+    "title": "A Version 1.0",
+    "date": "October 2004",
+    "word_count": 4157,
+    "reading_time_min": 21
+  },
+  {
+    "slug": "bubble",
+    "title": "What the Bubble Got Right",
+    "date": "September 2004",
+    "word_count": 3583,
+    "reading_time_min": 18
+  },
+  {
+    "slug": "essay",
+    "title": "The Age of the Essay",
+    "date": "September 2004",
+    "word_count": 4192,
+    "reading_time_min": 21
+  },
+  {
+    "slug": "pypar",
+    "title": "The Python Paradox",
+    "date": "August 2004",
+    "word_count": 447,
+    "reading_time_min": 3
+  },
+  {
+    "slug": "gh",
+    "title": "Great Hackers",
+    "date": "July 2004",
+    "word_count": 4851,
+    "reading_time_min": 25
+  },
+  {
+    "slug": "gap",
+    "title": "Mind the Gap",
+    "date": "May 2004",
+    "word_count": 4171,
+    "reading_time_min": 21
+  },
+  {
+    "slug": "wealth",
+    "title": "How to Make Wealth",
+    "date": "May 2004",
+    "word_count": 7919,
+    "reading_time_min": 40
+  },
+  {
+    "slug": "gba",
+    "title": "The Word \"Hacker\"",
+    "date": "April 2004",
+    "word_count": 1900,
+    "reading_time_min": 10
+  },
+  {
+    "slug": "say",
+    "title": "What You Can't Say",
+    "date": "January 2004",
+    "word_count": 5396,
+    "reading_time_min": 27
+  },
+  {
+    "slug": "ffb",
+    "title": "Filters that Fight Back",
+    "date": "August 2003",
+    "word_count": 633,
+    "reading_time_min": 4
+  },
+  {
+    "slug": "hp",
+    "title": "Hackers and Painters",
+    "date": "May 2003",
+    "word_count": 5209,
+    "reading_time_min": 27
+  },
+  {
+    "slug": "iflisp",
+    "title": "If Lisp is So Great",
+    "date": "May 2003",
+    "word_count": 414,
+    "reading_time_min": 3
+  },
+  {
+    "slug": "hundred",
+    "title": "The Hundred-Year Language",
+    "date": "April 2003",
+    "word_count": 4707,
+    "reading_time_min": 24
+  },
+  {
+    "slug": "nerds",
+    "title": "Why Nerds are Unpopular",
+    "date": "February 2003",
+    "word_count": 5666,
+    "reading_time_min": 29
+  },
+  {
+    "slug": "better",
+    "title": "Better Bayesian Filtering",
+    "date": "January 2003",
+    "word_count": 3430,
+    "reading_time_min": 18
+  },
+  {
+    "slug": "desres",
+    "title": "Design and Research",
+    "date": "January 2003",
+    "word_count": 2659,
+    "reading_time_min": 14
+  },
+  {
+    "slug": "spam",
+    "title": "A Plan for Spam",
+    "date": "August 2002",
+    "word_count": 5234,
+    "reading_time_min": 27
+  },
+  {
+    "slug": "icad",
+    "title": "Revenge of the Nerds",
+    "date": "May 2002",
+    "word_count": 5665,
+    "reading_time_min": 29
+  },
+  {
+    "slug": "power",
+    "title": "Succinctness is Power",
+    "date": "May 2002",
+    "word_count": 2957,
+    "reading_time_min": 15
+  },
+  {
+    "slug": "fix",
+    "title": "What Languages Fix",
+    "date": null,
+    "word_count": 262,
+    "reading_time_min": 2
+  },
+  {
+    "slug": "taste",
+    "title": "Taste for Makers",
+    "date": "February 2002",
+    "word_count": 4210,
+    "reading_time_min": 22
+  },
+  {
+    "slug": "noop",
+    "title": "Why Arc Isn't Especially Object-Oriented",
+    "date": null,
+    "word_count": 486,
+    "reading_time_min": 3
+  },
+  {
+    "slug": "diff",
+    "title": "What Made Lisp Different",
+    "date": "December 2001",
+    "word_count": 698,
+    "reading_time_min": 4
+  },
+  {
+    "slug": "road",
+    "title": "The Other Road Ahead",
+    "date": "September 2001",
+    "word_count": 10793,
+    "reading_time_min": 54
+  },
+  {
+    "slug": "rootsoflisp",
+    "title": "The Roots of Lisp",
+    "date": "May 2001",
+    "word_count": 356,
+    "reading_time_min": 2
+  },
+  {
+    "slug": "langdes",
+    "title": "Five Questions about Language Design",
+    "date": "May 2001",
+    "word_count": 2939,
+    "reading_time_min": 15
+  },
+  {
+    "slug": "popular",
+    "title": "Being Popular",
+    "date": "May 2001",
+    "word_count": 7369,
+    "reading_time_min": 37
+  },
+  {
+    "slug": "javacover",
+    "title": "Java's Cover",
+    "date": "April 2001",
+    "word_count": 1360,
+    "reading_time_min": 7
+  },
+  {
+    "slug": "avg",
+    "title": "Beating the Averages",
+    "date": "April 2001",
+    "word_count": 4023,
+    "reading_time_min": 21
+  },
+  {
+    "slug": "lwba",
+    "title": "Lisp for Web-Based Applications",
+    "date": "April 2001",
+    "word_count": 54,
+    "reading_time_min": 1
+  },
+  {
+    "slug": "progbot",
+    "title": "Programming Bottom-Up",
+    "date": "1993",
+    "word_count": 918,
+    "reading_time_min": 5
+  },
+  {
+    "slug": "prop62",
+    "title": "This Year We Can End the Death Penalty in California",
+    "date": "November 2016",
+    "word_count": 185,
+    "reading_time_min": 1
+  }
+]
