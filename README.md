@@ -2,18 +2,16 @@
 
 A fast, distraction-free reader for [Paul Graham's essays](https://www.paulgraham.com/articles.html).
 
-**Live:** https://askgraham.vercel.app/
-
-Every essay is bundled as local JSON and rendered as static pages. Search runs in your browser — no database, no server, no tracking.
+Read the whole catalog in one clean place — search it instantly, filter it by startup stage, pick up where you left off, and take any of it with you.
 
 ## Features
 
 - **Full catalog** — 233 essays, grouped by year, newest first.
 - **Search** — `⌘K` / `Ctrl+K` or `/` for full-text search across every essay.
-- **Filter by startup stage** — ideas, team, build, traction, growth, funding, running. Each shows a one-line reason it's worth reading.
+- **Filter by startup stage** — ideas, team, build, traction, growth, funding, running. Each essay opens with a one-line "Why read this".
 - **Keyboard-first** — `j` / `k` moves between older and newer essays.
 - **Reads well** — reading position is saved, text size and theme persist, footnotes preview inline.
-- **Take it anywhere** — export every essay as markdown or JSON, sized for NotebookLM, Claude, ChatGPT, Notion, and Obsidian.
+- **Take it anywhere** — export every essay as markdown or JSON, sized for NotebookLM, Claude, ChatGPT, Gemini, Notion, and Obsidian.
 
 ## Getting started
 
