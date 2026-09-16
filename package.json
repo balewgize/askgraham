@@ -6,9 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "scrape": "tsx scripts/scrape-essays.ts",
+    "scrape:sample": "tsx scripts/scrape-essays.ts --slugs=say,ramenprofitable,foundermode",
+    "index:search": "tsx scripts/build-search-index.ts",
+    "prebuild": "tsx scripts/build-search-index.ts"
   },
   "dependencies": {
+    "flexsearch": "^0.8.212",
     "next": "16.3.5",
     "react": "19.2.8",
     "react-dom": "19.2.8"
@@ -18,9 +23,11 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cheerio": "^1.2.0",
     "eslint": "^9",
     "eslint-config-next": "16.3.5",
     "tailwindcss": "^4",
+    "tsx": "^4.23.13",
     "typescript": "^5"
   },
   "packageManager": "pnpm@11.5.2"
