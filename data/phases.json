@@ -1,0 +1,2005 @@
+{
+  "taxonomyVersion": 1,
+  "model": "deepseek/deepseek-v4.1-flash",
+  "generated": "2026-09-16T06:53:33.602Z",
+  "essays": {
+    "95": {
+      "phases": [
+        "team"
+      ],
+      "why": "Shows why exceptional programmers are scarce and how immigration expands your hiring pool.",
+      "hash": "1b6e98becea0d00c"
+    },
+    "6631327": {
+      "phases": [
+        "ideas",
+        "growth"
+      ],
+      "why": "See how a Viaweb search-monetization idea was ahead of its time and why timing matters.",
+      "hash": "cfb62f83b741b78b"
+    },
+    "winc": {
+      "phases": [
+        "any"
+      ],
+      "why": "Learn the 20x wealth-to-income tax conversion to judge policy proposals affecting founders' economics.",
+      "hash": "4a836ce9da4dde0f"
+    },
+    "prepare": {
+      "phases": [
+        "ideas",
+        "build",
+        "team",
+        "funding"
+      ],
+      "why": "Best startup ideas often emerge from random side projects, not deliberate idea hunting. Founders should build prototypes and learn by doing rather than pitch stories. Shared projects are the best way to discover and vet cofounders. Fundraising is a necessary evil; users, not investors, validate the product.",
+      "hash": "9d20bebb23bff2fe"
+    },
+    "field": {
+      "phases": [
+        "any"
+      ],
+      "why": "Shows writers how to choose topics that surprise smart readers and maximize an essay's impact.",
+      "hash": "02535e756c70c812"
+    },
+    "earn": {
+      "phases": [
+        "growth",
+        "ideas",
+        "team"
+      ],
+      "why": "Find ideas by building with friends, then grow by making users love it.",
+      "hash": "64353c25f3b1bb50"
+    },
+    "powerful": {
+      "phases": [
+        "growth",
+        "ideas",
+        "traction",
+        "running"
+      ],
+      "why": "Teaches founders to reshape their company for network effects, full-stack moves, early customers, and generosity to gain lasting power.",
+      "hash": "9306794cdf7c192c"
+    },
+    "goodwriting": {
+      "phases": [
+        "any"
+      ],
+      "why": "Teaches writing as a tool for developing ideas, improving any founder's thinking and persuasion.",
+      "hash": "5a527536443218dc"
+    },
+    "writes": {
+      "phases": [
+        "any"
+      ],
+      "why": "Writing is thinking; founders who write clearly make better decisions at every stage.",
+      "hash": "c521f3bea6c367e1"
+    },
+    "brandage": {
+      "phases": [
+        "growth",
+        "ideas",
+        "build",
+        "running"
+      ],
+      "why": "Learn why brand becomes the differentiator once technology commoditizes your product.",
+      "hash": "81f635861064cb6c"
+    },
+    "woke": {
+      "phases": [
+        "running",
+        "team"
+      ],
+      "why": "Learn to spot and resist ideological capture in company culture, hiring, and public brand decisions.",
+      "hash": "162486be2fed1b89"
+    },
+    "foundermode": {
+      "phases": [
+        "running",
+        "team"
+      ],
+      "why": "Learn founder mode to run a scaling company without switching to manager mode; guides how founders engage direct reports and delegate.",
+      "hash": "1234bdd34936bc71"
+    },
+    "when": {
+      "phases": [
+        "ideas",
+        "any"
+      ],
+      "why": "Helps founders decide what to work on, and shows following genuine interest is how the biggest startup ideas surface.",
+      "hash": "19922586291bc720"
+    },
+    "google": {
+      "phases": [
+        "ideas",
+        "team",
+        "build"
+      ],
+      "why": "Learn to spot startup ideas by building projects you and friends genuinely want.",
+      "hash": "4bb3c95a1ea1863a"
+    },
+    "best": {
+      "phases": [
+        "any"
+      ],
+      "why": "Teaches founders how to discover novel insights by writing, questioning, and rigorous revision.",
+      "hash": "c2da110fb32cf08a"
+    },
+    "superlinear": {
+      "phases": [
+        "any",
+        "ideas",
+        "running"
+      ],
+      "why": "Explains why compounding work and curiosity yield outsized outcomes, guiding which work to choose.",
+      "hash": "1bb22b5471f5b656"
+    },
+    "greatwork": {
+      "phases": [
+        "any"
+      ],
+      "why": "A timeless recipe for choosing problems and doing great work in any field or stage.",
+      "hash": "2de94ea8af61493a"
+    },
+    "getideas": {
+      "phases": [
+        "ideas"
+      ],
+      "why": "Teaches founders to find startup ideas by noticing anomalies and gaps at frontiers of knowledge.",
+      "hash": "128f2eb842853868"
+    },
+    "persistence": {
+      "phases": [
+        "any",
+        "team",
+        "ideas",
+        "growth"
+      ],
+      "why": "Teaches founders to distinguish persistence from obstinacy, so they keep adapting while pursuing their goal.",
+      "hash": "465807ad6c9f4595"
+    },
+    "read": {
+      "phases": [
+        "any"
+      ],
+      "why": "Explains why writing and reading are how founders think through hard, ill-defined problems.",
+      "hash": "d21f1c2856c739dd"
+    },
+    "want": {
+      "phases": [
+        "any"
+      ],
+      "why": "Gives founders a mental model for self-control: you control actions, not the wants beneath them.",
+      "hash": "45e877e328f1d512"
+    },
+    "alien": {
+      "phases": [
+        "any"
+      ],
+      "why": "Use alien truth as a target to find your most general, universal ideas worth pursuing.",
+      "hash": "9bc43b17401b26b9"
+    },
+    "heresy": {
+      "phases": [
+        "any"
+      ],
+      "why": "Understand heresy dynamics to protect free expression and dissent, essential for founders challenging orthodoxy.",
+      "hash": "e48b07bbe1e884fc"
+    },
+    "words": {
+      "phases": [
+        "any",
+        "ideas"
+      ],
+      "why": "Use writing to pressure-test vague ideas and expose gaps before you commit to building.",
+      "hash": "cc278a8ad3198b12"
+    },
+    "reddits": {
+      "phases": [
+        "team",
+        "ideas",
+        "build",
+        "traction",
+        "growth",
+        "running",
+        "funding"
+      ],
+      "why": "See founder-market fit, fast launches, user growth, founder return, and backing founders over ideas.",
+      "hash": "8437182a0c2e9b46"
+    },
+    "goodtaste": {
+      "phases": [
+        "any"
+      ],
+      "why": "Teaches founders that taste is real and trainable, sharpening product and design judgment at every stage.",
+      "hash": "c0e6997eca6a2766"
+    },
+    "weird": {
+      "phases": [
+        "any"
+      ],
+      "why": "Learning weird languages expands your concept of what programming can be and how to think.",
+      "hash": "73c1cba7388e5d3a"
+    },
+    "own": {
+      "phases": [
+        "ideas",
+        "team",
+        "build",
+        "running"
+      ],
+      "why": "Use self-owned projects to find startup ideas, attract autonomous builders, and sustain motivation.",
+      "hash": "afbb97f88abe13b6"
+    },
+    "hwh": {
+      "phases": [
+        "any"
+      ],
+      "why": "Learn to tune effort, honesty, and interest so ambitious work stays productive without burnout.",
+      "hash": "90758284e7e40032"
+    },
+    "nft": {
+      "phases": [
+        "funding"
+      ],
+      "why": "Shows founders a novel NFT fundraising model where higher bids directly increase measurable impact.",
+      "hash": "81a324a7ebadf081"
+    },
+    "newideas": {
+      "phases": [
+        "ideas",
+        "running"
+      ],
+      "why": "Gives founders courage to pursue implausible ideas and question dismissal, improving idea selection and innovation culture.",
+      "hash": "cea95f4525fdead7"
+    },
+    "do": {
+      "phases": [
+        "any"
+      ],
+      "why": "Encourages founders to pursue making good new things rather than prestige or imitation.",
+      "hash": "650ed2b6ec611d00"
+    },
+    "fn": {
+      "phases": [
+        "ideas",
+        "any"
+      ],
+      "why": "Encourages fierce, independent-minded nerds to channel competitiveness into ambitious projects, which aids choosing what to build.",
+      "hash": "968153f378a07423"
+    },
+    "real": {
+      "phases": [
+        "any"
+      ],
+      "why": "Teaches founders to question official narratives and avoid catastrophic decisions based on flawed evidence.",
+      "hash": "c09f13180ab6a9ae"
+    },
+    "richnow": {
+      "phases": [
+        "ideas",
+        "funding",
+        "growth"
+      ],
+      "why": "Understand why now is the best time to start a company and why startups are the norm again. See why cheaper startups give founders more leverage and better terms from investors. Learn how faster company growth inflates founder equity and valuations.",
+      "hash": "7c6bce7244757342"
+    },
+    "simply": {
+      "phases": [
+        "any"
+      ],
+      "why": "Founders learn to strip prose so ideas reach readers faster and keep them engaged.",
+      "hash": "1a43d55670a24749"
+    },
+    "donate": {
+      "phases": [
+        "funding"
+      ],
+      "why": "Understand why investors should give unrestricted funding and trust you to allocate capital.",
+      "hash": "a70c207de3f46df5"
+    },
+    "worked": {
+      "phases": [
+        "any",
+        "ideas",
+        "build",
+        "traction",
+        "growth",
+        "funding",
+        "team",
+        "running"
+      ],
+      "why": "Learn to choose work by genuine interest and non-prestige, not impure motives.",
+      "hash": "8a5cebe7e6125063"
+    },
+    "smart": {
+      "phases": [
+        "any",
+        "ideas"
+      ],
+      "why": "Cultivate independent-mindedness, obsessive interest, and writing to generate better startup ideas and creative work.",
+      "hash": "7e9ada56c86bac68"
+    },
+    "airbnbs": {
+      "phases": [
+        "traction",
+        "team",
+        "growth",
+        "funding"
+      ],
+      "why": "Learn how relentless founders broke through by focusing on one market and reaching ramen profitability.",
+      "hash": "eda1fb72dd4796cf"
+    },
+    "think": {
+      "phases": [
+        "any",
+        "ideas",
+        "team",
+        "running"
+      ],
+      "why": "Build independent-mindedness to generate novel ideas and resist conventional thinking at every stage.",
+      "hash": "e08beaaf36deebc5"
+    },
+    "early": {
+      "phases": [
+        "any"
+      ],
+      "why": "Timeless essay on pushing through fear and self-doubt to make great work in any field.",
+      "hash": "0a6cb8c2d87ee55d"
+    },
+    "wtax": {
+      "phases": [
+        "running"
+      ],
+      "why": "See how wealth taxes compound on founder stock, so you can plan later-stage equity and personal finances.",
+      "hash": "0ddae2a5124fa104"
+    },
+    "orth": {
+      "phases": [
+        "any"
+      ],
+      "why": "Helps founders resist conventional thinking and recognize unorthodox truths that may matter at any stage.",
+      "hash": "8d50967e1a76e57b"
+    },
+    "earnest": {
+      "phases": [
+        "team",
+        "ideas",
+        "any"
+      ],
+      "why": "team: Learn why earnest, genuinely interested founders are more resilient and worth backing. ideas: Choose problems you care about for their own sake, not for money or coolness. any: A timeless reminder that earnestness, not cynicism, drives hard problems.",
+      "hash": "3304f83db07feb89"
+    },
+    "cred": {
+      "phases": [
+        "any"
+      ],
+      "why": "Learn to judge advisors, investors, and pundits by how their predictions survive real tests.",
+      "hash": "0994a7916a5b3538"
+    },
+    "ace": {
+      "phases": [
+        "funding",
+        "ideas",
+        "team",
+        "traction",
+        "build",
+        "growth"
+      ],
+      "why": "funding: Ace YC interviews by answering candidly, teaching partners about users, and avoiding pitches or bullshit. ideas: Choose a larval market with urgent first users and a credible path to a huge market. team: Spot founder qualities investors fund: resourcefulness, determination, cofounder bond, and genuine interest in the project. traction: Find your first users, know their needs firsthand, and let word of mouth spread. build: Build a crude prototype users want despite bugs and a small unknown company. growth: Grow fast by continually delighting users; stop and a competitor will replace you.",
+      "hash": "ab3df629421047cf"
+    },
+    "useful": {
+      "phases": [
+        "any"
+      ],
+      "why": "Learn to write clear, correct, novel ideas, improving founder communication and thinking at any startup stage.",
+      "hash": "65fe1dbc762d9fda"
+    },
+    "fh": {
+      "phases": [
+        "any"
+      ],
+      "why": "Teaches founders to recognize and ignore obsessive haters as fame's automatic downside, saving wasted energy.",
+      "hash": "953a277c926b1470"
+    },
+    "users": {
+      "phases": [
+        "traction",
+        "growth",
+        "build",
+        "ideas",
+        "team",
+        "funding"
+      ],
+      "why": "Learn from users, fix product quality, and prioritize the user-acquisition problem that actually blocks early growth. Focus weekly on the most important problem and move fast with measurable results to find what works. Make something you yourself would use, then measure and iterate on user feedback. Choose what to build by asking whether you would use it if you hadn't built it. Seek founder peers and colleagues who help each other, because ambitious people need them. Diagnose fundraising difficulty as a symptom: if the company is doing badly, investors can tell.",
+      "hash": "fc67de5bbdecd7c5"
+    },
+    "fp": {
+      "phases": [
+        "ideas"
+      ],
+      "why": "Helps founders pick overlooked problems instead of crowding fashionable ones, improving startup idea quality.",
+      "hash": "fc95c468c246aa43"
+    },
+    "kids": {
+      "phases": [
+        "any"
+      ],
+      "why": "Gives founders perspective on how children reshape ambition, schedule, and productivity over a long career.",
+      "hash": "ef090c95521f4404"
+    },
+    "mod": {
+      "phases": [
+        "any"
+      ],
+      "why": "Teaches founders to form independent opinions rather than inheriting ideological bundles, sharpening judgment in any startup work.",
+      "hash": "7e177eb1964bdc7c"
+    },
+    "lesson": {
+      "phases": [
+        "traction",
+        "funding",
+        "build",
+        "growth",
+        "ideas"
+      ],
+      "why": "Stop hacking bad tests; win by making a great product, getting users, and raising money honestly.",
+      "hash": "a0241c70199607f1"
+    },
+    "noob": {
+      "phases": [
+        "any"
+      ],
+      "why": "Founders should embrace feeling like a noob when entering new domains; it signals learning.",
+      "hash": "0a5f3e3e496163ef"
+    },
+    "genius": {
+      "phases": [
+        "any",
+        "ideas"
+      ],
+      "why": "Cultivate obsessive curiosity to do great work and find non-obvious paths over time.",
+      "hash": "f7fa21ff27a84cc3"
+    },
+    "conformism": {
+      "phases": [
+        "team",
+        "running",
+        "any"
+      ],
+      "why": "Spot independent-minded founders and hires, then protect free inquiry in your company culture.",
+      "hash": "ea030f9c9682d8c1"
+    },
+    "pow": {
+      "phases": [
+        "running"
+      ],
+      "why": "Understand that uncharismatic builders attract criticism yet may be the right CEOs, so don't mistake style for leadership.",
+      "hash": "929991beeedbd5ee"
+    },
+    "prop62": {
+      "phases": [
+        "any"
+      ],
+      "why": "A founder's reminder that real-world systems fail, so verify assumptions before acting.",
+      "hash": "74d92f89f4fdb46c"
+    },
+    "disc": {
+      "phases": [
+        "ideas",
+        "any"
+      ],
+      "why": "Shows founders that big payoffs require betting on problems whose value is not yet proven.",
+      "hash": "457b19492580b178"
+    },
+    "pgh": {
+      "phases": [
+        "team",
+        "funding",
+        "ideas"
+      ],
+      "why": "Shows how city talent, universities, and investors help founders hire, start, and raise.",
+      "hash": "2d3f911e14041373"
+    },
+    "vb": {
+      "phases": [
+        "any"
+      ],
+      "why": "Learn to prune bullshit, act on what matters, and savor limited time before windows close.",
+      "hash": "34a6e80893de9d7b"
+    },
+    "nov": {
+      "phases": [
+        "ideas",
+        "running"
+      ],
+      "why": "Find startup ideas in dead zones around mistaken assumptions; build a culture that welcomes heresy.",
+      "hash": "d55a0f7b6c12cfa5"
+    },
+    "sun": {
+      "phases": [
+        "any"
+      ],
+      "why": "Learn to generate valuable insights by adding small novelty to general ideas.",
+      "hash": "c0acd212c32197e5"
+    },
+    "jessica": {
+      "phases": [
+        "ideas",
+        "team",
+        "funding"
+      ],
+      "why": "Learn why founder character beats product or market insight when picking startups and cofounders.",
+      "hash": "a2129eb02e65890d"
+    },
+    "aord": {
+      "phases": [
+        "growth",
+        "funding",
+        "team",
+        "traction"
+      ],
+      "why": "Know if you're default alive, avoid overhiring, fix weak traction, and treat fundraising as plan B.",
+      "hash": "8cded7383ab4bd76"
+    },
+    "talk": {
+      "phases": [
+        "any"
+      ],
+      "why": "Write clearer emails, updates, and pitches by using spoken language so readers understand and act.",
+      "hash": "8fac58c7b54cca50"
+    },
+    "re": {
+      "phases": [
+        "ideas",
+        "running",
+        "team"
+      ],
+      "why": "Understand why startups now exist and why market pay and fragmentation reshape hiring and company culture.",
+      "hash": "5a59d685e17229aa"
+    },
+    "name": {
+      "phases": [
+        "ideas",
+        "build"
+      ],
+      "why": "Choose a name you can get the .com for; lacking it signals weakness, so fix it before launch.",
+      "hash": "27abf1e11b197190"
+    },
+    "safe": {
+      "phases": [
+        "growth",
+        "team"
+      ],
+      "why": "Founders learn to prioritize growth rate over extracting money, so being nice won't stall success.",
+      "hash": "a6dc69556d1133e3"
+    },
+    "corpdev": {
+      "phases": [
+        "growth",
+        "funding",
+        "running"
+      ],
+      "why": "Protects growing startups from distracting acquisition talks that demoralize founders and derail momentum before you're ready to sell.",
+      "hash": "6be782572f061757"
+    },
+    "ronco": {
+      "phases": [
+        "funding",
+        "any"
+      ],
+      "why": "funding: Learn why upstanding investors win referrals and how founder treatment affects future fundraising. any: Learn that genuine goodness beats calculated niceness in transparent, unpredictable startup communities.",
+      "hash": "236c45b3c9d7c979"
+    },
+    "altair": {
+      "phases": [
+        "ideas"
+      ],
+      "why": "You learn to ask what big company a lame-sounding idea could grow into.",
+      "hash": "fb1086bf15ed0b64"
+    },
+    "ecw": {
+      "phases": [
+        "ideas",
+        "team",
+        "funding",
+        "any"
+      ],
+      "why": "Stay open to changed-world ideas, bet on independent-minded founders, and test beliefs by betting on them.",
+      "hash": "b7af3aa2f54b57b8"
+    },
+    "bias": {
+      "phases": [
+        "funding"
+      ],
+      "why": "Learn a statistical test to spot bias in investor selection by checking if disadvantaged founders outperform.",
+      "hash": "98cb5406a20f4564"
+    },
+    "know": {
+      "phases": [
+        "any"
+      ],
+      "why": "Founders learn that reading and experience compile into reusable mental models even when details fade.",
+      "hash": "17c30b6680548346"
+    },
+    "mean": {
+      "phases": [
+        "team",
+        "growth",
+        "any"
+      ],
+      "why": "Explains why mean founders fail to attract best people and transcend competitors, making kindness a competitive advantage.",
+      "hash": "fa1125931e5e0cf9"
+    },
+    "before": {
+      "phases": [
+        "ideas",
+        "team",
+        "any"
+      ],
+      "why": "Learn domain expertise, pick cofounders by gut trust, and let startup ideas emerge from genuine curiosity.",
+      "hash": "7e3c2bdfdd7787e3"
+    },
+    "pinch": {
+      "phases": [
+        "funding",
+        "running",
+        "growth"
+      ],
+      "why": "Treat each raise as your last, then cut costs or sell differently to survive the fatal pinch.",
+      "hash": "88552cca0fd35da7"
+    },
+    "convince": {
+      "phases": [
+        "funding",
+        "team",
+        "ideas"
+      ],
+      "why": "Evaluate whether your startup is a good bet, then explain that truth clearly to investors.",
+      "hash": "00c8fc9a0f44a47d"
+    },
+    "herd": {
+      "phases": [
+        "funding"
+      ],
+      "why": "Understand investor herd psychology to navigate fundraising, offers, valuations, and negotiations without being surprised.",
+      "hash": "8d8c51aae6ab1789"
+    },
+    "ineq": {
+      "phases": [
+        "any",
+        "ideas",
+        "funding",
+        "running"
+      ],
+      "why": "Understand why starting startups creates wealth and why founders keep more equity and board control.",
+      "hash": "7a8abb82e8f56c03"
+    },
+    "invtrend": {
+      "phases": [
+        "funding",
+        "growth"
+      ],
+      "why": "Investors reading this learn how founder-friendly terms, fast decisions, and cheaper startups reshape deal-making.",
+      "hash": "33207ecc99c2f809"
+    },
+    "ds": {
+      "phases": [
+        "traction",
+        "build",
+        "growth",
+        "ideas",
+        "team"
+      ],
+      "why": "Recruit first users manually, delight them, and use unscalable tactics to kickstart growth.",
+      "hash": "c8b3565afde4b059"
+    },
+    "work": {
+      "phases": [
+        "ideas",
+        "any"
+      ],
+      "why": "Ask what feels like play to you but work to others, then choose startup ideas and work you can sustain.",
+      "hash": "71fc359c48264dc4"
+    },
+    "swan": {
+      "phases": [
+        "funding",
+        "ideas"
+      ],
+      "why": "See why investors back unpromising outliers and why fundraising after Demo Day isn't validation. Learn why the best startup ideas initially look bad and obvious good ideas are already taken.",
+      "hash": "7cfe5b6977cf544e"
+    },
+    "growth": {
+      "phases": [
+        "growth",
+        "ideas",
+        "traction",
+        "funding",
+        "running"
+      ],
+      "why": "Learn to measure weekly growth and use it as the compass for startup decisions.",
+      "hash": "72a398cd90e4a958"
+    },
+    "hw": {
+      "phases": [
+        "ideas",
+        "funding",
+        "build"
+      ],
+      "why": "Start a hardware company despite investor bias; YC wants hardware ideas, and prototyping is easier now.",
+      "hash": "897986dd0fa8718f"
+    },
+    "todo": {
+      "phases": [
+        "any"
+      ],
+      "why": "Reminds founders to avoid default life regrets, protect dreams, friendships, and happiness while building.",
+      "hash": "4976adc962884bc2"
+    },
+    "ambitious": {
+      "phases": [
+        "ideas",
+        "build",
+        "traction"
+      ],
+      "why": "Choose frighteningly ambitious problems and approach them obliquely by starting with a small, manageable idea. Build the deceptively small first version you and your friends genuinely want to use. Win a focused core of early users, like top hackers, before trying to expand.",
+      "hash": "02e26ac4f777c7e2"
+    },
+    "property": {
+      "phases": [
+        "any"
+      ],
+      "why": "Think clearly about how technology shifts property definitions so your business model avoids obsolete legal moats.",
+      "hash": "9f35eab8c99ec653"
+    },
+    "fr": {
+      "phases": [
+        "funding",
+        "running",
+        "growth",
+        "team"
+      ],
+      "why": "Maps phase-2 fundraising: parallel investor talks, expected-value prioritization, greedy offers, and closing committed money.",
+      "hash": "b191b63da075a529"
+    },
+    "ycstart": {
+      "phases": [
+        "funding",
+        "ideas",
+        "build"
+      ],
+      "why": "Learn how YC standardized seed funding, funded hackers, and launched fast to turn ignored ideas into successes.",
+      "hash": "356bd04eaee4da50"
+    },
+    "schlep": {
+      "phases": [
+        "ideas"
+      ],
+      "why": "See overlooked startup ideas by confronting the unpleasant schleps your unconscious avoids.",
+      "hash": "4251c18e10b9c2f6"
+    },
+    "startupideas": {
+      "phases": [
+        "ideas",
+        "build",
+        "traction",
+        "growth",
+        "team"
+      ],
+      "why": "Learn to notice organic problems you urgently need, not invent plausible startup ideas. Build interesting things and crappy v1s to discover what users truly need. Target a narrow group who urgently need your solution before broad appeal. Choose ideas with a fast path from niche beachhead to larger markets. Find cofounders by building projects with peers who share future-facing interests.",
+      "hash": "540249edd78beb36"
+    },
+    "speak": {
+      "phases": [
+        "any"
+      ],
+      "why": "Learn why writing beats speaking for ideas, and use talks mainly to motivate.",
+      "hash": "b8444dbf1e54de42"
+    },
+    "word": {
+      "phases": [
+        "team",
+        "funding",
+        "traction",
+        "ideas"
+      ],
+      "why": "Shows founders how resourcefulness and conversational follow-through separate the best from hardest-to-advise startups.",
+      "hash": "ba32c968b2598f02"
+    },
+    "vw": {
+      "phases": [
+        "traction",
+        "build",
+        "running",
+        "growth"
+      ],
+      "why": "Shows how Viaweb got early users via PR, search engines, and a test-drive funnel.",
+      "hash": "7c7b69ef8516fa86"
+    },
+    "hubs": {
+      "phases": [
+        "ideas",
+        "team",
+        "funding",
+        "growth"
+      ],
+      "why": "Founders learn to locate where startup density yields encouragement, helpful chance meetings, hires, investors, and growth.",
+      "hash": "511e04113dff4ba7"
+    },
+    "control": {
+      "phases": [
+        "funding",
+        "running"
+      ],
+      "why": "Learn how founders can keep board control after Series A and why it is becoming normal.",
+      "hash": "7f08dcd359023c29"
+    },
+    "superangels": {
+      "phases": [
+        "funding"
+      ],
+      "why": "Explains new angel, super-angel, and VC dynamics so founders can raise faster at higher valuations with less dilution.",
+      "hash": "d0380314e194371a"
+    },
+    "founders": {
+      "phases": [
+        "ideas",
+        "team",
+        "any"
+      ],
+      "why": "Understand what investors look for and the founder traits that matter most for building a startup.",
+      "hash": "cbe08dec4c412877"
+    },
+    "airbnb": {
+      "phases": [
+        "funding",
+        "traction",
+        "team",
+        "ideas",
+        "growth"
+      ],
+      "why": "See how VCs debate, intros work, and team, user traction, and market morphing overcome fundraising skepticism.",
+      "hash": "db14d118a23db490"
+    },
+    "patentpledge": {
+      "phases": [
+        "running",
+        "team",
+        "growth"
+      ],
+      "why": "Adopt a public patent pledge to attract talent, set higher standards, and reduce incumbent patent attacks as you scale.",
+      "hash": "62041d9fd335f1c1"
+    },
+    "hiresfund": {
+      "phases": [
+        "funding"
+      ],
+      "why": "Use convertible notes to price angel investors differently, break deadlocks, and avoid fixed round sizes.",
+      "hash": "f1e54858d42f59e0"
+    },
+    "future": {
+      "phases": [
+        "funding",
+        "traction",
+        "running"
+      ],
+      "why": "Learn how founder-friendly funding trends like faster closes and less investor control shape fundraising and board management.",
+      "hash": "27328643ab11c59d"
+    },
+    "selfindulgence": {
+      "phases": [
+        "any"
+      ],
+      "why": "Learn to spot fake work and bad investments that silently waste your time and money.",
+      "hash": "27ecd3d41fbd0b4d"
+    },
+    "tablets": {
+      "phases": [
+        "ideas"
+      ],
+      "why": "Spot startup ideas by finding physical objects tablet apps can replace.",
+      "hash": "afba19eae09190b3"
+    },
+    "yahoo": {
+      "phases": [
+        "running",
+        "team",
+        "growth"
+      ],
+      "why": "Shows how easy revenue and a non-hacker culture corrode hiring, product, and direction at scale.",
+      "hash": "1b42460421c12c9a"
+    },
+    "organic": {
+      "phases": [
+        "ideas"
+      ],
+      "why": "Find organic startup ideas by fixing what’s broken in your own life, especially as a young founder.",
+      "hash": "3d241b4cb978558c"
+    },
+    "top": {
+      "phases": [
+        "funding",
+        "any"
+      ],
+      "why": "Warns that fundraising hijacks your top idea and stalls startup progress.",
+      "hash": "8603ba878323856a"
+    },
+    "really": {
+      "phases": [
+        "team",
+        "ideas",
+        "build",
+        "traction",
+        "funding",
+        "growth",
+        "running"
+      ],
+      "why": "Choose cofounders for character and commitment, then actively maintain that marriage-like relationship.",
+      "hash": "607ccdbd8fa6528e"
+    },
+    "discover": {
+      "phases": [
+        "any"
+      ],
+      "why": "Learn to write and think to discover surprising truths instead of pandering, sharpening decisions at any startup stage.",
+      "hash": "822d24d82d05fb95"
+    },
+    "publishing": {
+      "phases": [
+        "ideas",
+        "growth",
+        "running"
+      ],
+      "why": "Choose a business model where free content drives indirect revenue or physical goods.",
+      "hash": "47afc299180586ff"
+    },
+    "addiction": {
+      "phases": [
+        "any"
+      ],
+      "why": "Founders learn to protect focus by rejecting addictive distractions that technological progress makes ever more prevalent.",
+      "hash": "fb5e76d5edda2ed1"
+    },
+    "determination": {
+      "phases": [
+        "any"
+      ],
+      "why": "Learn how willfulness, discipline, and ambition fuel founder persistence through every startup stage.",
+      "hash": "ec6e89c301566fab"
+    },
+    "nthings": {
+      "phases": [
+        "any"
+      ],
+      "why": "Learn when list formats clarify versus when real essays generate new ideas.",
+      "hash": "00d3716e4107716c"
+    },
+    "kate": {
+      "phases": [
+        "build",
+        "traction",
+        "ideas",
+        "growth",
+        "team",
+        "funding"
+      ],
+      "why": "Reinforces launching fast, listening to users, and iterating instead of perfecting in private.",
+      "hash": "54f95676146d8043"
+    },
+    "seesv": {
+      "phases": [
+        "any",
+        "funding",
+        "team",
+        "running"
+      ],
+      "why": "See where founders pitch VCs, choose offices, and absorb Silicon Valley's startup culture.",
+      "hash": "fa829959b01f9940"
+    },
+    "segway": {
+      "phases": [
+        "build",
+        "traction",
+        "funding"
+      ],
+      "why": "Ship early to real users; their feedback prevents overfunded secrecy and confident blind alleys.",
+      "hash": "69bba7154d3854a1"
+    },
+    "ramenprofitable": {
+      "phases": [
+        "funding",
+        "growth",
+        "running",
+        "traction"
+      ],
+      "why": "Explains how covering founders' living costs buys time, improves fundraising leverage, and protects product focus.",
+      "hash": "e8920e01ce39bb5b"
+    },
+    "5founders": {
+      "phases": [
+        "team",
+        "build",
+        "traction"
+      ],
+      "why": "Founder examples teach design, hiring smart hackers, and winning a few users' love.",
+      "hash": "dba44f6b5a979887"
+    },
+    "foundervisa": {
+      "phases": [
+        "ideas",
+        "funding"
+      ],
+      "why": "Shows why founder visas matter for starting more startups and how policy can enable founders.",
+      "hash": "b1a79d69458365a4"
+    },
+    "twitter": {
+      "phases": [
+        "growth",
+        "traction"
+      ],
+      "why": "Shows how avoiding tight control and early monetization can help a product spread like an open protocol.",
+      "hash": "4e32903ff2e90554"
+    },
+    "revolution": {
+      "phases": [
+        "funding",
+        "ideas"
+      ],
+      "why": "funding: You learn why startup hubs attract investors, so location affects your fundraising odds. ideas: You learn startup hubs form randomly, so choose where you start with ecosystem in mind.",
+      "hash": "b8f83639ffb79b3b"
+    },
+    "angelinvesting": {
+      "phases": [
+        "funding",
+        "team"
+      ],
+      "why": "Understand angel rounds, valuations, and how angels decide so you can raise from them effectively.",
+      "hash": "7e33ba39bec6a19b"
+    },
+    "relres": {
+      "phases": [
+        "ideas",
+        "team",
+        "build",
+        "traction",
+        "growth",
+        "funding",
+        "running",
+        "any"
+      ],
+      "why": "Defines the core founder trait—relentless resourcefulness—useful for deciding to start, hiring cofounders, and navigating any startup obstacle.",
+      "hash": "5d6a32be6b4cc65e"
+    },
+    "maybe": {
+      "phases": [
+        "funding",
+        "running"
+      ],
+      "why": "Explains angel/VC selection, valuations, convertible debt, and location choices that affect fundraising and staying put.",
+      "hash": "d933f1155f197a75"
+    },
+    "apple": {
+      "phases": [
+        "build",
+        "running",
+        "team",
+        "ideas"
+      ],
+      "why": "build: Understand platform approval delays and why launch-fast-and-iterate is essential when building software. running: Running a platform? Treat developers fairly; power-driven control breeds stupidity and decline. team: Best programmers avoid companies they see as evil, so morals affect hiring power. ideas: Platform shifts create startup openings; build for devices you and programmers actually use.",
+      "hash": "7893998073f76858"
+    },
+    "identity": {
+      "phases": [
+        "any"
+      ],
+      "why": "Helps founders keep identity small so they can think clearly and make better decisions.",
+      "hash": "29378f588abc5bb4"
+    },
+    "convergence": {
+      "phases": [
+        "ideas"
+      ],
+      "why": "See why the Internet is replacing TV and where to start companies that exploit that shift.",
+      "hash": "5b9ea95f336b8ae9"
+    },
+    "credentials": {
+      "phases": [
+        "ideas",
+        "build",
+        "growth",
+        "any"
+      ],
+      "why": "Explains why small startups now beat credentials, encouraging ambitious founders to pursue performance over pedigree.",
+      "hash": "922baffa6b4207e8"
+    },
+    "hackernews": {
+      "phases": [
+        "growth",
+        "running",
+        "traction"
+      ],
+      "why": "Learn how to grow a community without dilution by policing behavior, fluff, and bad comments.",
+      "hash": "89dd73a18cf4b008"
+    },
+    "makersschedule": {
+      "phases": [
+        "team",
+        "running",
+        "build",
+        "any"
+      ],
+      "why": "Protect long maker blocks and batch meetings so you can build without fragmentation.",
+      "hash": "3b9c3d3cdc8b6e0f"
+    },
+    "divergence": {
+      "phases": [
+        "funding",
+        "ideas",
+        "growth"
+      ],
+      "why": "Learn why cheap startups can skip VC and when investors aren't worth the trouble.",
+      "hash": "cca85232f6d5883d"
+    },
+    "13sentences": {
+      "phases": [
+        "traction",
+        "build",
+        "team",
+        "funding",
+        "running",
+        "growth",
+        "ideas"
+      ],
+      "why": "Gives founders a compact checklist: understand users, launch fast, stay cheap, and don't give up.",
+      "hash": "d355d022afe7b580"
+    },
+    "fundraising": {
+      "phases": [
+        "funding"
+      ],
+      "why": "Learn how to survive the brutal fundraising process without losing morale, momentum, or leverage.",
+      "hash": "e9d1e9a3f0152e97"
+    },
+    "highres": {
+      "phases": [
+        "ideas",
+        "running"
+      ],
+      "why": "Shows why founders should start startups and structure teams as small, autonomous groups.",
+      "hash": "ac55271ddfa287c6"
+    },
+    "artistsship": {
+      "phases": [
+        "running",
+        "build",
+        "team"
+      ],
+      "why": "Learn why every approval has hidden costs and avoid bureaucracy that slows shipping and drives away builders.",
+      "hash": "be61105f325e7b8b"
+    },
+    "cities": {
+      "phases": [
+        "any"
+      ],
+      "why": "Choose where to live and work by the ambition it reinforces, since peers and environment shape great work.",
+      "hash": "f104a16f8556eb32"
+    },
+    "distraction": {
+      "phases": [
+        "any"
+      ],
+      "why": "Gives tactics to protect focused work time from Internet distraction at any startup stage.",
+      "hash": "9540e2c9ac855f7a"
+    },
+    "prcmc": {
+      "phases": [
+        "running",
+        "funding",
+        "growth"
+      ],
+      "why": "Learn why selling to a public acquirer can act as pooled-risk management, balancing revenue, freedom, and later-stage control.",
+      "hash": "05fba4a87ec92af5"
+    },
+    "lies": {
+      "phases": [
+        "any",
+        "ideas",
+        "running"
+      ],
+      "why": "Audit inherited beliefs and clear mental debris that distorts founder judgment.",
+      "hash": "53b82182ac099e11"
+    },
+    "heroes": {
+      "phases": [
+        "any"
+      ],
+      "why": "Learn from heroes who cared obsessively and stayed honest, and pursue huge, important questions.",
+      "hash": "1b6702d768265199"
+    },
+    "good": {
+      "phases": [
+        "growth",
+        "traction",
+        "funding",
+        "team",
+        "ideas",
+        "build",
+        "running"
+      ],
+      "why": "Using benevolence as a compass improves morale, attracts users, helpers, and investors, and helps startups survive.",
+      "hash": "d3952969545b3da9"
+    },
+    "disagree": {
+      "phases": [
+        "any"
+      ],
+      "why": "Founders learn to evaluate arguments, refute central points, and disagree without meanness in any debate.",
+      "hash": "ef0a0a27ee7bdb8c"
+    },
+    "ycombinator": {
+      "phases": [
+        "funding",
+        "ideas",
+        "team",
+        "build"
+      ],
+      "why": "See what YC/seed funding really offers: cofounder fixes, focus, launch setup, and Demo Day fundraising.",
+      "hash": "5ce213183739c1d5"
+    },
+    "badeconomy": {
+      "phases": [
+        "ideas",
+        "team",
+        "funding",
+        "growth"
+      ],
+      "why": "Start now in a bad economy; choose strong cofounders, stay cheap, and adapt to reluctant investors.",
+      "hash": "0fc28dfa909e6bc6"
+    },
+    "newthings": {
+      "phases": [
+        "ideas",
+        "build",
+        "traction"
+      ],
+      "why": "Find overlooked problems and simple solutions to choose a startup worth building.",
+      "hash": "a95348ab934ff4d1"
+    },
+    "trolls": {
+      "phases": [
+        "running",
+        "traction",
+        "growth"
+      ],
+      "why": "Learn to set cultural norms and moderate early communities so trolls don't take over as you scale.",
+      "hash": "8bc6f737b4e966e5"
+    },
+    "boss": {
+      "phases": [
+        "ideas",
+        "team",
+        "running"
+      ],
+      "why": "ideas: Shows why starting your own startup beats a safe big-company job for ambitious programmers.",
+      "hash": "f56dc79cab3ec041"
+    },
+    "philosophy": {
+      "phases": [
+        "any"
+      ],
+      "why": "Use utility as a guide to general thinking and avoid impressive-sounding word salad.",
+      "hash": "3a4e95bce6f44f79"
+    },
+    "startuphubs": {
+      "phases": [
+        "funding",
+        "ideas",
+        "growth"
+      ],
+      "why": "Shows founders why choosing a startup hub improves investor access, deal flow, and scaling odds.",
+      "hash": "416787f4c275782c"
+    },
+    "head": {
+      "phases": [
+        "build",
+        "team",
+        "running"
+      ],
+      "why": "Protect long focus, start with a small prototype, and keep code single-owner so your first version ships.",
+      "hash": "d5055d36f2aed4a3"
+    },
+    "die": {
+      "phases": [
+        "growth",
+        "traction",
+        "team",
+        "build"
+      ],
+      "why": "Teaches founders to survive low morale, iterate until users love it, and avoid fatal distractions.",
+      "hash": "2ea25b592ddd3129"
+    },
+    "stuff": {
+      "phases": [
+        "any"
+      ],
+      "why": "Helps founders resist accumulating unnecessary possessions and spend money where it actually improves their lives.",
+      "hash": "5ac299ce1ef33771"
+    },
+    "equity": {
+      "phases": [
+        "funding",
+        "team"
+      ],
+      "why": "Use the 1/(1-n) equity equation to judge whether giving stock for money or hires leaves you net ahead.",
+      "hash": "87bfe571da68dba0"
+    },
+    "colleges": {
+      "phases": [
+        "team",
+        "ideas",
+        "running"
+      ],
+      "why": "You can start, hire, and manage by individual ability rather than college prestige.",
+      "hash": "43746d25c52462c8"
+    },
+    "microsoft": {
+      "phases": [
+        "ideas",
+        "build"
+      ],
+      "why": "See platform shifts and choose web-based products while desktop incumbents fade; use Ajax and web apps to build software that beats them.",
+      "hash": "d6553b0ace4ca488"
+    },
+    "unions": {
+      "phases": [
+        "growth",
+        "team",
+        "running"
+      ],
+      "why": "In rapid growth, overpay for reliable inputs instead of optimizing costs.",
+      "hash": "15155b28cb36e908"
+    },
+    "googles": {
+      "phases": [
+        "funding",
+        "running",
+        "ideas",
+        "growth"
+      ],
+      "why": "Learn why VCs avoid bold startups, how acquisition offers test founders, and where seed funding gaps create opportunity.",
+      "hash": "baafdd36be3e3927"
+    },
+    "judgement": {
+      "phases": [
+        "any"
+      ],
+      "why": "Rejection stings less and you learn to sell yourself when selectors judge as customers, not judges.",
+      "hash": "b99218c6cdd1bd4c"
+    },
+    "notnot": {
+      "phases": [
+        "ideas",
+        "team"
+      ],
+      "why": "It dismantles common excuses for not starting a startup and urges you to secure a committed cofounder.",
+      "hash": "4878f41dd9a41ace"
+    },
+    "guidetoinvestors": {
+      "phases": [
+        "funding",
+        "traction",
+        "growth",
+        "running",
+        "ideas",
+        "build"
+      ],
+      "why": "Learn investor behavior so you can raise money without losing product momentum.",
+      "hash": "8083881a4ccbfe33"
+    },
+    "wisdom": {
+      "phases": [
+        "any"
+      ],
+      "why": "Learn why makers feel discontent and how intelligence and wisdom differ, helping you endure creative work.",
+      "hash": "d141bba7bdbe565f"
+    },
+    "goodart": {
+      "phases": [
+        "any"
+      ],
+      "why": "Teaches that good craft is objective: make things that genuinely interest an audience, not tricks.",
+      "hash": "4fea188c974cfca4"
+    },
+    "mit": {
+      "phases": [
+        "ideas",
+        "team",
+        "build",
+        "any"
+      ],
+      "why": "Helps students decide whether and when to start a startup, and how to prepare while in school.",
+      "hash": "8b6411af76d3c423"
+    },
+    "foundersatwork": {
+      "phases": [
+        "team",
+        "build",
+        "running"
+      ],
+      "why": "You learn early startup productivity comes from small, focused founders, not professional appearances.",
+      "hash": "a8505e81db64e4df"
+    },
+    "copy": {
+      "phases": [
+        "any"
+      ],
+      "why": "Learn to copy what you genuinely like, not what impresses you, to develop independent taste and better work.",
+      "hash": "0f0d91cf77894ef7"
+    },
+    "webstartups": {
+      "phases": [
+        "ideas",
+        "funding",
+        "team",
+        "build",
+        "running"
+      ],
+      "why": "ideas: Learn why cheap web startups lower the courage threshold and make starting now more rational. funding: See how standardized angel terms, seed funding, and acquisitions change fundraising and deal-making. team: Understand how younger technical founders and college cofounders can start more startups. build: Use the minimal-version-first advice: launch quickly, then let users shape the product. running: Prepare for later-stage acquisition decisions and big-company productivity traps.",
+      "hash": "755de9325abb651c"
+    },
+    "investors": {
+      "phases": [
+        "funding"
+      ],
+      "why": "Learn to explain your startup clearly, demo effectively, and pitch investors with confidence.",
+      "hash": "545023f239e5e7fd"
+    },
+    "island": {
+      "phases": [
+        "any"
+      ],
+      "why": "Learn to protect quiet thinking time and capture fleeting ideas with simple tools, whatever startup stage you’re in.",
+      "hash": "247bbdad799d56dc"
+    },
+    "siliconvalley": {
+      "phases": [
+        "ideas",
+        "funding",
+        "team"
+      ],
+      "why": "Learn why location, investors, and nerds matter when choosing where to start and fund a startup.",
+      "hash": "8864c3de49aa1a1b"
+    },
+    "marginal": {
+      "phases": [
+        "ideas",
+        "build",
+        "team",
+        "traction",
+        "growth",
+        "running"
+      ],
+      "why": "Founders learn to exploit outsider advantages: contrarian ideas, cheap hacking, hands-on work, and direct audiences.",
+      "hash": "a679813bffdf1acc"
+    },
+    "randomness": {
+      "phases": [
+        "any"
+      ],
+      "why": "Teaches founders to prefer explanations that don't center on themselves and see randomness.",
+      "hash": "e12a19c927ac06c4"
+    },
+    "america": {
+      "phases": [
+        "ideas",
+        "team",
+        "funding",
+        "running"
+      ],
+      "why": "Decide whether and where to start a startup by seeing the legal, cultural, and economic conditions that help founders.",
+      "hash": "7678075ff3a65361"
+    },
+    "startupmistakes": {
+      "phases": [
+        "ideas",
+        "team",
+        "build",
+        "traction",
+        "growth",
+        "funding",
+        "running"
+      ],
+      "why": "Use this checklist to avoid fatal mistakes across idea, team, build, traction, growth, funding, and running.",
+      "hash": "df89cd1633d3a6c2"
+    },
+    "startuplessons": {
+      "phases": [
+        "build",
+        "traction",
+        "growth",
+        "funding",
+        "team",
+        "ideas",
+        "running"
+      ],
+      "why": "Release early, improve fast, make users happy, fear the right things, and stay committed to build traction and survive.",
+      "hash": "9ef94bc6598ab915"
+    },
+    "procrastination": {
+      "phases": [
+        "any",
+        "team",
+        "running"
+      ],
+      "why": "Teaches founders to prioritize important work, avoid errands, and protect uninterrupted deep work.",
+      "hash": "925a81a290734b53"
+    },
+    "softwarepatents": {
+      "phases": [
+        "running",
+        "build",
+        "traction",
+        "growth"
+      ],
+      "why": ":",
+      "hash": "fbfc65216e308b06"
+    },
+    "startupfunding": {
+      "phases": [
+        "funding",
+        "running",
+        "team",
+        "build"
+      ],
+      "why": "Learn funding sources, round mechanics, valuations, and term sheets so you can raise money without losing control.",
+      "hash": "da0fb739a6cd735b"
+    },
+    "web20": {
+      "phases": [
+        "build",
+        "traction",
+        "growth",
+        "ideas"
+      ],
+      "why": "Learn to build web-native products that treat users generously, give value away free, and outflank incumbents.",
+      "hash": "ac584e8cd8b75fa6"
+    },
+    "whyyc": {
+      "phases": [
+        "funding",
+        "ideas"
+      ],
+      "why": "Explains YC's origin so founders can decide whether to apply and start companies.",
+      "hash": "85045e6b0bf8e875"
+    },
+    "vcsqueeze": {
+      "phases": [
+        "funding",
+        "running"
+      ],
+      "why": "Understand why VCs are squeezed and how to negotiate founder liquidity in Series A. See how Sarbanes-Oxley and acquisition trends shape later exit and board decisions.",
+      "hash": "d84545fa520b5cd0"
+    },
+    "ideas": {
+      "phases": [
+        "ideas",
+        "team",
+        "build",
+        "funding"
+      ],
+      "why": "Generate startup ideas as questions with friends, build what people want, and plan an exit.",
+      "hash": "93dcab2170d817ee"
+    },
+    "sfp": {
+      "phases": [
+        "ideas",
+        "team",
+        "build",
+        "funding",
+        "growth",
+        "running"
+      ],
+      "why": "Young hackers can start viable companies on little money; independence matters more than age or business experience.",
+      "hash": "11ee9d45678ccfc5"
+    },
+    "love": {
+      "phases": [
+        "any"
+      ],
+      "why": "Founders learn to choose work they love so they persist and do great work.",
+      "hash": "59cf15d0a96924d4"
+    },
+    "inequality": {
+      "phases": [
+        "funding",
+        "ideas"
+      ],
+      "why": "Understand why VCs and founders need huge upside to take startup risk, and how taxes affect it.",
+      "hash": "b9df646af56b9fa1"
+    },
+    "opensource": {
+      "phases": [
+        "running",
+        "funding",
+        "ideas",
+        "team",
+        "build"
+      ],
+      "why": "Shows fixed hours, meetings, and sterile offices kill productivity; bottom-up work beats top-down management.",
+      "hash": "a674ee5019b1554f"
+    },
+    "bronze": {
+      "phases": [
+        "ideas",
+        "team",
+        "build"
+      ],
+      "why": "Learn why smart founders pick bad ideas, and how to choose problems customers will pay for.",
+      "hash": "14a7245f873bb75d"
+    },
+    "ladder": {
+      "phases": [
+        "ideas",
+        "running"
+      ],
+      "why": "See why founding a startup beats climbing a corporate ladder, and weigh the added risk.",
+      "hash": "a4195fe00a0346c5"
+    },
+    "venturecapital": {
+      "phases": [
+        "funding",
+        "growth",
+        "running"
+      ],
+      "why": "Understand VC incentives, avoid oversized rounds and high valuations that restrict exits, and anticipate board interference.",
+      "hash": "02b5c3afb7cf3c62"
+    },
+    "submarine": {
+      "phases": [
+        "traction",
+        "build",
+        "growth"
+      ],
+      "why": "Learn how PR and media buzz work to get press, attract users, and scale.",
+      "hash": "c5d7cd7006e8e09f"
+    },
+    "start": {
+      "phases": [
+        "ideas",
+        "team",
+        "build",
+        "traction",
+        "funding",
+        "growth",
+        "running"
+      ],
+      "why": "Use heuristics to find underserved problems and understand people matter more than ideas. Apply the animal test and hire smart, effective, tolerable hackers; choose two to four committed cofounders. Prototype fast and make something customers actually want instead of elaborate Hail Mary plans. Watch real users, do market research, and target niche or small customers first. Raise seed/angel money pragmatically, manage valuation and IP, and treat VCs as money sources. Get big slow, put users before advertisers, and own the low end with cheap, easy products. Stay cheap, avoid unnecessary hiring, and keep a grad-student office culture.",
+      "hash": "b6d5b432faa6b0ca"
+    },
+    "writing44": {
+      "phases": [
+        "any"
+      ],
+      "why": "Write faster and rewrite ruthlessly to generate sharper ideas and communicate them at any stage.",
+      "hash": "5d4c0c6fd4701ce9"
+    },
+    "college": {
+      "phases": [
+        "any"
+      ],
+      "why": "Timeless advice on learning, hacking, and doing what you love; useful at any stage.",
+      "hash": "aa10d7409a4ecbfb"
+    },
+    "polls": {
+      "phases": [
+        "any"
+      ],
+      "why": "Learn to spot social-desirability bias and trust behavior over what users say.",
+      "hash": "bbbdd1eebcfdf43d"
+    },
+    "hs": {
+      "phases": [
+        "ideas",
+        "any"
+      ],
+      "why": "Teaches founders to work on hard, interesting problems and let curiosity generate startup ideas.",
+      "hash": "e139dbc1772c5ac3"
+    },
+    "usa": {
+      "phases": [
+        "build",
+        "any",
+        "running"
+      ],
+      "why": "Work fast on prototypes, but let design taste shape what you ship.",
+      "hash": "39d56abb8aaf9d6e"
+    },
+    "laundry": {
+      "phases": [
+        "any"
+      ],
+      "why": "See how much rewriting turns rough drafts into clear thinking, useful at any stage.",
+      "hash": "dc0aa1c8d79f3557"
+    },
+    "charisma": {
+      "phases": [
+        "any"
+      ],
+      "why": "Teaches Occam's razor and how overlooked human factors like charisma can decide outcomes; not stage-specific.",
+      "hash": "d74e58cee84a4a32"
+    },
+    "mac": {
+      "phases": [
+        "ideas",
+        "traction",
+        "build"
+      ],
+      "why": "Use hacker platform adoption as an early signal for what to build and who will first use it.",
+      "hash": "a23da86893cc559e"
+    },
+    "bubble": {
+      "phases": [
+        "ideas",
+        "team",
+        "traction",
+        "growth",
+        "any"
+      ],
+      "why": "Argues good ideas, substance, and small founder-led startups beat connections and formality in the coming economy.",
+      "hash": "d873bb37b8a34666"
+    },
+    "pypar": {
+      "phases": [
+        "team",
+        "build"
+      ],
+      "why": "Choose tools that attract self-motivated programmers; this upgrades both hires and the software they build.",
+      "hash": "cf052fab4f08a0b0"
+    },
+    "wealth": {
+      "phases": [
+        "ideas",
+        "team",
+        "build",
+        "traction",
+        "growth",
+        "funding",
+        "running"
+      ],
+      "why": "Explains why startups create wealth and why to pick hard technical problems.",
+      "hash": "ca142be3a825179e"
+    },
+    "gap": {
+      "phases": [
+        "any"
+      ],
+      "why": "Explains why creating wealth through startups is valuable and why income variation reflects productivity.",
+      "hash": "898cd5b38a92447b"
+    },
+    "gba": {
+      "phases": [
+        "any",
+        "team",
+        "ideas",
+        "running"
+      ],
+      "why": "Adopt the hacker mindset: rule-breaking curiosity and disobedience drive great software, teams, and ideas.",
+      "hash": "677dbd99c09179e3"
+    },
+    "essay": {
+      "phases": [
+        "any"
+      ],
+      "why": "Learn to write essays to think through problems, discover surprises, and question assumptions.",
+      "hash": "18bb1cc1a5cdf99f"
+    },
+    "say": {
+      "phases": [
+        "any"
+      ],
+      "why": "Teaches founders to question invisible orthodoxies, so they can find overlooked, potentially valuable ideas.",
+      "hash": "2031346ce097ab12"
+    },
+    "hp": {
+      "phases": [
+        "any",
+        "build",
+        "team",
+        "running",
+        "ideas"
+      ],
+      "why": "Craft, design, empathy, and relentless making apply at every startup stage; it also guides building, team code ownership, running creative teams, and choosing new markets.",
+      "hash": "f51b029a6348e15d"
+    },
+    "ffb": {
+      "phases": [
+        "any"
+      ],
+      "why": "Shows founders how to turn spammers' scale into a defensive advantage.",
+      "hash": "3d684b799675a383"
+    },
+    "hundred": {
+      "phases": [
+        "build",
+        "any"
+      ],
+      "why": "Use it to design flexible version 1 software and defer optimization until needed.",
+      "hash": "ffcbf5239fbe5efd"
+    },
+    "iflisp": {
+      "phases": [
+        "any"
+      ],
+      "why": "Learn why quality and popularity diverge, so choose tools by merit not hype.",
+      "hash": "529da0ac9833e1f2"
+    },
+    "gh": {
+      "phases": [
+        "team",
+        "running",
+        "build"
+      ],
+      "why": "team: Helps founders recognize, attract, and keep the 10x hackers who make early teams win. running: Shows how to manage technical talent, choose tools, and design offices so hackers stay productive. build: Guides early infrastructure and tool choices that let hackers build the first version fast.",
+      "hash": "d53d024aaa3b2767"
+    },
+    "nerds": {
+      "phases": [
+        "any"
+      ],
+      "why": "Founders can ignore empty status games and focus on real work; outsiders often win.",
+      "hash": "340afcb783956016"
+    },
+    "hiring": {
+      "phases": [
+        "ideas",
+        "funding",
+        "build",
+        "team",
+        "running"
+      ],
+      "why": "Start young, keep founder control, make what users want, and see acquirers value startup teams.",
+      "hash": "e93d10d32498067d"
+    },
+    "icad": {
+      "phases": [
+        "build",
+        "team",
+        "funding"
+      ],
+      "why": "Choose a powerful language to build faster, hire fewer smarter hackers, and resist investor pressure on tech choices.",
+      "hash": "36c55f076eaac27c"
+    },
+    "power": {
+      "phases": [
+        "any"
+      ],
+      "why": "Use succinct languages and abstractions to think and build faster at any startup stage.",
+      "hash": "782d2500c435ba2f"
+    },
+    "better": {
+      "phases": [
+        "any"
+      ],
+      "why": "Teaches data-driven iteration, tokenization, and treating false positives as bugs—craft lessons for technical founders.",
+      "hash": "5177810144986507"
+    },
+    "diff": {
+      "phases": [
+        "any"
+      ],
+      "why": "Understand Lisp's nine innovations to sharpen your programming craft and technical judgment.",
+      "hash": "314c37f0a4e6b936"
+    },
+    "taste": {
+      "phases": [
+        "any"
+      ],
+      "why": "Learn timeless design principles to judge and improve what you build.",
+      "hash": "608272fdb26a4d64"
+    },
+    "desres": {
+      "phases": [
+        "build",
+        "ideas",
+        "team",
+        "running",
+        "any"
+      ],
+      "why": "Prototype early, refine working code, and get it in front of users before perfecting.",
+      "hash": "1e0759b73d769a57"
+    },
+    "road": {
+      "phases": [
+        "ideas",
+        "build",
+        "traction",
+        "growth",
+        "team",
+        "running"
+      ],
+      "why": "See why server-based software is a startup opportunity and whether to pursue it.",
+      "hash": "58090d7c56ae5023"
+    },
+    "rootsoflisp": {
+      "phases": [
+        "any"
+      ],
+      "why": "Helps technical founders understand Lisp’s core ideas and why languages evolve toward abstraction.",
+      "hash": "3e6f65c5a4f8a9b3"
+    },
+    "popular": {
+      "phases": [
+        "build",
+        "traction",
+        "growth",
+        "ideas"
+      ],
+      "why": "Learn to design a terse, hackable product with powerful libraries and fast iteration.",
+      "hash": "50e681adf64f6a3a"
+    },
+    "javacover": {
+      "phases": [
+        "any",
+        "build"
+      ],
+      "why": "Learn to judge technologies by their cover so you avoid hype-driven tools and pick durable ones.",
+      "hash": "7318b2370aff34f6"
+    },
+    "avg": {
+      "phases": [
+        "build",
+        "growth"
+      ],
+      "why": "Use the most powerful language to build faster and gain a technical edge competitors can't copy.",
+      "hash": "5b61bef4cf40965f"
+    },
+    "progbot": {
+      "phases": [
+        "build",
+        "team",
+        "any"
+      ],
+      "why": "Write smaller, more agile code by evolving abstractions, making your first product easier to modify and ship.",
+      "hash": "386a6d404f957e40"
+    },
+    "lwba": {
+      "phases": [
+        "build"
+      ],
+      "why": "See why Lisp let Viaweb build features faster and outpace competitors.",
+      "hash": "903d59f9fcdb9575"
+    },
+    "fix": {
+      "phases": [
+        "any"
+      ],
+      "why": "See how new tools win by fixing specific pains, useful for spotting product opportunities and choosing tech.",
+      "hash": "359d762e6240e5d8"
+    },
+    "noop": {
+      "phases": [
+        "any",
+        "build"
+      ],
+      "why": "Use OOP selectively, avoid overengineering, and build software with simpler, more powerful language choices.",
+      "hash": "7bf9d99bc2be1831"
+    },
+    "spam": {
+      "phases": [
+        "any"
+      ],
+      "why": "Learn Bayesian filtering and probabilistic thinking to solve adversarial problems with simple, evolving algorithms.",
+      "hash": "9ebe153ce37f8abe"
+    },
+    "langdes": {
+      "phases": [
+        "any",
+        "build"
+      ],
+      "why": "Sharpen your craft: design tools for real users, favor brevity, control, and risk-taking. Build server-based apps with changeable releases, profilers, and throwaway-program speed.",
+      "hash": "3cd743b88f6f03b1"
+    }
+  }
+}

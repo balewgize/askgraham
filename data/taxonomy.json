@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "phases": [
+    {
+      "id": "ideas",
+      "label": "Ideas & starting",
+      "order": 1,
+      "description": "Choosing what to build and deciding to start a company."
+    },
+    {
+      "id": "team",
+      "label": "Founders & team",
+      "order": 2,
+      "description": "Cofounders, early hires, and how founders should work."
+    },
+    {
+      "id": "build",
+      "label": "Build & launch",
+      "order": 3,
+      "description": "Making the first version and getting it in front of people."
+    },
+    {
+      "id": "traction",
+      "label": "First users & traction",
+      "order": 4,
+      "description": "Getting users and early growth, before product-market fit."
+    },
+    {
+      "id": "growth",
+      "label": "Product-market fit & growth",
+      "order": 5,
+      "description": "Finding what works, scaling demand, and staying alive."
+    },
+    {
+      "id": "funding",
+      "label": "Fundraising",
+      "order": 6,
+      "description": "Raising money, investors, and deal terms."
+    },
+    {
+      "id": "running",
+      "label": "Running the company",
+      "order": 7,
+      "description": "Managing people, culture, and later-stage decisions."
+    },
+    {
+      "id": "any",
+      "label": "Any stage",
+      "order": 8,
+      "description": "Timeless essays on work, craft, and thinking."
+    }
+  ]
+}

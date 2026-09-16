@@ -3,6 +3,9 @@
 import { Document } from "flexsearch";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { formatDateShort } from "@/lib/dates";
+import { SearchIcon } from "./icons";
 
 type Meta = { slug: string; title: string; date: string | null; reading_time_min: number };
 
@@ -152,51 +155,63 @@ export default function SearchPalette() {
     [router],
   );
 
+  // The footer only needs its own top border when something sits between it and the input.
+  const resultsAreaVisible = status === "loading" || status === "error" || query.trim().length >= 2;
+
   return (
     <>
       <button
         type="button"
         onClick={openPalette}
-        className="rounded-md border border-black/10 px-2 py-1 text-xs text-zinc-600 hover:bg-black/5 dark:border-white/15 dark:text-zinc-300 dark:hover:bg-white/10"
+        className="flex items-center gap-1.5 rounded-md border border-black/10 px-2 py-1.5 text-xs text-zinc-600 hover:bg-black/5 dark:border-white/15 dark:text-zinc-300 dark:hover:bg-white/10"
         aria-label="Search essays"
       >
-        ⌘K search
+        <SearchIcon size={15} />
+        <span className="hidden sm:inline">Search</span>
+        <kbd className="hidden rounded border border-black/10 px-1 text-[10px] text-zinc-400 md:inline dark:border-white/15">
+          ⌘K
+        </kbd>
       </button>
-      {open && (
-        <div
-          className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 p-4 pt-[12vh]"
-          onClick={() => setOpen(false)}
-          role="presentation"
-        >
+      {open &&
+        createPortal(
           <div
-            className="w-full max-w-xl overflow-hidden rounded-xl border border-black/10 bg-white shadow-2xl dark:border-white/15 dark:bg-zinc-900"
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 p-4 pt-[12vh] dark:bg-black/60"
+            onMouseDown={(e) => {
+              if (e.target === e.currentTarget) setOpen(false);
+            }}
+            role="presentation"
+          >
+          <div
+            className="flex max-h-full w-full max-w-xl flex-col overflow-hidden rounded-xl border border-black/10 bg-white shadow-2xl dark:border-white/15 dark:bg-zinc-800"
             role="dialog"
             aria-modal="true"
             aria-label="Search essays"
           >
-            <input
-              ref={inputRef}
-              value={query}
-              onChange={(e) => {
-                setQuery(e.target.value);
-                if (e.target.value.trim().length < 2) setResults([]);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "ArrowDown") {
-                  e.preventDefault();
-                  setActive((a) => Math.min(a + 1, results.length - 1));
-                } else if (e.key === "ArrowUp") {
-                  e.preventDefault();
-                  setActive((a) => Math.max(a - 1, 0));
-                } else if (e.key === "Enter" && results[active]) {
-                  go(results[active].slug);
-                }
-              }}
-              placeholder="Search all essays… (title + full text)"
-              className="w-full border-b border-black/10 bg-transparent px-4 py-3 text-sm outline-none dark:border-white/10"
-            />
-            <div className="max-h-80 overflow-y-auto p-1">
+            <div className="flex items-center gap-2 border-b border-black/10 px-4 dark:border-white/10">
+              <SearchIcon size={16} className="shrink-0 text-zinc-400" />
+              <input
+                ref={inputRef}
+                value={query}
+                onChange={(e) => {
+                  setQuery(e.target.value);
+                  if (e.target.value.trim().length < 2) setResults([]);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "ArrowDown") {
+                    e.preventDefault();
+                    setActive((a) => Math.min(a + 1, results.length - 1));
+                  } else if (e.key === "ArrowUp") {
+                    e.preventDefault();
+                    setActive((a) => Math.max(a - 1, 0));
+                  } else if (e.key === "Enter" && results[active]) {
+                    go(results[active].slug);
+                  }
+                }}
+                placeholder="Search all essays… (title + full text)"
+                className="w-full bg-transparent py-3 text-sm outline-none"
+              />
+            </div>
+            <div className="min-h-0 flex-1 overflow-y-auto p-1">
               {status === "loading" && <p className="px-3 py-4 text-xs text-zinc-500">Loading search index…</p>}
               {status === "error" && <p className="px-3 py-4 text-xs text-red-500">Search index failed to load.</p>}
               {status === "ready" && query.trim().length >= 2 && results.length === 0 && (
@@ -217,16 +232,21 @@ export default function SearchPalette() {
                     {r.via === "body" && <span className="ml-2 text-[10px] font-normal text-zinc-400">in text</span>}
                   </span>
                   <span className="shrink-0 text-[11px] text-zinc-500">
-                    {r.date ?? "undated"} · {r.reading_time_min} min
+                    {formatDateShort(r.date)} · {r.reading_time_min} min
                   </span>
                 </button>
               ))}
             </div>
-            <p className="border-t border-black/10 px-4 py-2 text-[11px] text-zinc-400 dark:border-white/10">
+            <p
+              className={`px-4 py-2 text-[13px] text-zinc-400 ${
+                resultsAreaVisible ? "border-t border-black/10 dark:border-white/10" : ""
+              }`}
+            >
               ↑↓ navigate · Enter open · Esc close
             </p>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </>
   );

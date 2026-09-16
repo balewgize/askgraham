@@ -4,15 +4,24 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import type { Essay, IndexEntry } from "@/lib/essays";
+import { CheckIcon, CopyIcon, DownloadIcon } from "./icons";
 import { getFontScale, getProgress, setFontScale, setProgress, type FontScale } from "./reader-prefs";
 
 function FootnoteRef({ id, text }: { id: string; text: string }) {
   const [pinned, setPinned] = useState(false);
+  const activate = () => {
+    // Phones: jump to the full note below. Pointer devices: toggle the popover.
+    if (window.matchMedia("(max-width: 639px)").matches) {
+      document.getElementById(`fn-${id}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    setPinned((v) => !v);
+  };
   return (
     <span className="group relative inline-block">
       <button
         type="button"
-        onClick={() => setPinned((v) => !v)}
+        onClick={activate}
         onBlur={() => setPinned(false)}
         aria-label={`Footnote ${id}`}
         className="mx-0.5 inline-block -translate-y-1 rounded px-0.5 align-super text-[0.7em] font-semibold text-orange-700 hover:bg-orange-100 dark:text-orange-300 dark:hover:bg-orange-950"
@@ -20,8 +29,8 @@ function FootnoteRef({ id, text }: { id: string; text: string }) {
         [{id}]
       </button>
       <span
-        className={`absolute left-1/2 z-20 w-64 -translate-x-1/2 rounded-lg border border-black/10 bg-white p-3 text-left text-[13px] font-normal normal-case leading-relaxed tracking-normal shadow-xl dark:border-white/15 dark:bg-zinc-900 ${
-          pinned ? "block" : "hidden group-hover:block group-focus-within:block"
+        className={`absolute left-1/2 z-20 w-[min(16rem,80vw)] -translate-x-1/2 rounded-lg border border-black/10 bg-white p-3 text-left text-[13px] font-normal normal-case leading-relaxed tracking-normal shadow-xl dark:border-white/15 dark:bg-zinc-800 ${
+          pinned ? "block" : "hidden sm:group-hover:block sm:group-focus-within:block"
         }`}
         role="note"
       >
@@ -70,8 +79,20 @@ export default function EssayReader({
 }) {
   const router = useRouter();
   const [scale, setScale] = useState<FontScale>(getFontScale);
+  const [copied, setCopied] = useState(false);
   const restored = useRef(false);
   const footnoteMap = new Map(essay.footnotes.map((f) => [f.id, f.text]));
+
+  const copyMarkdown = async () => {
+    try {
+      const md = await fetch(`/corpus/md/${essay.slug}.md`).then((r) => r.text());
+      await navigator.clipboard.writeText(md);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* clipboard unavailable — the Download link still works */
+    }
+  };
 
   // Restore reading position once.
   useEffect(() => {
@@ -113,7 +134,7 @@ export default function EssayReader({
 
   return (
     <div>
-      <div className="mb-6 flex items-center gap-2 text-xs text-zinc-500">
+      <div className="mb-6 flex flex-wrap items-center gap-2 text-xs text-zinc-500">
         <span>Text size:</span>
         {(["s", "m", "l"] as FontScale[]).map((s) => (
           <button
@@ -133,6 +154,26 @@ export default function EssayReader({
             {s === "s" ? "A−" : s === "m" ? "A" : "A+"}
           </button>
         ))}
+        <div className="ml-auto flex items-center gap-2">
+          <button
+            type="button"
+            onClick={copyMarkdown}
+            aria-label="Copy essay as markdown"
+            className="flex items-center gap-1.5 rounded border border-black/10 px-2 py-1 hover:bg-black/5 dark:border-white/15 dark:hover:bg-white/10"
+          >
+            {copied ? <CheckIcon size={14} /> : <CopyIcon size={14} />}
+            <span className="hidden sm:inline">{copied ? "Copied" : "Copy"}</span>
+          </button>
+          <a
+            href={`/corpus/md/${essay.slug}.md`}
+            download
+            aria-label="Download essay as markdown"
+            className="flex items-center gap-1.5 rounded border border-black/10 px-2 py-1 hover:bg-black/5 dark:border-white/15 dark:hover:bg-white/10"
+          >
+            <DownloadIcon size={14} />
+            <span className="hidden sm:inline">Download</span>
+          </a>
+        </div>
       </div>
 
       <article
@@ -149,7 +190,7 @@ export default function EssayReader({
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-zinc-500">Notes</h2>
           <ol className="space-y-2 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
             {essay.footnotes.map((f) => (
-              <li key={f.id} id={`fn-${f.id}`}>
+              <li key={f.id} id={`fn-${f.id}`} className="scroll-mt-24">
                 <span className="mr-2 font-semibold">[{f.id}]</span>
                 {f.text}
               </li>

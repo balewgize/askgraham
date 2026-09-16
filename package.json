@@ -10,9 +10,12 @@
     "scrape": "tsx scripts/scrape-essays.ts",
     "scrape:sample": "tsx scripts/scrape-essays.ts --slugs=say,ramenprofitable,foundermode",
     "index:search": "tsx scripts/build-search-index.ts",
-    "prebuild": "tsx scripts/build-search-index.ts"
+    "export:corpus": "tsx scripts/export-corpus.ts",
+    "classify": "tsx scripts/classify-essays.ts",
+    "prebuild": "tsx scripts/build-search-index.ts && tsx scripts/export-corpus.ts"
   },
   "dependencies": {
+    "fflate": "^0.8.3",
     "flexsearch": "^0.8.212",
     "next": "16.3.5",
     "react": "19.2.8",
