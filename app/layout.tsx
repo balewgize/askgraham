@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
+import { Analytics } from "@vercel/analytics/next";
 import SearchPalette from "@/components/search-palette";
 import ThemeToggle from "@/components/theme-toggle";
 import { DownloadIcon, GitHubIcon } from "@/components/icons";
@@ -127,6 +128,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           </a>{" "}
           · {new Date().getFullYear()}
         </footer>
+        <Analytics />
       </body>
     </html>
   );
