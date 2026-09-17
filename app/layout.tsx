@@ -1,3 +1,4 @@
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
@@ -127,6 +128,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           </a>{" "}
           · {new Date().getFullYear()}
         </footer>
+        <SpeedInsights />
       </body>
     </html>
   );
