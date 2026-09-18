@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import EssayIndex from "@/components/essay-index";
+import PathCta from "@/components/path-cta";
 import { getIndex } from "@/lib/essays";
+import { getResolvedPaths } from "@/lib/paths";
 import { getPhases, getTaxonomy } from "@/lib/phases";
 import { SITE_DESCRIPTION, SITE_URL } from "@/lib/site";
 
@@ -12,7 +14,12 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const [index, taxonomy, phases] = await Promise.all([getIndex(), getTaxonomy(), getPhases()]);
+  const [index, taxonomy, phases, paths] = await Promise.all([
+    getIndex(),
+    getTaxonomy(),
+    getPhases(),
+    getResolvedPaths(),
+  ]);
 
   const classified = phases && Object.keys(phases.essays).length > 0;
   const chips = classified
@@ -24,5 +31,9 @@ export default async function Home() {
       )
     : {};
 
-  return <EssayIndex entries={index} chips={chips} essayPhases={essayPhases} />;
+  const primary = paths.find((p) => p.id === "start-here") ?? paths[0];
+  const secondary = paths.find((p) => p.id !== primary?.id);
+  const hero = primary ? <PathCta path={primary} secondary={secondary} /> : undefined;
+
+  return <EssayIndex entries={index} chips={chips} essayPhases={essayPhases} hero={hero} />;
 }

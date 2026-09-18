@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { formatDateShort } from "@/lib/dates";
 import type { IndexEntry } from "@/lib/essays";
 
@@ -18,10 +18,12 @@ export default function EssayIndex({
   entries,
   chips,
   essayPhases,
+  hero,
 }: {
   entries: IndexEntry[];
   chips: Chip[];
   essayPhases: Record<string, EssayPhase>;
+  hero?: ReactNode;
 }) {
   const [active, setActive] = useState<string | null>(null);
 
@@ -64,6 +66,8 @@ export default function EssayIndex({
           <kbd className="rounded border border-black/10 px-1 dark:border-white/15">k</kbd> to move between essays
         </p>
       </div>
+
+      {hero}
 
       {chips.length > 0 && (
         <div className="mb-6 flex flex-wrap gap-1.5">

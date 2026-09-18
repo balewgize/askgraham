@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import EssayReader from "@/components/essay-reader";
 import { formatDateShort } from "@/lib/dates";
 import { getEssay, getPrevNext, getSlugs } from "@/lib/essays";
+import { getResolvedPaths } from "@/lib/paths";
 import { getPhases } from "@/lib/phases";
 import { essayDescription, isoDate } from "@/lib/seo";
 import { SITE_KEYWORDS, SITE_NAME, SITE_URL } from "@/lib/site";
@@ -50,8 +51,9 @@ export default async function EssayPage({ params }: { params: Promise<{ slug: st
     notFound();
   }
   const { prev, next } = await getPrevNext(slug);
-  const phases = await getPhases();
+  const [phases, paths] = await Promise.all([getPhases(), getResolvedPaths()]);
   const why = phases?.essays[slug]?.why;
+  const essayPaths = paths.filter((p) => p.steps.some((s) => s.slug === slug));
 
   const description = essayDescription(essay);
   const url = `${SITE_URL}/essays/${essay.slug}`;
@@ -106,7 +108,7 @@ export default async function EssayPage({ params }: { params: Promise<{ slug: st
           </a>
         </p>
       </header>
-      <EssayReader essay={essay} prev={prev} next={next} why={why} />
+      <EssayReader essay={essay} prev={prev} next={next} why={why} paths={essayPaths} />
     </div>
   );
 }

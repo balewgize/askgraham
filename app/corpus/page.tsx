@@ -58,6 +58,7 @@ export default async function CorpusPage() {
   }
 
   const bundles = manifest.files.filter((f) => f.kind === "bundle");
+  const paths = manifest.files.filter((f) => f.kind === "path");
   const all = manifest.files.find((f) => f.kind === "all");
   const jsonl = manifest.files.find((f) => f.kind === "jsonl");
   const zip = manifest.files.find((f) => f.kind === "zip");
@@ -73,6 +74,17 @@ export default async function CorpusPage() {
           AI notebook or notes app and ask away.
         </p>
       </div>
+
+      {paths.length > 0 && (
+        <Tool
+          name="Reading paths"
+          blurb="Curated, ordered sequences of essays. Import one to follow a guided route from first idea to a working company."
+        >
+          {paths.map((f) => (
+            <FileRow key={f.path} file={f} />
+          ))}
+        </Tool>
+      )}
 
       <Tool
         name="NotebookLM"

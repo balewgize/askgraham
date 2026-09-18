@@ -16,6 +16,7 @@ import { zipSync, strToU8 } from "fflate";
 import { mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { sortIndex, type Essay } from "../lib/essays";
+import { getPaths } from "../lib/paths";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const ESSAYS_DIR = path.join(DATA_DIR, "essays");
@@ -72,7 +73,7 @@ type ManifestFile = {
   path: string;
   bytes: number;
   words: number;
-  kind: "all" | "bundle" | "jsonl" | "zip";
+  kind: "all" | "bundle" | "jsonl" | "zip" | "path";
   label: string;
 };
 
@@ -88,6 +89,7 @@ async function main() {
   await rm(OUT_DIR, { recursive: true, force: true });
   await mkdir(path.join(OUT_DIR, "md"), { recursive: true });
   await mkdir(path.join(OUT_DIR, "notebooklm"), { recursive: true });
+  await mkdir(path.join(OUT_DIR, "paths"), { recursive: true });
 
   const files: ManifestFile[] = [];
   const zipEntries: Record<string, Uint8Array> = {};
@@ -150,6 +152,29 @@ async function main() {
       words: wordCount(content),
       kind: "bundle",
       label: `${decade} essays`,
+    });
+  }
+
+  // Reading paths: intro + ordered essays, notes included.
+  const paths = await getPaths();
+  for (const p of paths) {
+    const steps = p.steps.filter((s) => bySlug.has(s.slug));
+    const group = steps.map((s) => bySlug.get(s.slug)!);
+    const intro = [
+      `# ${p.title}`,
+      `_${p.subtitle} — ${p.description}_`,
+      `Suggested reading order (${group.length} essays):\n\n${steps
+        .map((s, i) => `${i + 1}. **${bySlug.get(s.slug)!.title}** — ${s.note}`)
+        .join("\n")}`,
+    ];
+    const content = [...intro, "---", ...group.map((e) => essayMarkdown(e, 2))].join("\n\n") + "\n";
+    zipEntries[`paths/${p.id}.md`] = await write(`paths/${p.id}.md`, content);
+    files.push({
+      path: `paths/${p.id}.md`,
+      bytes: Buffer.byteLength(content),
+      words: wordCount(content),
+      kind: "path",
+      label: p.title,
     });
   }
 

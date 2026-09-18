@@ -4,8 +4,18 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import type { Essay, IndexEntry } from "@/lib/essays";
+import type { ResolvedPath } from "@/lib/paths";
 import { CheckIcon, CopyIcon, DownloadIcon } from "./icons";
-import { getFontScale, getProgress, setFontScale, setProgress, type FontScale } from "./reader-prefs";
+import {
+  getFontScale,
+  getProgress,
+  setActivePath,
+  setFontScale,
+  setPathDone,
+  setProgress,
+  useActivePathId,
+  type FontScale,
+} from "./reader-prefs";
 
 function FootnoteRef({ id, text }: { id: string; text: string }) {
   const [pinned, setPinned] = useState(false);
@@ -73,17 +83,43 @@ export default function EssayReader({
   prev,
   next,
   why,
+  paths = [],
 }: {
   essay: Essay;
   prev: IndexEntry | null;
   next: IndexEntry | null;
   why?: string;
+  paths?: ResolvedPath[];
 }) {
   const router = useRouter();
   const [scale, setScale] = useState<FontScale>(getFontScale);
   const [copied, setCopied] = useState(false);
+  const storedPathId = useActivePathId();
   const restored = useRef(false);
   const footnoteMap = new Map(essay.footnotes.map((f) => [f.id, f.text]));
+
+  // The path this essay belongs to, and this essay's place in it.
+  const membership = paths.find((p) => p.steps.some((s) => s.slug === essay.slug)) ?? null;
+  const activePathId =
+    storedPathId && paths.some((p) => p.id === storedPathId)
+      ? storedPathId
+      : membership?.id ?? paths[0]?.id ?? null;
+  const activePath = activePathId ? paths.find((p) => p.id === activePathId) ?? null : null;
+  const pathIndex = activePath ? activePath.steps.findIndex((s) => s.slug === essay.slug) : -1;
+  const inActivePath = pathIndex >= 0;
+  const pathPrev = activePath && pathIndex > 0 ? activePath.steps[pathIndex - 1] : null;
+  const pathNext = activePath && pathIndex >= 0 ? activePath.steps[pathIndex + 1] ?? null : null;
+
+  // Ribbon shows the active path if we're in it, otherwise any path this essay belongs to.
+  const ribbonPath = inActivePath ? activePath : membership;
+  const ribbonIndex = ribbonPath ? ribbonPath.steps.findIndex((s) => s.slug === essay.slug) : -1;
+  const navPrev: { slug: string; title: string } | null = inActivePath ? pathPrev : prev;
+  const navNext: { slug: string; title: string } | null = inActivePath ? pathNext : next;
+
+  // Remember the fallback path so j/k follows the intended order.
+  useEffect(() => {
+    if (activePathId && activePathId !== storedPathId) setActivePath(activePathId);
+  }, [activePathId, storedPathId]);
 
   const copyMarkdown = async () => {
     try {
@@ -104,7 +140,7 @@ export default function EssayReader({
     if (y > 200) requestAnimationFrame(() => window.scrollTo(0, y));
   }, [essay.slug]);
 
-  // Persist reading position (throttled).
+  // Persist reading position (throttled) and mark path steps read at the end.
   useEffect(() => {
     let t: ReturnType<typeof setTimeout> | null = null;
     const onScroll = () => {
@@ -112,6 +148,8 @@ export default function EssayReader({
       t = setTimeout(() => {
         t = null;
         setProgress(essay.slug, window.scrollY);
+        const atEnd = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 240;
+        if (atEnd && activePath) setPathDone(activePath.id, essay.slug, true);
       }, 800);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -119,20 +157,22 @@ export default function EssayReader({
       window.removeEventListener("scroll", onScroll);
       if (t) clearTimeout(t);
     };
-  }, [essay.slug]);
+  }, [essay.slug, activePath]);
 
-  // j/k essay navigation.
+  // j/k navigation: within the active path when there is one, otherwise by date.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null;
       if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;
-      if (e.key === "j" && next) router.push(`/essays/${next.slug}`);
-      else if (e.key === "k" && prev) router.push(`/essays/${prev.slug}`);
+      const nextSlug = inActivePath ? pathNext?.slug : next?.slug;
+      const prevSlug = inActivePath ? pathPrev?.slug : prev?.slug;
+      if (e.key === "j" && nextSlug) router.push(`/essays/${nextSlug}`);
+      else if (e.key === "k" && prevSlug) router.push(`/essays/${prevSlug}`);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [router, prev, next]);
+  }, [router, prev, next, inActivePath, pathPrev, pathNext]);
 
   return (
     <div>
@@ -178,6 +218,23 @@ export default function EssayReader({
         </div>
       </div>
 
+      {ribbonPath && ribbonIndex >= 0 && (
+        <div className="mb-6 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg border border-orange-500/30 bg-orange-50/60 px-3 py-2 text-xs dark:border-orange-400/20 dark:bg-orange-950/20">
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-orange-600 dark:text-orange-400">
+            Reading path
+          </span>
+          <Link
+            href={`/paths/${ribbonPath.id}`}
+            className="font-medium text-orange-700 hover:underline dark:text-orange-300"
+          >
+            {ribbonPath.title}
+          </Link>
+          <span className="text-zinc-500">
+            Step {ribbonIndex + 1} of {ribbonPath.steps.length}
+          </span>
+        </div>
+      )}
+
       {why && (
         <div className="mb-6 max-w-[70ch] border-l-2 border-orange-500/60 pl-3">
           <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400">Why read this</p>
@@ -210,18 +267,22 @@ export default function EssayReader({
 
       <nav className="mt-10 flex max-w-[70ch] items-stretch justify-between gap-3 border-t border-black/10 pt-4 text-sm dark:border-white/10">
         <div className="flex-1">
-          {prev && (
-            <Link href={`/essays/${prev.slug}`} className="group block rounded-lg p-2 hover:bg-black/5 dark:hover:bg-white/5">
-              <span className="text-[11px] uppercase tracking-wide text-zinc-400">← k · newer</span>
-              <span className="block font-medium group-hover:underline">{prev.title}</span>
+          {navPrev && (
+            <Link href={`/essays/${navPrev.slug}`} className="group block rounded-lg p-2 hover:bg-black/5 dark:hover:bg-white/5">
+              <span className="text-[11px] uppercase tracking-wide text-zinc-400">
+                {inActivePath ? "← k · previous" : "← k · newer"}
+              </span>
+              <span className="block font-medium group-hover:underline">{navPrev.title}</span>
             </Link>
           )}
         </div>
         <div className="flex-1 text-right">
-          {next && (
-            <Link href={`/essays/${next.slug}`} className="group block rounded-lg p-2 hover:bg-black/5 dark:hover:bg-white/5">
-              <span className="text-[11px] uppercase tracking-wide text-zinc-400">older · j →</span>
-              <span className="block font-medium group-hover:underline">{next.title}</span>
+          {navNext && (
+            <Link href={`/essays/${navNext.slug}`} className="group block rounded-lg p-2 hover:bg-black/5 dark:hover:bg-white/5">
+              <span className="text-[11px] uppercase tracking-wide text-zinc-400">
+                {inActivePath ? "next · j →" : "older · j →"}
+              </span>
+              <span className="block font-medium group-hover:underline">{navNext.title}</span>
             </Link>
           )}
         </div>

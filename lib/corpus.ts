@@ -5,7 +5,7 @@ export type CorpusFile = {
   path: string;
   bytes: number;
   words: number;
-  kind: "all" | "bundle" | "jsonl" | "zip";
+  kind: "all" | "bundle" | "jsonl" | "zip" | "path";
   label: string;
 };
 

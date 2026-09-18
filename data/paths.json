@@ -1,0 +1,125 @@
+{
+  "version": 1,
+  "model": "deepseek/deepseek-v4.1-flash",
+  "generated": "2026-09-18T14:16:20.894Z",
+  "paths": [
+    {
+      "id": "start-here",
+      "title": "Start Here",
+      "subtitle": "The essential Paul Graham essays, in order",
+      "description": "This path begins with choosing work, protecting focus, and thinking clearly. It then builds founder resourcefulness, startup wealth, idea discovery, unscalable beginnings, growth, and ends with a capstone on great work.",
+      "audience": "New to Paul Graham",
+      "order": 1,
+      "steps": [
+        {
+          "slug": "do",
+          "note": "Start here: choose making good new things over prestige, imitation, or default career paths."
+        },
+        {
+          "slug": "work",
+          "note": "Use the play-work test to find work you can sustain and eventually turn into a startup."
+        },
+        {
+          "slug": "makersschedule",
+          "note": "Protect long uninterrupted maker blocks; fragmented schedules destroy the focus great work requires."
+        },
+        {
+          "slug": "identity",
+          "note": "Keep beliefs from becoming identity so you can reason clearly about contested, important questions."
+        },
+        {
+          "slug": "words",
+          "note": "Write to pressure-test vague ideas; gaps appear before you commit time or money."
+        },
+        {
+          "slug": "think",
+          "note": "Build independent-mindedness to resist conventional thinking and generate novel ideas worth pursuing."
+        },
+        {
+          "slug": "relres",
+          "note": "The core founder trait: adapt relentlessly around obstacles rather than making excuses or quitting."
+        },
+        {
+          "slug": "wealth",
+          "note": "Understand why startups create wealth: small teams, hard problems, and measurable performance earn leverage."
+        },
+        {
+          "slug": "startupideas",
+          "note": "Notice problems you urgently need; build rough versions and follow narrow users before broad markets."
+        },
+        {
+          "slug": "ds",
+          "note": "Recruit first users manually, delight them intensely, and use unscalable tactics to spark growth."
+        },
+        {
+          "slug": "growth",
+          "note": "Use weekly growth as the compass; without it, startup decisions lose their clearest test."
+        },
+        {
+          "slug": "greatwork",
+          "note": "Capstone: choose important problems, cultivate curiosity, and sustain effort across a career of great work."
+        }
+      ],
+      "hash": "4e0f0becc6fd6a9b"
+    },
+    {
+      "id": "for-founders",
+      "title": "For Founders",
+      "subtitle": "Idea to first customers, in order",
+      "description": "A first-time founder's arc from choosing to start through finding an idea, building a first version, launching, and landing early users. Each essay is practical and still true today, ordered so each builds on the last.",
+      "audience": "First-time founder",
+      "order": 2,
+      "steps": [
+        {
+          "slug": "boss",
+          "note": "Start here: why ambitious builders should own their work rather than take a safe big-company job."
+        },
+        {
+          "slug": "notnot",
+          "note": "Dismantles the common excuses that keep you from starting, so you commit instead of deliberating."
+        },
+        {
+          "slug": "before",
+          "note": "Once committed: learn domain expertise, pick cofounders by trust, and let ideas emerge from curiosity."
+        },
+        {
+          "slug": "startupideas",
+          "note": "Now find an idea by noticing problems you urgently need, not inventing plausible-sounding ones."
+        },
+        {
+          "slug": "schlep",
+          "note": "Deepens idea-finding by surfacing the unpleasant schleps your unconscious avoids."
+        },
+        {
+          "slug": "organic",
+          "note": "Refines the search: build from what's broken in your own life, especially early on."
+        },
+        {
+          "slug": "relres",
+          "note": "Before building, adopt the core founder trait: relentless resourcefulness in the face of obstacles."
+        },
+        {
+          "slug": "13sentences",
+          "note": "A compact checklist for the build phase: understand users, launch fast, stay cheap."
+        },
+        {
+          "slug": "ds",
+          "note": "Launch tactic: recruit your first users manually and delight them with unscalable effort."
+        },
+        {
+          "slug": "users",
+          "note": "With users in hand, focus weekly on the one problem blocking growth and iterate on feedback."
+        },
+        {
+          "slug": "growth",
+          "note": "Measure weekly growth as the compass for every decision once you have traction."
+        },
+        {
+          "slug": "aord",
+          "note": "Finally, know if you're default alive or dead, and avoid overhiring before you're sure."
+        }
+      ],
+      "hash": "77daa0ef7b58a51c"
+    }
+  ]
+}

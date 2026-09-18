@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "paths": [
+    {
+      "id": "start-here",
+      "title": "Start Here",
+      "subtitle": "The essential Paul Graham essays, in order",
+      "audience": "New to Paul Graham",
+      "intent": "A first-time reader who has never read Paul Graham and wants his core ideas about startups, work, and thinking. Choose and order 10-12 essays so concepts build up progressively. Favor accessible, self-contained, widely cited essays that each land one idea. Open with something short, clear, and motivating that assumes zero prior knowledge. Save long synthesis pieces, essays that reference other essays, and dated or news-pegged commentary for later. Prefer ideas that still hold up today. No two essays may make the same point, and avoid pieces aimed mainly at people already running a company.",
+      "minSteps": 10,
+      "maxSteps": 12
+    },
+    {
+      "id": "for-founders",
+      "title": "For Founders",
+      "subtitle": "Idea to first customers, in order",
+      "audience": "First-time founder",
+      "intent": "A first-time founder who wants to start a company and get it off the ground. Choose and order 10-12 essays as a progression through the founder journey: deciding to start, finding an idea, building the first version, launching, and getting the first users. Prefer practical essays that are still true today and open with one that motivates and frames why to start a startup. Include at least one essay on founder mindset or resourcefulness. Skip essays aimed mainly at writing, cities, policy, investing, or running a large company, and skip dated or news-pegged pieces. No two essays may make the same point.",
+      "minSteps": 10,
+      "maxSteps": 12
+    }
+  ]
+}
