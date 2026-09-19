@@ -1,6 +1,5 @@
-import Link from "next/link";
 import type { ReactNode } from "react";
-import { formatBytes, getCorpusManifest, type CorpusFile } from "@/lib/corpus";
+import { formatBytes, getExportManifest, type ExportFile } from "@/lib/export";
 
 export const dynamic = "force-static";
 
@@ -8,17 +7,17 @@ export const metadata = {
   title: "Take the essays anywhere",
   description:
     "Download Paul Graham's essays as clean markdown and JSON, ready to import into NotebookLM, Claude, ChatGPT, Notion, or Obsidian.",
-  alternates: { canonical: "/corpus" },
+  alternates: { canonical: "/export" },
 };
 
 function fmtInt(n: number) {
   return n.toLocaleString("en-US");
 }
 
-function FileRow({ file }: { file: CorpusFile }) {
+function FileRow({ file }: { file: ExportFile }) {
   return (
     <a
-      href={`/corpus/${file.path}`}
+      href={`/export/${file.path}`}
       download
       className="flex items-baseline justify-between gap-3 rounded-lg border border-black/10 px-3 py-2 text-sm hover:bg-black/5 dark:border-white/15 dark:hover:bg-white/5"
     >
@@ -40,8 +39,8 @@ function Tool({ name, blurb, children }: { name: string; blurb: string; children
   );
 }
 
-export default async function CorpusPage() {
-  const manifest = await getCorpusManifest();
+export default async function ExportPage() {
+  const manifest = await getExportManifest();
 
   if (!manifest) {
     return (
@@ -75,17 +74,6 @@ export default async function CorpusPage() {
         </p>
       </div>
 
-      {paths.length > 0 && (
-        <Tool
-          name="Reading paths"
-          blurb="Curated, ordered sequences of essays. Import one to follow a guided route from first idea to a working company."
-        >
-          {paths.map((f) => (
-            <FileRow key={f.path} file={f} />
-          ))}
-        </Tool>
-      )}
-
       <Tool
         name="NotebookLM"
         blurb="Add one decade at a time. Each file stays well under NotebookLM's 500,000-word limit, so imports won't fail."
@@ -116,15 +104,23 @@ export default async function CorpusPage() {
         {jsonl && <FileRow file={jsonl} />}
       </Tool>
 
+      {paths.length > 0 && (
+        <Tool
+          name="Reading paths"
+          blurb="Curated, ordered sequences of essays. Import one to follow a guided route from first idea to a working company."
+        >
+          {paths.map((f) => (
+            <FileRow key={f.path} file={f} />
+          ))}
+        </Tool>
+      )}
+
       <p className="mt-10 border-t border-black/10 pt-3 text-sm text-zinc-500 dark:border-white/10 dark:text-zinc-400">
         Updated {manifest.generated.slice(0, 10)} · source:{" "}
         <a href={manifest.source} target="_blank" rel="noopener noreferrer" className="underline">
           paulgraham.com
         </a>{" "}
-        · all essays © Paul Graham.{" "}
-        <Link href="/" className="underline">
-          Back to reading
-        </Link>
+        · all essays © Paul Graham.
       </p>
     </div>
   );

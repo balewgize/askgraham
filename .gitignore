@@ -38,7 +38,7 @@ yarn-error.log*
 .vercel
 
 # generated corpus exports (rebuilt by `pnpm dev` / `prebuild`)
-/public/corpus
+/public/export
 
 # typescript
 *.tsbuildinfo

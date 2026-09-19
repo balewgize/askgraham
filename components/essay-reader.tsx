@@ -123,7 +123,7 @@ export default function EssayReader({
 
   const copyMarkdown = async () => {
     try {
-      const md = await fetch(`/corpus/md/${essay.slug}.md`).then((r) => r.text());
+      const md = await fetch(`/export/md/${essay.slug}.md`).then((r) => r.text());
       await navigator.clipboard.writeText(md);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -207,7 +207,7 @@ export default function EssayReader({
             <span className="hidden sm:inline">{copied ? "Copied" : "Copy"}</span>
           </button>
           <a
-            href={`/corpus/md/${essay.slug}.md`}
+            href={`/export/md/${essay.slug}.md`}
             download
             aria-label="Download essay as markdown"
             className="flex items-center gap-1.5 rounded border border-black/10 px-2 py-1 hover:bg-black/5 dark:border-white/15 dark:hover:bg-white/10"

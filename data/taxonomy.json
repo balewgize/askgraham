@@ -45,9 +45,9 @@
     },
     {
       "id": "any",
-      "label": "Any stage",
+      "label": "Work & thinking",
       "order": 8,
-      "description": "Timeless essays on work, craft, and thinking."
+      "description": "Essays on work, craft, and thinking, useful at any stage."
     }
   ]
 }

@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
-export type CorpusFile = {
+export type ExportFile = {
   path: string;
   bytes: number;
   words: number;
@@ -9,18 +9,18 @@ export type CorpusFile = {
   label: string;
 };
 
-export type CorpusManifest = {
+export type ExportManifest = {
   generated: string;
   essays: number;
   words: number;
   source: string;
-  files: CorpusFile[];
+  files: ExportFile[];
 };
 
-export async function getCorpusManifest(): Promise<CorpusManifest | null> {
+export async function getExportManifest(): Promise<ExportManifest | null> {
   try {
-    const raw = await readFile(path.join(process.cwd(), "public", "corpus", "manifest.json"), "utf-8");
-    return JSON.parse(raw) as CorpusManifest;
+    const raw = await readFile(path.join(process.cwd(), "public", "export", "manifest.json"), "utf-8");
+    return JSON.parse(raw) as ExportManifest;
   } catch {
     return null;
   }

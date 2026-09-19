@@ -92,7 +92,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                 Ask Graham
               </Link>
               <Link
-                href="/corpus"
+                href="/export"
                 aria-label="Export essays"
                 className="flex items-center gap-1.5 rounded-md px-2 py-1.5 text-xs text-zinc-600 hover:bg-black/5 dark:text-zinc-300 dark:hover:bg-white/10"
               >

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import EssayReader from "@/components/essay-reader";
 import { formatDateShort } from "@/lib/dates";
@@ -92,11 +91,6 @@ export default async function EssayPage({ params }: { params: Promise<{ slug: st
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }}
       />
-      <nav className="mb-6 text-xs text-zinc-500">
-        <Link href="/" className="hover:underline">
-          ← All essays
-        </Link>
-      </nav>
       <header className="mb-8 max-w-[70ch]">
         <h1 className="font-serif text-2xl font-bold leading-tight tracking-tight sm:text-3xl" style={{ fontFamily: "Georgia, serif" }}>
           {essay.title}

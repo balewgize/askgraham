@@ -4,12 +4,12 @@
  * Usage:
  *   pnpm export:corpus
  *
- * Output (public/corpus/):
+ * Output (public/export/):
  *   essays.md               all essays in one LLM-friendly markdown document
  *   essays.jsonl            one full essay JSON per line
  *   md/<slug>.md            one markdown file per essay
  *   notebooklm/<decade>.md  decade bundles, each far below NotebookLM's 500k-word cap
- *   askgraham-corpus.zip    essays.md + essays.jsonl + every md file
+ *   askgraham-export.zip    essays.md + essays.jsonl + every md file
  *   manifest.json           counts, sizes and word totals for the download page
  */
 import { zipSync, strToU8 } from "fflate";
@@ -20,7 +20,7 @@ import { getPaths } from "../lib/paths";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const ESSAYS_DIR = path.join(DATA_DIR, "essays");
-const OUT_DIR = path.join(process.cwd(), "public", "corpus");
+const OUT_DIR = path.join(process.cwd(), "public", "export");
 const SOURCE = "https://www.paulgraham.com/articles.html";
 
 const fmtInt = (n: number) => n.toLocaleString("en-US");
@@ -180,9 +180,9 @@ async function main() {
 
   // Everything zipped.
   const zip = Buffer.from(zipSync(zipEntries, { level: 6 }));
-  await writeFile(path.join(OUT_DIR, "askgraham-corpus.zip"), zip);
+  await writeFile(path.join(OUT_DIR, "askgraham-export.zip"), zip);
   files.push({
-    path: "askgraham-corpus.zip",
+    path: "askgraham-export.zip",
     bytes: zip.byteLength,
     words: 0,
     kind: "zip",
@@ -199,7 +199,7 @@ async function main() {
   await writeFile(path.join(OUT_DIR, "manifest.json"), JSON.stringify(manifest, null, 2));
 
   console.log(
-    `corpus: ${essays.length} essays, ${fmtInt(totalWords)} words, ${decades.length} decade bundles -> public/corpus/`,
+    `corpus: ${essays.length} essays, ${fmtInt(totalWords)} words, ${decades.length} decade bundles -> public/export/`,
   );
 }
 

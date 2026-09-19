@@ -18,12 +18,6 @@ export default function PathView({ path }: { path: ResolvedPath }) {
 
   return (
     <div>
-      <nav className="mb-6 text-xs text-zinc-500">
-        <Link href="/" className="hover:underline">
-          ← All essays
-        </Link>
-      </nav>
-
       <header className="mb-6 max-w-[70ch]">
         <p className="text-[10px] font-semibold uppercase tracking-widest text-orange-600 dark:text-orange-400">
           Reading path

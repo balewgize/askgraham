@@ -77,7 +77,7 @@ export default function EssayIndex({
             aria-pressed={active === null}
             className={`rounded-full border px-3 py-1 text-xs ${
               active === null
-                ? "border-zinc-900 bg-zinc-900 font-medium text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900"
+                ? "border-zinc-900/25 bg-zinc-900/[0.06] font-medium text-zinc-900 dark:border-white/25 dark:bg-white/10 dark:text-zinc-100"
                 : "border-black/10 text-zinc-600 hover:bg-black/5 dark:border-white/15 dark:text-zinc-300 dark:hover:bg-white/10"
             }`}
           >
@@ -93,7 +93,7 @@ export default function EssayIndex({
                 aria-pressed={isActive}
                 className={`rounded-full border px-3 py-1 text-xs ${
                   isActive
-                    ? "border-zinc-900 bg-zinc-900 font-medium text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900"
+                    ? "border-zinc-900/25 bg-zinc-900/[0.06] font-medium text-zinc-900 dark:border-white/25 dark:bg-white/10 dark:text-zinc-100"
                     : "border-black/10 text-zinc-600 hover:bg-black/5 dark:border-white/15 dark:text-zinc-300 dark:hover:bg-white/10"
                 }`}
               >
