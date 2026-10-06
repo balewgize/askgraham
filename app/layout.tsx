@@ -4,7 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import SearchPalette from "@/components/search-palette";
 import ThemeToggle from "@/components/theme-toggle";
-import { DownloadIcon, GitHubIcon } from "@/components/icons";
+import { BookmarkIcon, DownloadIcon, GitHubIcon } from "@/components/icons";
 import { SITE_DESCRIPTION, SITE_KEYWORDS, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
@@ -98,6 +98,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               >
                 <DownloadIcon size={15} />
                 <span className="hidden sm:inline">Export</span>
+              </Link>
+              <Link
+                href="/favorites"
+                aria-label="Favorites"
+                className="flex items-center gap-1.5 rounded-md px-2 py-1.5 text-xs text-zinc-600 hover:bg-black/5 dark:text-zinc-300 dark:hover:bg-white/10"
+              >
+                <BookmarkIcon size={15} />
+                <span className="hidden sm:inline">Favorites</span>
               </Link>
               <a
                 href="https://github.com/balewgize/askgraham"

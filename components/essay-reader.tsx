@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import type { Essay, IndexEntry } from "@/lib/essays";
 import type { ResolvedPath } from "@/lib/paths";
 import { CheckIcon, CopyIcon, DownloadIcon } from "./icons";
+import FavoriteButton from "./favorite-button";
 import {
   getFontScale,
   getProgress,
@@ -197,6 +198,7 @@ export default function EssayReader({
           </button>
         ))}
         <div className="ml-auto flex items-center gap-2">
+          <FavoriteButton slug={essay.slug} />
           <button
             type="button"
             onClick={copyMarkdown}

@@ -103,9 +103,7 @@ export function setActivePath(id: string) {
 
 export function getPathDone(id: string): string[] {
   try {
-    const raw = localStorage.getItem(pathDoneKey(id));
-    const parsed = raw ? (JSON.parse(raw) as unknown) : [];
-    return Array.isArray(parsed) ? parsed.filter((s): s is string => typeof s === "string") : [];
+    return parseSlugs(localStorage.getItem(pathDoneKey(id)) ?? "");
   } catch {
     return [];
   }
@@ -121,6 +119,42 @@ export function setPathDone(id: string, slug: string, done: boolean) {
   } catch {
     /* ignore */
   }
+}
+
+const FAVORITES_KEY = "askgraham:favorites";
+
+function parseSlugs(raw: string): string[] {
+  try {
+    const parsed = raw ? (JSON.parse(raw) as unknown) : [];
+    return Array.isArray(parsed) ? parsed.filter((s): s is string => typeof s === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
+/** Slugs the reader bookmarked, oldest save first. */
+export function getFavorites(): string[] {
+  try {
+    return parseSlugs(localStorage.getItem(FAVORITES_KEY) ?? "");
+  } catch {
+    return [];
+  }
+}
+
+export function setFavorite(slug: string, on: boolean) {
+  try {
+    const current = new Set(getFavorites());
+    if (on) current.add(slug);
+    else current.delete(slug);
+    localStorage.setItem(FAVORITES_KEY, JSON.stringify([...current]));
+    emit();
+  } catch {
+    /* ignore */
+  }
+}
+
+export function toggleFavorite(slug: string) {
+  setFavorite(slug, !getFavorites().includes(slug));
 }
 
 /** Reactive active-path id. Server snapshot is null; client reads localStorage. */
@@ -141,12 +175,21 @@ export function usePathDone(id: string): string[] {
     },
     () => "",
   );
-  return useMemo(() => {
-    try {
-      const parsed = raw ? (JSON.parse(raw) as unknown) : [];
-      return Array.isArray(parsed) ? parsed.filter((s): s is string => typeof s === "string") : [];
-    } catch {
-      return [];
-    }
-  }, [raw]);
+  return useMemo(() => parseSlugs(raw), [raw]);
+}
+
+/** Reactive list of bookmarked slugs, oldest save first. Server snapshot is empty. */
+export function useFavorites(): string[] {
+  const raw = useSyncExternalStore(
+    subscribe,
+    () => {
+      try {
+        return localStorage.getItem(FAVORITES_KEY) ?? "";
+      } catch {
+        return "";
+      }
+    },
+    () => "",
+  );
+  return useMemo(() => parseSlugs(raw), [raw]);
 }
