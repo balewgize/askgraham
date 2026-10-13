@@ -51,15 +51,15 @@ export default function SiteHeader() {
       data-site-header
       className="sticky top-0 z-40 border-b border-line bg-raised/80 backdrop-blur-xl"
     >
-      <div className="mx-auto flex h-14 max-w-3xl items-center gap-2 px-4">
+      <div className="grid h-14 w-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 px-4 sm:px-6">
         <Link
           href="/"
-          className="-ml-1.5 shrink-0 rounded-lg px-1.5 py-1 font-serif text-[1.0625rem] font-semibold tracking-tight transition-colors hover:bg-fg/[0.06]"
+          className="-ml-1.5 shrink-0 justify-self-start rounded-lg px-1.5 py-1 font-serif text-[1.0625rem] font-semibold tracking-tight transition-colors hover:bg-fg/[0.06]"
         >
           Ask Graham
         </Link>
 
-        <nav aria-label="Primary" className="ml-2 hidden items-center gap-1 sm:flex">
+        <nav aria-label="Primary" className="hidden items-center gap-1 justify-self-center sm:flex">
           {NAV.map(({ href, label }) => {
             const active = isActive(pathname, href);
             return (
@@ -83,9 +83,8 @@ export default function SiteHeader() {
           })}
         </nav>
 
-        <div className="ml-auto flex items-center gap-0.5">
+        <div className="flex items-center gap-0.5 justify-self-end">
           <SearchPalette />
-          <ThemeToggle />
           <a
             href={GITHUB_URL}
             target="_blank"
@@ -95,6 +94,7 @@ export default function SiteHeader() {
           >
             <GitHubIcon size={17} />
           </a>
+          <ThemeToggle />
 
           <div ref={menuRef} className="relative sm:hidden">
             <button
