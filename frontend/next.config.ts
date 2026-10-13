@@ -19,11 +19,12 @@ const nextConfig: NextConfig = {
   // standalone bundle.
   outputFileTracingRoot: path.join(__dirname, ".."),
 
-  // Every route is `force-static`, so the essay corpus is read at build time and
-  // baked into the prerendered HTML. It is never touched at runtime, so tracing
-  // it would only add ~4MB of JSON to the image.
+  // Both corpus trees are read at build time and baked into the prerendered
+  // HTML; neither is touched at runtime. Tracing them would add ~4MB of JSON to
+  // the image. `data/` is still needed by the prebuild scripts, and
+  // `snapshot/` becomes the reader's input once Phase 3 switches lib/ over.
   outputFileTracingExcludes: {
-    "/*": ["../data/**/*"],
+    "/*": ["../data/**/*", "../snapshot/**/*"],
   },
 
   // Proxy `/api/*` to the backend so the browser only ever talks to one origin.

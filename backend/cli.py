@@ -56,6 +56,36 @@ def ingest(
 
 
 @app.command()
+def snapshot(
+    out_dir: Path | None = typer.Option(
+        None, "--out-dir", help="Destination. Defaults to frontend/snapshot."
+    ),
+) -> None:
+    """Write the frontend's build-time corpus from Postgres."""
+    configure_logging()
+
+    async def main() -> None:
+        from rag.snapshot import export_snapshot
+
+        try:
+            async with db.session_scope() as session:
+                stats = await export_snapshot(session, out_dir)
+                typer.echo(
+                    f"essays: {stats.essays} ({stats.words:,} words)\n"
+                    f"paragraphs: {stats.paragraphs}  footnotes: {stats.footnotes}  "
+                    f"phase tags: {stats.phases}\n"
+                    f"paths: {stats.paths}  steps: {stats.path_steps}"
+                )
+        except Exception as exc:
+            log.exception("cli.snapshot_failed")
+            raise typer.Exit(code=1) from exc
+        finally:
+            await db.dispose_engine()
+
+    asyncio.run(main())
+
+
+@app.command()
 def stats() -> None:
     """Row counts, to confirm what is actually loaded."""
     configure_logging()
