@@ -97,7 +97,11 @@ class IngestStats:
     essays_skipped: int = 0
     paragraphs_written: int = 0
     footnotes_written: int = 0
-    phases_written: int = 0
+    # Counted separately on purpose: these are different tables. Adding them
+    # together produced a "phase tags: 608" report for a corpus that has 600
+    # tags and 8 taxonomy phases.
+    taxonomy_phases_written: int = 0
+    phase_tags_written: int = 0
     paths_written: int = 0
     paths_skipped: int = 0
 
@@ -108,7 +112,8 @@ class IngestStats:
             "essays_skipped": self.essays_skipped,
             "paragraphs_written": self.paragraphs_written,
             "footnotes_written": self.footnotes_written,
-            "phases_written": self.phases_written,
+            "taxonomy_phases_written": self.taxonomy_phases_written,
+            "phase_tags_written": self.phase_tags_written,
             "paths_written": self.paths_written,
             "paths_skipped": self.paths_skipped,
         }
@@ -245,7 +250,7 @@ async def _upsert_taxonomy(session: AsyncSession, data_dir: Path, stats: IngestS
                     description=phase.get("description", ""),
                 )
             )
-            stats.phases_written += 1
+            stats.taxonomy_phases_written += 1
 
     await session.execute(delete(TaxonomyMeta).where(TaxonomyMeta.id == 1))
     session.add(TaxonomyMeta(id=1, version=int(taxonomy.get("version", 1)), generated=None))
@@ -292,7 +297,7 @@ async def _upsert_essay_phases(session: AsyncSession, data_dir: Path, stats: Ing
 
     if rows:
         await session.execute(insert(EssayPhase), rows)
-        stats.phases_written += len(rows)
+        stats.phase_tags_written += len(rows)
 
 
 async def _upsert_paths(session: AsyncSession, data_dir: Path, stats: IngestStats) -> None:

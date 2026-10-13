@@ -43,7 +43,7 @@ def ingest(
                     f"{stats.essays_skipped} unchanged, {stats.essays_seen} seen\n"
                     f"paragraphs: {stats.paragraphs_written}  "
                     f"footnotes: {stats.footnotes_written}  "
-                    f"phase tags: {stats.phases_written}  "
+                    f"phase tags: {stats.phase_tags_written}  "
                     f"paths: {stats.paths_written}"
                 )
         except Exception as exc:
@@ -83,6 +83,56 @@ def scrape(
     )
     if stats.skipped:
         typer.echo(f"skipped: {', '.join(stats.skipped)}", err=True)
+
+
+@app.command()
+def classify(
+    force: bool = typer.Option(False, "--force", help="Ignore the cache and redo everything."),
+    dry_run: bool = typer.Option(False, "--dry-run", help="Show what would run. No API calls."),
+    limit: int | None = typer.Option(None, "--limit", help="Classify at most N essays."),
+    push: bool = typer.Option(True, "--push/--no-push", help="Also write results into Postgres."),
+    data_dir: Path | None = typer.Option(
+        None, "--data-dir", help="Corpus directory. Defaults to the repo's data/."
+    ),
+) -> None:
+    """Tag essays by startup stage. Only pays for essays whose text changed.
+
+    Exits non-zero if any essay failed, so a CI run cannot mistake a partial
+    result for a complete one.
+    """
+    configure_logging()
+    from llm.classify import ClassifyStats, classify_essays, sync_phases_to_db
+
+    source = data_dir or settings.data_dir
+    outcome: ClassifyStats | None = None
+
+    async def main() -> None:
+        nonlocal outcome
+        try:
+            outcome = await classify_essays(source, limit=limit, force=force, dry_run=dry_run)
+            if dry_run:
+                typer.echo(f"dry run — {outcome.attempted} would be classified, nothing written")
+                return
+            typer.echo(
+                f"model: {outcome.model}\n"
+                f"{outcome.total} essays · {outcome.cached} cached · "
+                f"{outcome.classified} classified · {len(outcome.failures)} failed"
+            )
+            if push:
+                async with db.session_scope() as session:
+                    rows = await sync_phases_to_db(session, source)
+                typer.echo(f"pushed {rows} phase tags to Postgres")
+        except Exception as exc:
+            log.exception("cli.classify_failed")
+            raise typer.Exit(code=1) from exc
+        finally:
+            await db.dispose_engine()
+
+    asyncio.run(main())
+
+    if outcome and outcome.failures:
+        typer.echo(f"{len(outcome.failures)} failed — rerun to retry them", err=True)
+        raise typer.Exit(code=1)
 
 
 @app.command()
