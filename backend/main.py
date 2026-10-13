@@ -105,6 +105,7 @@ def create_app() -> FastAPI:
     # ── routes ────────────────────────────────────────────────────────
     app.include_router(health_router)
     app.include_router(search_router, prefix="/api/v1")
+    app.include_router(essay_router, prefix="/api/v1")
     app.include_router(chat_router, prefix="/api/v1")
 
     return app
@@ -258,6 +259,42 @@ async def search(
             elapsed_ms=round(outcome.elapsed_ms, 2),
         ),
     )
+
+
+# ── essays ────────────────────────────────────────────────────────
+
+essay_router = APIRouter(tags=["essays"])
+
+
+class EssayFootnoteModel(BaseModel):
+    id: str
+    text: str
+
+
+class EssayResponse(BaseModel):
+    slug: str
+    title: str
+    url: str
+    date: str | None
+    word_count: int
+    reading_time_min: int
+    paragraphs: list[str]
+    footnotes: list[EssayFootnoteModel]
+
+
+@essay_router.get("/essays/{slug}", response_model=EssayResponse)
+async def get_essay(
+    slug: str,
+    session: AsyncSession = Depends(db.get_session),
+) -> EssayResponse:
+    """One essay with its paragraphs, for the chat's citation panel.
+
+    The panel needs the whole essay, not just the retrieved chunk, so it can
+    scroll to the cited paragraph in context.
+    """
+    from rag.corpus import load_essay
+
+    return EssayResponse(**await load_essay(session, slug))
 
 
 # ── chat ──────────────────────────────────────────────────────────

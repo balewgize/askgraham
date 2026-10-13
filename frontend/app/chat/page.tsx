@@ -9,14 +9,11 @@ export const metadata: Metadata = {
 };
 
 export default function ChatPage() {
+  // Break out of the reader's narrow column so chat and the citation panel can
+  // sit side by side on large screens. `overflow-x-clip` on the body keeps the
+  // wider child from producing a horizontal scrollbar.
   return (
-    <div className="flex flex-col gap-5">
-      <div className="max-w-[46ch]">
-        <h1 className="font-serif text-3xl font-semibold tracking-tight">Ask the essays</h1>
-        <p className="mt-2.5 text-[0.95rem] leading-relaxed text-fg-muted">
-          Every answer is grounded in the corpus and cites the passage it came from.
-        </p>
-      </div>
+    <div className="relative left-1/2 w-[min(100dvw-2rem,84rem)] -translate-x-1/2">
       <Chat />
     </div>
   );

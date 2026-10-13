@@ -53,10 +53,18 @@ function FootnoteRef({ id, text }: { id: string; text: string }) {
   );
 }
 
-function Paragraph({ text, footnotes }: { text: string; footnotes: Map<string, string> }) {
+function Paragraph({
+  text,
+  footnotes,
+  id,
+}: {
+  text: string;
+  footnotes: Map<string, string>;
+  id: string;
+}) {
   const parts = text.split(/\[(\d+)\]/g);
   return (
-    <p>
+    <p id={id} className="scroll-mt-28">
       {parts.map((part, i) =>
         i % 2 === 1 ? (
           footnotes.has(part) ? (
@@ -306,7 +314,7 @@ export default function EssayReader({
         style={{ fontSize: size, lineHeight: leading }}
       >
         {essay.paragraphs.map((p, i) => (
-          <Paragraph key={i} text={p} footnotes={footnoteMap} />
+          <Paragraph key={i} id={`p-${i}`} text={p} footnotes={footnoteMap} />
         ))}
       </article>
 
