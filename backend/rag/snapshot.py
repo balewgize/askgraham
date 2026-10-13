@@ -91,7 +91,7 @@ def _write_json(path: Path, payload: Any) -> None:
     )
 
 
-async def _load_essays(session: AsyncSession) -> list[dict[str, Any]]:
+async def load_essays(session: AsyncSession) -> list[dict[str, Any]]:
     """Every essay with its paragraphs and footnotes, in canonical order.
 
     Children are fetched in two bulk queries rather than per essay: 233 essays
@@ -152,7 +152,7 @@ async def _load_index(session: AsyncSession, essays: list[dict[str, Any]]) -> li
     ]
 
 
-async def _load_generation_meta(session: AsyncSession) -> dict[str, GenerationMeta]:
+async def load_generation_meta(session: AsyncSession) -> dict[str, GenerationMeta]:
     rows = (await session.execute(select(GenerationMeta))).scalars().all()
     return {row.artifact: row for row in rows}
 
@@ -212,7 +212,7 @@ async def _load_phases(
     }
 
 
-async def _load_paths(
+async def load_paths(
     session: AsyncSession, meta_by_artifact: dict[str, GenerationMeta]
 ) -> dict[str, Any]:
     paths = (await session.execute(select(ReadingPath).order_by(ReadingPath.order))).scalars().all()
@@ -260,12 +260,12 @@ async def export_snapshot(session: AsyncSession, out_dir: Path | None = None) ->
     staging.mkdir(parents=True)
 
     try:
-        meta_by_artifact = await _load_generation_meta(session)
-        essays = await _load_essays(session)
+        meta_by_artifact = await load_generation_meta(session)
+        essays = await load_essays(session)
         index = await _load_index(session, essays)
         taxonomy = await _load_taxonomy(session, meta_by_artifact)
         phases = await _load_phases(session, meta_by_artifact)
-        paths = await _load_paths(session, meta_by_artifact)
+        paths = await load_paths(session, meta_by_artifact)
 
         for essay in essays:
             _write_json(staging / "essays" / f"{essay['slug']}.json", essay)
@@ -308,4 +308,11 @@ async def export_snapshot(session: AsyncSession, out_dir: Path | None = None) ->
     return stats
 
 
-__all__ = ["SNAPSHOT_DIR", "SnapshotStats", "export_snapshot"]
+__all__ = [
+    "SNAPSHOT_DIR",
+    "SnapshotStats",
+    "export_snapshot",
+    "load_essays",
+    "load_generation_meta",
+    "load_paths",
+]

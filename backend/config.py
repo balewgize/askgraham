@@ -40,6 +40,34 @@ class Settings(BaseSettings):
     db_max_overflow: int = 10
     db_pool_timeout_s: int = 30
 
+    # ── retrieval ──────────────────────────────────────────────────────
+    # Chunking. `max_tokens` is deliberately below the model's 512-token
+    # truncation limit so no chunk is silently cut off before embedding.
+    chunk_max_tokens: int = 384
+    chunk_overlap_tokens: int = 64
+    # Embeddings are local ONNX: free, offline, reproducible. The model name is
+    # the only knob; swapping it changes the vector width and needs a migration.
+    embedding_model: str = "BAAI/bge-small-en-v1.5"
+    embedding_dim: int = 384
+    # Empty means fastembed's default cache (HF_HOME, or ~/.cache/fastembed).
+    embedding_cache_dir: str = ""
+    embedding_batch_size: int = 64
+    # Cross-encoder reranker. Off means RRF order is final; the Phase 8 ablation
+    # flips this to price the quality it buys.
+    rerank_enabled: bool = True
+    rerank_model: str = "Xenova/ms-marco-MiniLM-L-6-v2"
+    # Upper bound on how many fused candidates the cross-encoder scores. This is
+    # the dominant cost of a search (the two first-stage arms are ~30ms combined),
+    # so it is capped independently of how many results the caller asks for.
+    rerank_candidates: int = 20
+    # RRF constant. 60 is the value from the original paper and the usual
+    # default; Phase 8 sweeps it.
+    rrf_k: int = 60
+    # Candidates fetched from each arm (vector, lexical) before fusion.
+    search_candidates: int = 50
+    search_default_limit: int = 10
+    search_max_limit: int = 50
+
     # ── llm ────────────────────────────────────────────────────────────
     openrouter_api_key: str = ""
     openrouter_base_url: str = "https://openrouter.ai/api/v1"
@@ -65,6 +93,11 @@ class Settings(BaseSettings):
     def data_dir(self) -> Path:
         """Repo-root `data/` — the 233 essays plus derived metadata."""
         return REPO_ROOT / "data"
+
+    @property
+    def export_dir(self) -> Path:
+        """`frontend/public/export/` — downloadable bundles, served statically."""
+        return REPO_ROOT / "frontend" / "public" / "export"
 
     @property
     def is_production(self) -> bool:

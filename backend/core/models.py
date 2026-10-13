@@ -20,10 +20,13 @@ pipeline used for its LLM caches.
 """
 
 from datetime import datetime
+from typing import Any
 
+from pgvector.sqlalchemy import Vector
 from sqlalchemy import (
     BigInteger,
     Boolean,
+    Computed,
     DateTime,
     ForeignKey,
     Index,
@@ -32,6 +35,7 @@ from sqlalchemy import (
     UniqueConstraint,
     func,
 )
+from sqlalchemy.dialects.postgresql import TSVECTOR
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -75,6 +79,9 @@ class Essay(Base):
     )
     footnotes: Mapped[list[EssayFootnote]] = relationship(
         back_populates="essay", cascade="all, delete-orphan", order_by="EssayFootnote.position"
+    )
+    chunks: Mapped[list[Chunk]] = relationship(
+        back_populates="essay", cascade="all, delete-orphan", order_by="Chunk.position"
     )
 
     def __repr__(self) -> str:
@@ -223,6 +230,69 @@ class PathStep(Base):
     path: Mapped[ReadingPath] = relationship(back_populates="steps")
 
 
+class Chunk(Base):
+    """One retrieval unit: a few adjacent paragraphs, embedded and full-text indexed.
+
+    Paragraphs are grouped rather than split per paragraph so a chunk can carry
+    enough context to be worth retrieving, but `start_paragraph`/`end_paragraph`
+    keep the link back to the source. A citation resolves to those paragraph
+    positions, which is why the range is stored and not just the text.
+
+    Three derived columns are deliberate:
+
+    - `embedding` — pgvector, cosine distance. `Vector(384)` matches
+      `settings.embedding_model`; changing the model means a migration.
+    - `tsv` — a *generated* column, so the lexical index cannot drift from
+      `text`. Nothing in Python has to remember to update it.
+    - `content_hash` — sha256 of `text`, so `index` re-embeds only chunks whose
+      text changed. Embedding is the expensive step.
+    """
+
+    __tablename__ = "chunks"
+    __table_args__ = (
+        UniqueConstraint("slug", "position", name="uq_chunk_slug_position"),
+        Index("ix_chunks_slug_position", "slug", "position"),
+        # Lexical arm of hybrid search.
+        Index("ix_chunks_tsv", "tsv", postgresql_using="gin"),
+        # Vector arm. HNSW is the right default for a read-mostly corpus of this
+        # size: recall comparable to IVFFlat without a training step, and no
+        # rebuild when rows are added.
+        Index(
+            "ix_chunks_embedding",
+            "embedding",
+            postgresql_using="hnsw",
+            postgresql_with={"m": 16, "ef_construction": 64},
+            postgresql_ops={"embedding": "vector_cosine_ops"},
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    slug: Mapped[str] = mapped_column(
+        Text, ForeignKey("essays.slug", ondelete="CASCADE"), nullable=False
+    )
+    # Chunk ordinal within the essay. Stable only while the essay text is.
+    position: Mapped[int] = mapped_column(Integer, nullable=False)
+    start_paragraph: Mapped[int] = mapped_column(Integer, nullable=False)
+    end_paragraph: Mapped[int] = mapped_column(Integer, nullable=False)
+    text: Mapped[str] = mapped_column(Text, nullable=False)
+    token_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_hash: Mapped[str] = mapped_column(Text, nullable=False)
+
+    # `Any` rather than `list[float]`: pgvector's TypeDecorator is what turns the
+    # Python list into a `vector` literal, and mypy cannot see through it.
+    embedding: Mapped[Any | None] = mapped_column(Vector(384))
+    tsv: Mapped[str] = mapped_column(
+        TSVECTOR,
+        Computed("to_tsvector('english', text)", persisted=True),
+        nullable=False,
+    )
+
+    essay: Mapped[Essay] = relationship(back_populates="chunks")
+
+    def __repr__(self) -> str:
+        return f"<Chunk {self.slug}#{self.position}>"
+
+
 class IngestRun(Base):
     """Audit row for each ingest. Makes `was this corpus ever loaded?` answerable."""
 
@@ -241,6 +311,7 @@ class IngestRun(Base):
 
 __all__ = [
     "Base",
+    "Chunk",
     "Essay",
     "EssayFootnote",
     "EssayParagraph",

@@ -72,4 +72,16 @@ async def session_scope() -> AsyncIterator[AsyncSession]:
             raise
 
 
-__all__ = ["dispose_engine", "get_engine", "get_sessionmaker", "session_scope"]
+async def get_session() -> AsyncIterator[AsyncSession]:
+    """FastAPI dependency yielding a request-scoped session.
+
+    Deliberately not decorated with `@asynccontextmanager`: FastAPI resolves
+    async *generator* dependencies itself, and wrapping it would return an
+    object FastAPI cannot yield from. The session is not committed here —
+    read-only request handlers have nothing to write.
+    """
+    async with get_sessionmaker()() as session:
+        yield session
+
+
+__all__ = ["dispose_engine", "get_engine", "get_session", "get_sessionmaker", "session_scope"]

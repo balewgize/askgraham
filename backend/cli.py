@@ -140,6 +140,36 @@ def classify(
 
 
 @app.command()
+def index(
+    force: bool = typer.Option(False, "--force", help="Re-embed everything, ignoring hashes."),
+    limit: int | None = typer.Option(None, "--limit", help="Index at most N essays."),
+) -> None:
+    """Chunk and embed the corpus into Postgres. Re-embeds only changed chunks."""
+    configure_logging()
+
+    async def main() -> None:
+        from rag.retrieval import index_chunks
+
+        try:
+            async with db.session_scope() as session:
+                stats = await index_chunks(session, force=force, limit=limit)
+                typer.echo(
+                    f"essays: {stats.essays_seen} seen, {stats.essays_indexed} indexed, "
+                    f"{stats.essays_skipped} unchanged\n"
+                    f"chunks: {stats.chunks_written} written, {stats.chunks_skipped} unchanged "
+                    f"({stats.tokens:,} tokens)\n"
+                    f"elapsed: {stats.elapsed_s:.1f}s"
+                )
+        except Exception as exc:
+            log.exception("cli.index_failed")
+            raise typer.Exit(code=1) from exc
+        finally:
+            await db.dispose_engine()
+
+    asyncio.run(main())
+
+
+@app.command()
 def paths(
     only: str | None = typer.Option(None, "--only", help="Regenerate a single path by id."),
     force: bool = typer.Option(False, "--force", help="Ignore the cache and regenerate."),
@@ -221,6 +251,34 @@ def snapshot(
 
 
 @app.command()
+def export(
+    out_dir: Path | None = typer.Option(
+        None, "--out-dir", help="Destination. Defaults to frontend/public/export."
+    ),
+) -> None:
+    """Write the downloadable corpus bundles the /export page links to."""
+    configure_logging()
+
+    async def main() -> None:
+        from rag.export import export_corpus
+
+        try:
+            async with db.session_scope() as session:
+                stats = await export_corpus(session, out_dir)
+            typer.echo(
+                f"essays: {stats.essays} ({stats.words:,} words) · "
+                f"{stats.files} files · {stats.bytes / 1_048_576:.1f} MB"
+            )
+        except Exception as exc:
+            log.exception("cli.export_failed")
+            raise typer.Exit(code=1) from exc
+        finally:
+            await db.dispose_engine()
+
+    asyncio.run(main())
+
+
+@app.command()
 def stats() -> None:
     """Row counts, to confirm what is actually loaded."""
     configure_logging()
@@ -228,7 +286,14 @@ def stats() -> None:
     async def main() -> None:
         from sqlalchemy import func, select
 
-        from core.models import Essay, EssayFootnote, EssayParagraph, PathStep, ReadingPath
+        from core.models import (
+            Chunk,
+            Essay,
+            EssayFootnote,
+            EssayParagraph,
+            PathStep,
+            ReadingPath,
+        )
 
         async def count(label: str, model: type[Any]) -> None:
             async with db.get_sessionmaker()() as session:
@@ -239,6 +304,7 @@ def stats() -> None:
             await count("essays", Essay)
             await count("paragraphs", EssayParagraph)
             await count("footnotes", EssayFootnote)
+            await count("chunks (indexed)", Chunk)
             await count("reading paths", ReadingPath)
             await count("path steps", PathStep)
         finally:

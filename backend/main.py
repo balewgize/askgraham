@@ -8,12 +8,15 @@ import time
 import uuid
 from collections.abc import AsyncIterator, Awaitable, Callable
 from contextlib import asynccontextmanager
+from typing import Literal
 
 import structlog
-from fastapi import APIRouter, FastAPI, Request, Response
+from fastapi import APIRouter, Depends, FastAPI, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from config import settings
 from core import db
@@ -100,7 +103,7 @@ def create_app() -> FastAPI:
 
     # ── routes ────────────────────────────────────────────────────────
     app.include_router(health_router)
-    # Phase 3: app.include_router(api_router, prefix="/api/v1")
+    app.include_router(search_router, prefix="/api/v1")
 
     return app
 
@@ -136,6 +139,118 @@ async def readyz() -> JSONResponse:
     return JSONResponse(
         status_code=200,
         content={"status": "ok", "database": "up", "environment": settings.environment},
+    )
+
+
+# ── search ────────────────────────────────────────────────────────
+
+search_router = APIRouter(tags=["search"])
+
+SearchMode = Literal["hybrid", "vector", "lexical"]
+
+# Enough prose to make a result scannable without shipping whole chunks to the
+# palette. Cut at a word boundary so it never ends mid-word.
+_SNIPPET_CHARS = 280
+
+
+def _snippet(text: str) -> str:
+    collapsed = " ".join(text.split())
+    if len(collapsed) <= _SNIPPET_CHARS:
+        return collapsed
+    cut = collapsed[:_SNIPPET_CHARS].rsplit(" ", 1)[0]
+    return f"{cut}…"
+
+
+class SearchHitModel(BaseModel):
+    slug: str
+    title: str
+    date: str | None
+    reading_time_min: int
+    score: float
+    start_paragraph: int
+    end_paragraph: int
+    snippet: str
+    vector_rank: int | None = None
+    lexical_rank: int | None = None
+    rerank_score: float | None = None
+
+
+class SearchTimings(BaseModel):
+    vector_ms: float
+    lexical_ms: float
+    rerank_ms: float
+    elapsed_ms: float
+
+
+class SearchResponse(BaseModel):
+    query: str
+    mode: str
+    count: int
+    results: list[SearchHitModel]
+    timings: SearchTimings
+
+
+@search_router.get("/search", response_model=SearchResponse)
+async def search(
+    session: AsyncSession = Depends(db.get_session),
+    q: str = Query(min_length=1, max_length=500, description="Search query."),
+    limit: int = Query(
+        default=settings.search_default_limit,
+        ge=1,
+        le=settings.search_max_limit,
+    ),
+    mode: SearchMode = Query(
+        default="hybrid",
+        description="Which first-stage arms to run. Used by Phase 8 ablations.",
+    ),
+    dedupe: bool = Query(
+        default=True,
+        description="Collapse to the best chunk per essay (the palette lists essays).",
+    ),
+    rerank: bool | None = Query(
+        default=None,
+        description="Override cross-encoder reranking. Defaults to RERANK_ENABLED.",
+    ),
+) -> SearchResponse:
+    """Hybrid search over the chunk index.
+
+    Imports `rag.retrieval` lazily so the embedder's ONNX stack is only touched
+    by a search, not by app import or a health check.
+    """
+    from rag.retrieval import dedupe_by_essay, hybrid_search
+
+    # When collapsing to one hit per essay, fetch extra candidates so the head
+    # can still fill `limit` after several chunks of the same essay collapse.
+    fetch_limit = min(settings.search_max_limit, limit * 3) if dedupe else limit
+    outcome = await hybrid_search(session, q, limit=fetch_limit, mode=mode, rerank=rerank)
+    hits = dedupe_by_essay(outcome.hits)[:limit] if dedupe else outcome.hits
+
+    return SearchResponse(
+        query=q,
+        mode=mode,
+        count=len(hits),
+        results=[
+            SearchHitModel(
+                slug=hit.slug,
+                title=hit.title,
+                date=hit.date,
+                reading_time_min=hit.reading_time_min,
+                score=hit.score,
+                start_paragraph=hit.start_paragraph,
+                end_paragraph=hit.end_paragraph,
+                snippet=_snippet(hit.text),
+                vector_rank=hit.vector_rank,
+                lexical_rank=hit.lexical_rank,
+                rerank_score=hit.rerank_score,
+            )
+            for hit in hits
+        ],
+        timings=SearchTimings(
+            vector_ms=round(outcome.vector_ms, 2),
+            lexical_ms=round(outcome.lexical_ms, 2),
+            rerank_ms=round(outcome.rerank_ms, 2),
+            elapsed_ms=round(outcome.elapsed_ms, 2),
+        ),
     )
 
 
