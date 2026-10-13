@@ -98,6 +98,23 @@ def test_parse_index_excludes_navigation_links() -> None:
         assert nav not in slugs
 
 
+def test_parse_index_excludes_non_essay_stubs() -> None:
+    """`rss` carries the bullet but is a 10-word note, not an essay."""
+    from rag.scrape import _NON_ESSAY_SLUGS
+
+    assert "rss" in _NON_ESSAY_SLUGS
+    slugs = {e.slug for e in parse_index(fixture("articles"))}
+    assert "rss" in slugs, "rss should be scraped by markup, then filtered by slug"
+
+
+def test_catalogue_excludes_stubs() -> None:
+    """The filtered catalogue must stay at 233 real essays."""
+    from rag.scrape import _NON_ESSAY_SLUGS
+
+    entries = [e for e in parse_index(fixture("articles")) if e.slug not in _NON_ESSAY_SLUGS]
+    assert len(entries) == 233
+
+
 def test_parse_index_raises_when_markup_changes() -> None:
     """A silent zero would wipe the catalogue; fail loudly instead."""
     with pytest.raises(ValueError, match="0 essays"):

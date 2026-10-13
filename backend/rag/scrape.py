@@ -72,6 +72,12 @@ _REDDIT_BULLET = 'img[src*="the-reddits-2.gif"]'
 _ESSAY_COLUMN = 'td[width="435"], td[width="374"]'
 _BODY_FONT = 'font[size="2"]'
 
+# Pages that carry the article-index bullet but are not essays. PG lists them
+# alongside the real ones, so selecting purely on markup would add them to the
+# catalogue: `rss` is a one-line "Aaron Swartz made a feed" note of 10 words
+# followed by a Yahoo store script.
+_NON_ESSAY_SLUGS = frozenset({"rss"})
+
 
 @dataclass
 class IndexEntry:
@@ -398,6 +404,7 @@ def scrape_catalog(
         stats.index_entries = len(entries)
         log.info("scrape.index_parsed", count=len(entries))
 
+        entries = [e for e in entries if e.slug not in _NON_ESSAY_SLUGS]
         selected = entries
         if slugs:
             wanted = set(slugs)
