@@ -37,6 +37,17 @@ export function setTheme(t: Theme) {
     /* ignore */
   }
   applyTheme(t);
+  emit();
+}
+
+/**
+ * Reactive theme. `useSyncExternalStore` uses the server snapshot ("system")
+ * through hydration and only then reads localStorage, which is what keeps the
+ * toggle from mismatching on first paint. Reading it with `useState(getTheme)`
+ * does not: the server cannot see the stored value and the client can.
+ */
+export function useTheme(): Theme {
+  return useSyncExternalStore(subscribe, getTheme, () => "system");
 }
 
 export function getFontScale(): FontScale {

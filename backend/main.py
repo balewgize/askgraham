@@ -344,7 +344,14 @@ async def chat(
     return StreamingResponse(
         event_stream(),
         media_type="text/event-stream",
-        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+        # `no-transform` asks any intermediary (including Next's dev proxy) not
+        # to compress the body. Gzipping an event stream breaks browser stream
+        # readers, and `no-cache` keeps it from being buffered.
+        headers={
+            "Cache-Control": "no-cache, no-transform",
+            "Content-Encoding": "identity",
+            "X-Accel-Buffering": "no",
+        },
     )
 
 
