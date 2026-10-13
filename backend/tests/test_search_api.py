@@ -16,6 +16,10 @@ def test_search_route_is_in_the_api_contract(app: FastAPI) -> None:
     assert "/api/v1/search" in served_paths(app)
 
 
+def test_chat_route_is_in_the_api_contract(app: FastAPI) -> None:
+    assert "/api/v1/chat" in served_paths(app)
+
+
 def test_short_text_is_returned_whole() -> None:
     assert _snippet("hello   world") == "hello world"
 

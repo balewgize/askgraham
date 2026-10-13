@@ -23,7 +23,7 @@ separate from `rag/`: that boundary should be visible in the tree.
 import asyncio
 import json
 import re
-from collections.abc import Awaitable, Callable, Sequence
+from collections.abc import AsyncIterator, Awaitable, Callable, Sequence
 from typing import Any
 
 import httpx
@@ -131,6 +131,14 @@ class OpenRouterClient:
     def configured(self) -> bool:
         return bool(self.api_key)
 
+    def _headers(self, app_title: str) -> dict[str, str]:
+        return {
+            "Authorization": f"Bearer {self.api_key}",
+            "Content-Type": "application/json",
+            "HTTP-Referer": "https://askgraham.vercel.app",
+            "X-Title": app_title,
+        }
+
     async def chat_json(
         self,
         *,
@@ -206,12 +214,7 @@ class OpenRouterClient:
         """
         response = await client.post(
             f"{self.base_url}/chat/completions",
-            headers={
-                "Authorization": f"Bearer {self.api_key}",
-                "Content-Type": "application/json",
-                "HTTP-Referer": "https://askgraham.vercel.app",
-                "X-Title": app_title,
-            },
+            headers=self._headers(app_title),
             json={
                 "model": self.model,
                 "messages": messages,
@@ -236,6 +239,66 @@ class OpenRouterClient:
             raise RetryableLLMError(f"unexpected response shape: {str(payload)[:200]}") from exc
 
         return extract_json(content), content
+
+    async def stream_chat(
+        self,
+        *,
+        messages: list[dict[str, str]],
+        client: httpx.AsyncClient,
+        app_title: str,
+        usage: dict[str, int] | None = None,
+    ) -> AsyncIterator[str]:
+        """Stream a chat completion, yielding content deltas as they arrive.
+
+        Server-sent events from the OpenAI-compatible endpoint. Non-retried by
+        design: once the first token is on the wire the client has already seen
+        a partial answer, and a silent replay would duplicate it. The caller
+        decides whether a failed stream is worth showing as an error.
+
+        `usage`, when passed, is filled from the final frame. OpenRouter only
+        includes it because of `stream_options`.
+        """
+        if not self.api_key:
+            raise LLMError("OPENROUTER_API_KEY is not set")
+
+        async with client.stream(
+            "POST",
+            f"{self.base_url}/chat/completions",
+            headers=self._headers(app_title),
+            json={
+                "model": self.model,
+                "messages": messages,
+                "stream": True,
+                "stream_options": {"include_usage": True},
+            },
+            timeout=self.timeout,
+        ) as response:
+            if response.status_code >= 400:
+                body = (await response.aread()).decode("utf-8", "replace")[:300]
+                message = f"HTTP {response.status_code}: {body}"
+                if response.status_code == 429 or response.status_code >= 500:
+                    raise RetryableLLMError(message)
+                raise LLMError(message)
+
+            async for line in response.aiter_lines():
+                if not line.startswith("data:"):
+                    continue
+                data = line[len("data:") :].strip()
+                if data == "[DONE]":
+                    break
+                try:
+                    frame = json.loads(data)
+                except json.JSONDecodeError:
+                    continue  # keepalive comment or partial frame
+                if usage is not None and isinstance(frame.get("usage"), dict):
+                    for key in ("prompt_tokens", "completion_tokens", "total_tokens"):
+                        value = frame["usage"].get(key)
+                        if isinstance(value, int):
+                            usage[key] = value
+                for choice in frame.get("choices") or []:
+                    delta = (choice.get("delta") or {}).get("content")
+                    if delta:
+                        yield delta
 
 
 def _excerpt(content: str) -> str:

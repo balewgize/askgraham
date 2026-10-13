@@ -39,6 +39,10 @@ after ingesting:
 cd backend && uv run python cli.py index
 ```
 
+Chat lives at `/chat` and streams from `POST /api/v1/chat`. It needs
+`OPENROUTER_API_KEY`; inside the container stack set it in `backend/.env` (the
+api service mounts `backend/`, not the repo root).
+
 Two compose files:
 
 | File | Use |

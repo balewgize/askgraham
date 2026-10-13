@@ -40,6 +40,14 @@ export function DownloadIcon(props: IconProps) {
   );
 }
 
+export function ChatIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z" />
+    </Svg>
+  );
+}
+
 export function CopyIcon(props: IconProps) {
   return (
     <Svg {...props}>

@@ -47,7 +47,9 @@ services:
       DATABASE_URL: postgresql+asyncpg://askgraham:askgraham@db:5432/askgraham
       ENVIRONMENT: local
       LOG_LEVEL: INFO
-      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      # OPENROUTER_API_KEY is deliberately not set here. The key lives in the
+      # bind-mounted backend/.env; an empty env var from compose would override
+      # the file and break chat.
     ports:
       - "8000:8000"
     volumes:

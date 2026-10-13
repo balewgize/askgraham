@@ -72,6 +72,14 @@ class Settings(BaseSettings):
     search_default_limit: int = 10
     search_max_limit: int = 50
 
+    # ── chat ───────────────────────────────────────────────────────────
+    # Passages put in front of the model. More context helps until it starts
+    # burying the useful chunk; eight is a paragraph budget, not a token one.
+    chat_context_chunks: int = 8
+    # Prior turns echoed to the model for follow-ups. Capped so a long
+    # conversation cannot grow the request without bound.
+    chat_max_history: int = 12
+
     # ── llm ────────────────────────────────────────────────────────────
     openrouter_api_key: str = ""
     openrouter_base_url: str = "https://openrouter.ai/api/v1"

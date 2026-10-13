@@ -4,17 +4,18 @@ Wires middleware, error handling, CORS and routers. Kept deliberately thin:
 business logic lives in the service modules, not here.
 """
 
+import json
 import time
 import uuid
 from collections.abc import AsyncIterator, Awaitable, Callable
 from contextlib import asynccontextmanager
-from typing import Literal
+from typing import Any, Literal
 
 import structlog
 from fastapi import APIRouter, Depends, FastAPI, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-from pydantic import BaseModel
+from fastapi.responses import JSONResponse, StreamingResponse
+from pydantic import BaseModel, Field
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -104,6 +105,7 @@ def create_app() -> FastAPI:
     # ── routes ────────────────────────────────────────────────────────
     app.include_router(health_router)
     app.include_router(search_router, prefix="/api/v1")
+    app.include_router(chat_router, prefix="/api/v1")
 
     return app
 
@@ -255,6 +257,94 @@ async def search(
             rerank_ms=round(outcome.rerank_ms, 2),
             elapsed_ms=round(outcome.elapsed_ms, 2),
         ),
+    )
+
+
+# ── chat ──────────────────────────────────────────────────────────
+
+chat_router = APIRouter(tags=["chat"])
+
+
+class ChatTurn(BaseModel):
+    role: Literal["user", "assistant"]
+    content: str = Field(min_length=1, max_length=8000)
+
+
+class ChatRequest(BaseModel):
+    message: str = Field(min_length=1, max_length=2000)
+    # Bounded so a long conversation cannot grow the request (or the bill)
+    # without limit. The client trims; the server enforces.
+    history: list[ChatTurn] = Field(default_factory=list, max_length=settings.chat_max_history)
+
+
+def _sse(payload: dict[str, Any]) -> str:
+    """One server-sent event. Every event is a JSON object with a `type`."""
+    return f"data: {json.dumps(payload, ensure_ascii=False)}\n\n"
+
+
+@chat_router.post("/chat")
+async def chat(
+    request: ChatRequest,
+    session: AsyncSession = Depends(db.get_session),
+) -> StreamingResponse:
+    """Retrieve for the question, then stream a cited answer.
+
+    Retrieval finishes before the response starts, so the request's database
+    session is no longer needed once the stream is open — only the model call
+    is streamed. Events: `sources`, then `delta` per token, then `done`, or an
+    `error` event if generation fails partway.
+    """
+    from llm.generation import Source, Turn, stream_answer
+    from rag.retrieval import hybrid_search
+
+    outcome = await hybrid_search(session, request.message, limit=settings.chat_context_chunks)
+    sources = [
+        Source(
+            slug=hit.slug,
+            title=hit.title,
+            start_paragraph=hit.start_paragraph,
+            end_paragraph=hit.end_paragraph,
+            text=hit.text,
+        )
+        for hit in outcome.hits
+    ]
+    history = [Turn(role=turn.role, content=turn.content) for turn in request.history]
+
+    async def event_stream() -> AsyncIterator[str]:
+        yield _sse(
+            {
+                "type": "sources",
+                "sources": [
+                    {
+                        "slug": s.slug,
+                        "title": s.title,
+                        "start_paragraph": s.start_paragraph,
+                        "end_paragraph": s.end_paragraph,
+                    }
+                    for s in sources
+                ],
+            }
+        )
+        usage: dict[str, int] = {}
+        started = time.perf_counter()
+        try:
+            async for delta in stream_answer(
+                question=request.message, history=history, sources=sources, usage=usage
+            ):
+                yield _sse({"type": "delta", "text": delta})
+        except Exception as exc:
+            log.exception("chat.failed", question_chars=len(request.message))
+            yield _sse({"type": "error", "message": f"generation failed: {exc}"[:200]})
+            return
+
+        elapsed_ms = round((time.perf_counter() - started) * 1000, 2)
+        log.info("chat.complete", elapsed_ms=elapsed_ms, chunks=len(sources), **usage)
+        yield _sse({"type": "done", "elapsed_ms": elapsed_ms, "usage": usage})
+
+    return StreamingResponse(
+        event_stream(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )
 
 

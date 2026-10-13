@@ -5,7 +5,7 @@ import Link from "next/link";
 import HeaderHeight from "@/components/header-height";
 import SearchPalette from "@/components/search-palette";
 import ThemeToggle from "@/components/theme-toggle";
-import { BookmarkIcon, DownloadIcon, GitHubIcon } from "@/components/icons";
+import { BookmarkIcon, ChatIcon, DownloadIcon, GitHubIcon } from "@/components/icons";
 import { SITE_DESCRIPTION, SITE_KEYWORDS, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
@@ -114,6 +114,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                 className="mr-1.5 rounded-md px-1.5 py-1 font-serif text-lg font-semibold tracking-tight transition-colors hover:bg-fg/[0.06]"
               >
                 Ask Graham
+              </Link>
+              <Link href="/chat" aria-label="Ask the essays" className={navLink}>
+                <ChatIcon size={16} />
+                <span className="hidden sm:inline">Ask</span>
               </Link>
               <Link href="/export" aria-label="Export essays" className={navLink}>
                 <DownloadIcon size={16} />
