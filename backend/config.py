@@ -63,6 +63,10 @@ class Settings(BaseSettings):
     # RRF constant. 60 is the value from the original paper and the usual
     # default; Phase 8 sweeps it.
     rrf_k: int = 60
+    # Field boost for a title match, relative to the dense and body-lexical
+    # arms. A title is short and intentional, so matching it is stronger
+    # evidence than matching one body chunk — the BM25F idea, in RRF form.
+    title_boost: float = 3.0
     # Candidates fetched from each arm (vector, lexical) before fusion.
     search_candidates: int = 50
     search_default_limit: int = 10

@@ -18,6 +18,7 @@ type Result = {
   end_paragraph: number;
   vector_rank: number | null;
   lexical_rank: number | null;
+  title_rank: number | null;
   rerank_score: number | null;
 };
 
@@ -185,7 +186,7 @@ export default function SearchPalette() {
                     }
                   }}
                   placeholder="Search all essays… (hybrid: meaning + exact words)"
-                  className="w-full bg-transparent py-3.5 text-base text-fg outline-none placeholder:text-fg-subtle"
+                  className="w-full bg-transparent py-3.5 text-base text-fg outline-none focus-visible:outline-hidden! placeholder:text-fg-subtle"
                 />
               </div>
               <div className="min-h-0 flex-1 overflow-y-auto p-1.5">

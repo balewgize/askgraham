@@ -5,6 +5,8 @@ elsewhere. What is unit-tested here is the fusion arithmetic and the pure
 transformations, because a silent bug in RRF changes every ranking.
 """
 
+import pytest
+
 from core.models import Chunk
 from rag.retrieval import (
     SearchHit,
@@ -40,6 +42,33 @@ def test_rrf_k_dampens_high_ranks() -> None:
     small = rrf_fuse({1: 1}, {2: 1}, k=1)
     large = rrf_fuse({1: 1}, {2: 1}, k=1000)
     assert small[1] > large[1]
+
+
+def test_rrf_fuses_a_third_title_ranking() -> None:
+    """The title arm is a peer of the dense and lexical arms."""
+    fused = rrf_fuse({1: 1}, {2: 1}, {3: 1}, k=60)
+    assert len(fused) == 3
+    assert fused[1] == fused[2] == fused[3]
+
+
+def test_rrf_lifts_a_document_matched_by_title_and_body() -> None:
+    """A title hit plus a body hit must beat a single-arm hit."""
+    fused = rrf_fuse({1: 1}, {2: 1}, {2: 1}, k=60)
+    assert max(fused, key=lambda d: fused[d]) == 2
+    assert fused[2] > fused[1]
+
+
+def test_rrf_weights_let_a_field_outrank_a_peer() -> None:
+    """The title arm carries more than the dense arm — a BM25F-style boost."""
+    plain = rrf_fuse({1: 1}, {2: 1}, k=60)
+    weighted = rrf_fuse({1: 1}, {2: 1}, k=60, weights=[1.0, 3.0])
+    assert plain[1] == plain[2]
+    assert weighted[2] > weighted[1]
+
+
+def test_rrf_rejects_a_weight_per_ranking_mismatch() -> None:
+    with pytest.raises(ValueError):
+        rrf_fuse({1: 1}, {2: 1}, k=60, weights=[1.0])
 
 
 def _hit(slug: str, score: float) -> SearchHit:

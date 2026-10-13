@@ -1,15 +1,17 @@
-"""Hybrid retrieval: chunk and embed the corpus, then search it two ways and fuse.
+"""Hybrid retrieval: chunk and embed the corpus, then search it several ways and fuse.
 
-Search runs two cheap first-stage retrievals whose failures are uncorrelated:
+Search runs three cheap first-stage retrievals whose failures are uncorrelated:
 
 - **dense** — pgvector cosine distance over the HNSW index. Finds paraphrases
   and synonym matches that share no words with the query.
-- **lexical** — Postgres `ts_rank_cd` over a generated tsvector. Finds exact
-  terms, names and rare words that a small dense model blurs.
+- **lexical (body)** — Postgres `ts_rank_cd` over a generated tsvector. Finds
+  exact terms, names and rare words that a small dense model blurs.
+- **lexical (title)** — the same ranking over the essay title. A short query
+  often *is* a title ("do things"), and the body arm cannot see that.
 
-The two are combined with **Reciprocal Rank Fusion**, which needs only the
-*ranks*, not the two scores' incomparable scales. A cross-encoder then reorders
-the fused head — it is too expensive to run over the whole corpus, which is the
+They are combined with **weighted Reciprocal Rank Fusion**, which needs only the
+*ranks*, not the arms' incomparable scales. A cross-encoder then reorders the
+fused head — it is too expensive to run over the whole corpus, which is the
 whole reason for the two-stage design.
 
 `index_chunks` is the other half: chunk each essay, embed only the chunks whose
@@ -20,6 +22,7 @@ change, because a vector produced by a different model is not comparable.
 
 import hashlib
 import time
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import Any, Literal
@@ -210,18 +213,23 @@ async def index_chunks(
 def rrf_fuse(
     *rankings: dict[int, int],
     k: int = 60,
+    weights: Sequence[float] | None = None,
 ) -> dict[int, float]:
-    """Reciprocal Rank Fusion of any number of `{id: 1-based rank}` maps.
+    """Weighted Reciprocal Rank Fusion of `{id: 1-based rank}` maps.
 
-    `score(d) = Σ 1 / (k + rank_i(d))`. Ranks rather than scores because cosine
-    distance and `ts_rank_cd` are not on a common scale and cannot be added
-    without a normalization nobody can defend. A document missing from a ranking
-    simply contributes nothing.
+    `score(d) = Σ w_i / (k + rank_i(d))`. Ranks rather than scores because
+    cosine distance and `ts_rank_cd` are not on a common scale and cannot be
+    added without a normalization nobody can defend. A document missing from a
+    ranking simply contributes nothing. `weights` lets a field carry more than a
+    peer — a title match is stronger evidence than a body chunk, the same idea
+    as a BM25F field boost.
     """
+    if weights is None:
+        weights = [1.0] * len(rankings)
     scores: dict[int, float] = {}
-    for ranking in rankings:
+    for ranking, weight in zip(rankings, weights, strict=True):
         for doc_id, rank in ranking.items():
-            scores[doc_id] = scores.get(doc_id, 0.0) + 1.0 / (k + rank)
+            scores[doc_id] = scores.get(doc_id, 0.0) + weight / (k + rank)
     return scores
 
 
@@ -237,6 +245,7 @@ class SearchHit:
     end_paragraph: int
     vector_rank: int | None = None
     lexical_rank: int | None = None
+    title_rank: int | None = None
     rerank_score: float | None = None
 
     def as_dict(self) -> dict[str, Any]:
@@ -251,6 +260,7 @@ class SearchHit:
             "end_paragraph": self.end_paragraph,
             "vector_rank": self.vector_rank,
             "lexical_rank": self.lexical_rank,
+            "title_rank": self.title_rank,
             "rerank_score": None if self.rerank_score is None else round(self.rerank_score, 6),
         }
 
@@ -260,6 +270,7 @@ class SearchResult:
     hits: list[SearchHit] = field(default_factory=list)
     vector_ms: float = 0.0
     lexical_ms: float = 0.0
+    title_ms: float = 0.0
     rerank_ms: float = 0.0
     elapsed_ms: float = 0.0
 
@@ -268,6 +279,7 @@ class SearchResult:
             "hits": len(self.hits),
             "vector_ms": round(self.vector_ms, 2),
             "lexical_ms": round(self.lexical_ms, 2),
+            "title_ms": round(self.title_ms, 2),
             "rerank_ms": round(self.rerank_ms, 2),
             "elapsed_ms": round(self.elapsed_ms, 2),
         }
@@ -288,6 +300,35 @@ async def _lexical_ranks(session: AsyncSession, query: str, limit: int) -> dict[
     rank = func.ts_rank_cd(Chunk.tsv, tsquery)
     rows = await session.execute(
         select(Chunk.id).where(Chunk.tsv.op("@@")(tsquery)).order_by(rank.desc()).limit(limit)
+    )
+    return {chunk_id: rank for rank, (chunk_id,) in enumerate(rows.all(), start=1)}
+
+
+async def _title_ranks(session: AsyncSession, query: str, limit: int) -> dict[int, int]:
+    """Rank essays whose *title* matches, keyed by their opening chunk.
+
+    The chunk `tsv` covers body text only, so a title query like "do things"
+    would never surface "Do Things that Don't Scale" — the essay barely uses the
+    phrase in prose. Treating the title as its own field and fusing it is the
+    standard field-boost move, and it restores what the client-side index
+    matched for free. Position 0 is the representative chunk: the snippet a
+    title match should cite.
+
+    Deliberately the `simple` dictionary, not `english`: stemming and stopword
+    removal that help long prose hurt short titles. With `english`, "do things"
+    becomes `'thing'` and matches "Is There Such a Thing as Good Taste?" as
+    strongly as it matches the essay actually titled "Do Things…". With
+    `simple`, the query is `'do' & 'things'` and only the real title satisfies it.
+    """
+    tsquery = func.websearch_to_tsquery("simple", query)
+    title_vector = func.to_tsvector("simple", Essay.title)
+    rank = func.ts_rank_cd(title_vector, tsquery)
+    rows = await session.execute(
+        select(Chunk.id)
+        .join(Essay, Essay.slug == Chunk.slug)
+        .where(Chunk.position == 0, title_vector.op("@@")(tsquery))
+        .order_by(rank.desc())
+        .limit(limit)
     )
     return {chunk_id: rank for rank, (chunk_id,) in enumerate(rows.all(), start=1)}
 
@@ -315,6 +356,7 @@ async def hybrid_search(
 
     vector_ranks: dict[int, int] = {}
     lexical_ranks: dict[int, int] = {}
+    title_ranks: dict[int, int] = {}
 
     if mode in ("hybrid", "vector"):
         step = time.perf_counter()
@@ -327,7 +369,20 @@ async def hybrid_search(
         lexical_ranks = await _lexical_ranks(session, text, candidates)
         result.lexical_ms = (time.perf_counter() - step) * 1000
 
-    fused = rrf_fuse(vector_ranks, lexical_ranks, k=settings.rrf_k)
+        # The title is a lexical field, so it belongs to the lexical arm rather
+        # than being a third retrieval mode. It is what makes an exact title
+        # query ("do things") find the essay with that title.
+        step = time.perf_counter()
+        title_ranks = await _title_ranks(session, text, candidates)
+        result.title_ms = (time.perf_counter() - step) * 1000
+
+    fused = rrf_fuse(
+        vector_ranks,
+        lexical_ranks,
+        title_ranks,
+        k=settings.rrf_k,
+        weights=[1.0, 1.0, settings.title_boost],
+    )
     if not fused:
         result.elapsed_ms = (time.perf_counter() - started) * 1000
         log.info("search.complete", mode=mode, query_chars=len(text), **result.as_dict())
@@ -383,6 +438,7 @@ async def hybrid_search(
                 end_paragraph=row.end_paragraph,
                 vector_rank=vector_ranks.get(row.id),
                 lexical_rank=lexical_ranks.get(row.id),
+                title_rank=title_ranks.get(row.id),
                 rerank_score=rerank_scores[original_index] if rerank_scores is not None else None,
             )
         )

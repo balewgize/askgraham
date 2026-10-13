@@ -172,12 +172,14 @@ class SearchHitModel(BaseModel):
     snippet: str
     vector_rank: int | None = None
     lexical_rank: int | None = None
+    title_rank: int | None = None
     rerank_score: float | None = None
 
 
 class SearchTimings(BaseModel):
     vector_ms: float
     lexical_ms: float
+    title_ms: float
     rerank_ms: float
     elapsed_ms: float
 
@@ -241,6 +243,7 @@ async def search(
                 snippet=_snippet(hit.text),
                 vector_rank=hit.vector_rank,
                 lexical_rank=hit.lexical_rank,
+                title_rank=hit.title_rank,
                 rerank_score=hit.rerank_score,
             )
             for hit in hits
@@ -248,6 +251,7 @@ async def search(
         timings=SearchTimings(
             vector_ms=round(outcome.vector_ms, 2),
             lexical_ms=round(outcome.lexical_ms, 2),
+            title_ms=round(outcome.title_ms, 2),
             rerank_ms=round(outcome.rerank_ms, 2),
             elapsed_ms=round(outcome.elapsed_ms, 2),
         ),

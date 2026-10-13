@@ -36,10 +36,11 @@ tsv        tsvector GENERATED ALWAYS AS
            (to_tsvector('english', text)) STORED        -- GIN
 ```
 
-`GET /api/v1/search` runs both arms, fuses them with Reciprocal Rank Fusion,
-then reranks the fused head with a cross-encoder. The frontend palette calls it
-and no longer ships an index. `frontend/scripts/` is deleted; the export that
-used to live there is now `rag/export.py` + `uv run python cli.py export`.
+`GET /api/v1/search` runs three first-stage arms — dense, body-lexical and
+title-lexical — fuses them with weighted Reciprocal Rank Fusion, then reranks
+the fused head with a cross-encoder. The frontend palette calls it and no
+longer ships an index. `frontend/scripts/` is deleted; the export that used to
+live there is now `rag/export.py` + `uv run python cli.py export`.
 
 ### Why server-side search
 
@@ -54,10 +55,36 @@ can silently disagree with the measured one.
 
 Cosine distance and `ts_rank_cd` are not on the same scale, and any fixed
 normalization is a guess that has to be re-tuned whenever either changes.
-Reciprocal Rank Fusion uses only the *ranks*: `Σ 1/(k + rank)`. It is a few
+Reciprocal Rank Fusion uses only the *ranks*: `Σ w_i/(k + rank)`. It is a few
 lines, has one constant (`k=60`, the paper's default), and a document that
 ranks respectably in both arms beats one that wins a single arm. Phase 8 sweeps
-`k` rather than hand-tuning weights.
+`k` and the weights rather than hand-tuning score normalizations.
+
+### Why the title is a separate, boosted arm
+
+The first cut indexed only body text, and the palette got worse for exactly the
+queries the old client index was good at. "do things" did not return "Do Things
+that Don't Scale": the essay barely uses the phrase in prose, dense retrieval
+cannot resolve a three-word generic query, and the chunk `tsvector` had no
+title. The palette's best trick had been matching the *title*, and the server
+had quietly dropped it.
+
+So the title is scored as its own field and fused as a third arm, over the
+essay's opening chunk (the snippet a title match should cite). Two details make
+it behave:
+
+- **The `simple` dictionary, not `english`.** Stemming and stopword removal
+  help long prose and hurt short titles. With `english`, "do things" reduces to
+  `'thing'` and matches "Is There Such a Thing as Good Taste?" as strongly as the
+  essay actually called "Do Things…". With `simple` the query is `'do' &
+  'things'`, and only the real title satisfies it.
+- **A weight of 3.** A title is short and intentional; matching it is stronger
+  evidence than matching one body chunk. Without the boost, one title rank still
+  lost to documents that hit two other arms. This is the BM25F field-boost idea,
+  expressed in RRF weights.
+
+The knobs are `TITLE_BOOST` and `RRF_K`, both settings, so Phase 8 can measure
+them like everything else.
 
 ### Why a generated `tsvector`
 
