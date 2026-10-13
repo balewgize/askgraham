@@ -20,8 +20,8 @@
  */
 :root {
   /* Sticky offsets. HeaderHeight refines --header-h at runtime; this is the
-     first-paint default (36px control row + 16px padding + 1px border). */
-  --header-h: 53px;
+     first-paint default (56px header: h-14 + 1px border). */
+  --header-h: 56px;
 
   --surface: #faf9f7; /* page — warm paper, not pure white */
   --raised: #ffffff; /* cards, sticky header, dialogs */

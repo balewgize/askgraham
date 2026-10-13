@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState, type ReactNode } from "react";
 import { formatDateShort } from "@/lib/dates";
 import type { IndexEntry } from "@/lib/essays";
+import Disclosure from "./disclosure";
 
 type Chip = { id: string; label: string };
 type EssayPhase = { phases: string[] };
@@ -62,20 +63,23 @@ export default function EssayIndex({
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="font-serif text-3xl font-semibold tracking-tight sm:text-[2.1rem] sm:leading-tight">
+      <div className="mb-6">
+        <h1 className="font-serif text-[1.75rem] font-semibold leading-tight tracking-tight sm:text-[2rem]">
           Paul Graham&apos;s Essays
         </h1>
-        <p className="mt-2 max-w-[46ch] text-base leading-relaxed text-fg-muted">
-          {entries.length} essays on startups, writing, and work — searchable, readable in full, and free to
-          export.
+        <p className="mt-1.5 text-sm leading-relaxed text-fg-muted">
+          Search {entries.length} essays, read them in full, or ask a question and get a cited answer.
         </p>
       </div>
 
       {hero}
 
       {chips.length > 0 && (
-        <div className="mb-8">
+        <Disclosure
+          className="mb-6"
+          label="Filter"
+          meta={active ? `${activeLabel} · ${filtered.length}` : `All stages · ${entries.length}`}
+        >
           <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Filter essays by stage">
             <button
               type="button"
@@ -102,19 +106,19 @@ export default function EssayIndex({
               );
             })}
           </div>
-          <p className="mt-3 text-xs text-fg-subtle" aria-live="polite">
+          <p className="mt-2.5 text-xs text-fg-subtle" aria-live="polite">
             {active
               ? `${filtered.length} ${filtered.length === 1 ? "essay" : "essays"} in ${activeLabel}`
               : `${entries.length} essays, newest first`}
           </p>
-        </div>
+        </Disclosure>
       )}
 
       {filtered.length === 0 && <p className="text-sm text-fg-muted">No essays tagged for this stage yet.</p>}
 
       {years.map((year) => (
         <section key={year} className="mb-2">
-          <h2 className="sticky top-[var(--header-h,53px)] z-30 -mx-1 mb-1 flex items-baseline gap-2 border-b border-line bg-surface/90 px-1 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-fg-subtle backdrop-blur-sm">
+          <h2 className="sticky top-[var(--header-h,56px)] z-30 -mx-1 mb-1 flex items-baseline gap-2 border-b border-line bg-surface/90 px-1 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-fg-subtle backdrop-blur-sm">
             <span className="tabular-nums">{year}</span>
             <span className="font-normal normal-case tracking-normal opacity-70">
               {groups.get(year)!.length}

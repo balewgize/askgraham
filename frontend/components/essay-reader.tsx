@@ -220,7 +220,7 @@ export default function EssayReader({
   return (
     <div>
       <div
-        className="fixed inset-x-0 top-[var(--header-h,53px)] z-30 h-0.5"
+        className="fixed inset-x-0 top-[var(--header-h,56px)] z-30 h-0.5"
         role="progressbar"
         aria-label="Reading progress"
         aria-valuenow={Math.round(readPct)}

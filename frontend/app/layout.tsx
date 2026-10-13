@@ -1,11 +1,8 @@
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Source_Serif_4 } from "next/font/google";
-import Link from "next/link";
 import HeaderHeight from "@/components/header-height";
-import SearchPalette from "@/components/search-palette";
-import ThemeToggle from "@/components/theme-toggle";
-import { BookmarkIcon, ChatIcon, DownloadIcon, GitHubIcon } from "@/components/icons";
+import SiteHeader from "@/components/site-header";
 import { SITE_DESCRIPTION, SITE_KEYWORDS, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
@@ -28,9 +25,6 @@ const sourceSerif = Source_Serif_4({
   axes: ["opsz"],
   display: "swap",
 });
-
-const navLink =
-  "flex items-center gap-1.5 rounded-md px-2 py-2 text-sm text-fg-muted transition-colors hover:bg-fg/[0.06] hover:text-fg";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -103,46 +97,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to content
         </a>
         <HeaderHeight />
-        <header
-          data-site-header
-          className="sticky top-0 z-40 border-b border-line bg-raised/85 backdrop-blur-md"
-        >
-          <div className="mx-auto flex max-w-3xl items-center justify-between gap-2 px-4 py-2">
-            <div className="flex items-center gap-0.5">
-              <Link
-                href="/"
-                className="mr-1.5 rounded-md px-1.5 py-1 font-serif text-lg font-semibold tracking-tight transition-colors hover:bg-fg/[0.06]"
-              >
-                Ask Graham
-              </Link>
-              <Link href="/chat" aria-label="Ask the essays" className={navLink}>
-                <ChatIcon size={16} />
-                <span className="hidden sm:inline">Ask</span>
-              </Link>
-              <Link href="/export" aria-label="Export essays" className={navLink}>
-                <DownloadIcon size={16} />
-                <span className="hidden sm:inline">Export</span>
-              </Link>
-              <Link href="/favorites" aria-label="Favorites" className={navLink}>
-                <BookmarkIcon size={16} />
-                <span className="hidden sm:inline">Favorites</span>
-              </Link>
-              <a
-                href="https://github.com/balewgize/askgraham"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="View source on GitHub"
-                className={navLink}
-              >
-                <GitHubIcon size={17} />
-              </a>
-            </div>
-            <div className="flex items-center gap-1">
-              <SearchPalette />
-              <ThemeToggle />
-            </div>
-          </div>
-        </header>
+        <SiteHeader />
         <main id="main" className="mx-auto w-full max-w-3xl flex-1 px-4 py-6 sm:py-10">
           {children}
         </main>

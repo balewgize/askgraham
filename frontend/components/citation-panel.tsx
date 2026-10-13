@@ -97,6 +97,7 @@ export default function CitationPanel({ slug, start, end, onClose }: Props) {
         <div className="flex shrink-0 items-center gap-1">
           <Link
             href={`/essays/${slug}#p-${start}`}
+            target="_blank"
             className="rounded-md px-2 py-1.5 text-sm text-fg-muted transition-colors hover:bg-fg/[0.06] hover:text-fg"
           >
             Open full essay

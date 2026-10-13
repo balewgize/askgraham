@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import type { ResolvedPath } from "@/lib/paths";
+import Disclosure from "./disclosure";
 import { usePathDone } from "./reader-prefs";
 
 /** "12 essays · 3h 40m" — total reading time for a path. */
@@ -23,36 +24,28 @@ function PathCard({ path }: { path: ResolvedPath }) {
   // Resume beats "Start" — one tap back into the next unfinished essay.
   const nextUp = path.steps.find((s) => !doneSet.has(s.slug));
   const cta = complete ? "Review path" : doneSet.size === 0 ? "Begin" : "Continue";
+  const pct = total > 0 ? Math.round((doneSet.size / total) * 100) : 0;
 
   return (
-    <li className="flex flex-col rounded-xl border border-line bg-raised p-5 transition-colors hover:border-line-firm">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-fg-subtle">{path.audience}</p>
-      <h2 className="mt-1.5 font-serif text-xl font-semibold tracking-tight text-fg">{path.title}</h2>
-      <p className="mt-1.5 text-sm leading-relaxed text-fg-muted">{path.subtitle}</p>
-      <p className="mt-2 text-xs tabular-nums text-fg-subtle">{summarize(path.steps)}</p>
-
-      <div className="mt-auto pt-5">
-        <div
-          className="h-1 w-full overflow-hidden rounded-full bg-fg/10"
-          role="progressbar"
-          aria-valuenow={doneSet.size}
-          aria-valuemin={0}
-          aria-valuemax={total}
-          aria-label={`${path.title} progress`}
-        >
-          <div
-            className="h-full rounded-full bg-accent transition-[width] duration-300"
-            style={{ width: `${Math.round((doneSet.size / total) * 100)}%` }}
-          />
+    <li className="flex flex-col gap-3 rounded-lg border border-line bg-raised p-4 transition-colors hover:border-line-firm">
+      <div>
+        <div className="flex items-baseline justify-between gap-2">
+          <p className="truncate text-[11px] font-semibold uppercase tracking-[0.12em] text-fg-subtle">
+            {path.audience}
+          </p>
+          <p className="shrink-0 text-[11px] tabular-nums text-fg-subtle">{summarize(path.steps)}</p>
         </div>
-        <p className="mt-2 text-xs tabular-nums text-fg-subtle">
-          {complete ? `All ${total} read` : `${doneSet.size} of ${total} read`}
-        </p>
+        <h2 className="mt-1.5 font-serif text-lg font-semibold leading-snug tracking-tight text-fg">
+          {path.title}
+        </h2>
+        <p className="mt-1 text-[13px] leading-snug text-fg-muted">{path.subtitle}</p>
+      </div>
 
-        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+      <div>
+        <div className="flex items-center justify-between gap-3">
           <Link
             href={nextUp ? `/essays/${nextUp.slug}` : `/paths/${path.id}`}
-            className="inline-flex min-h-9 items-center gap-1.5 rounded-lg bg-fg px-4 text-sm font-medium text-surface transition-opacity hover:opacity-85"
+            className="inline-flex min-h-8 items-center gap-1.5 rounded-lg bg-fg px-3.5 text-[13px] font-medium text-surface transition-opacity hover:opacity-85"
           >
             {cta}
             <span aria-hidden="true">→</span>
@@ -62,10 +55,29 @@ function PathCard({ path }: { path: ResolvedPath }) {
           </Link>
           <Link
             href={`/paths/${path.id}`}
-            className="text-sm text-fg-muted underline decoration-line underline-offset-4 transition-colors hover:text-fg"
+            className="text-[13px] text-fg-muted underline decoration-line underline-offset-4 transition-colors hover:text-fg"
           >
             See all {total}
           </Link>
+        </div>
+
+        <div className="mt-3 flex items-center gap-2.5">
+          <div
+            className="h-0.5 flex-1 overflow-hidden rounded-full bg-fg/10"
+            role="progressbar"
+            aria-valuenow={doneSet.size}
+            aria-valuemin={0}
+            aria-valuemax={total}
+            aria-label={`${path.title} progress`}
+          >
+            <div
+              className="h-full rounded-full bg-accent transition-[width] duration-300"
+              style={{ width: `${pct}%` }}
+            />
+          </div>
+          <span className="shrink-0 text-[11px] tabular-nums text-fg-subtle">
+            {complete ? "All read" : `${doneSet.size}/${total}`}
+          </span>
         </div>
       </div>
     </li>
@@ -77,23 +89,16 @@ export default function StartHere({ paths }: { paths: ResolvedPath[] }) {
   if (paths.length === 0) return null;
 
   return (
-    <section className="mb-10" aria-labelledby="start-here-heading">
-      <div className="mb-3 flex items-baseline justify-between gap-3">
-        <h2
-          id="start-here-heading"
-          className="text-[11px] font-semibold uppercase tracking-[0.12em] text-fg-subtle"
-        >
-          Start here
-        </h2>
-        <p className="text-[11px] text-fg-subtle">
-          {paths.length} guided {paths.length === 1 ? "path" : "paths"}
-        </p>
-      </div>
+    <Disclosure
+      className="mb-6"
+      label="Start here"
+      meta={`${paths.length} guided ${paths.length === 1 ? "path" : "paths"}`}
+    >
       <ul className="grid gap-3 sm:grid-cols-2">
         {paths.map((p) => (
           <PathCard key={p.id} path={p} />
         ))}
       </ul>
-    </section>
+    </Disclosure>
   );
 }

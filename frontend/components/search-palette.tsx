@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { formatDateShort } from "@/lib/dates";
+import { iconButton } from "@/lib/ui";
 import { SearchIcon } from "./icons";
 
 /** One backend search hit. Shaped by `GET /api/v1/search`. */
@@ -137,7 +138,7 @@ export default function SearchPalette() {
       <button
         type="button"
         onClick={openPalette}
-        className="flex items-center gap-1.5 rounded-md border border-line-firm px-2 py-2 text-sm text-fg-muted transition-colors hover:bg-fg/[0.06] hover:text-fg"
+        className={`${iconButton} sm:w-auto sm:gap-2 sm:border sm:border-line-firm/60 sm:px-3`}
         aria-label="Search essays"
       >
         <SearchIcon size={16} />
