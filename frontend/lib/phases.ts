@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { DATA_DIR } from "./essays";
+import { SNAPSHOT_DIR } from "./essays";
 
 export type Phase = {
   id: string;
@@ -28,14 +28,14 @@ export type PhasesFile = {
 };
 
 export async function getTaxonomy(): Promise<Taxonomy> {
-  const raw = await readFile(path.join(DATA_DIR, "taxonomy.json"), "utf-8");
+  const raw = await readFile(path.join(SNAPSHOT_DIR, "taxonomy.json"), "utf-8");
   return JSON.parse(raw) as Taxonomy;
 }
 
 /** Null until `pnpm classify` has been run at least once. */
 export async function getPhases(): Promise<PhasesFile | null> {
   try {
-    const raw = await readFile(path.join(DATA_DIR, "phases.json"), "utf-8");
+    const raw = await readFile(path.join(SNAPSHOT_DIR, "phases.json"), "utf-8");
     return JSON.parse(raw) as PhasesFile;
   } catch {
     return null;

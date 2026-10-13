@@ -23,10 +23,20 @@ export type IndexEntry = {
 };
 
 /**
- * Repo-root `data/`, resolved from the frontend package root.
- * The backend owns this data; the frontend reads it only until Phase 3,
- * when `lib/` switches from fs to the HTTP API.
+ * Two corpora, two audiences — kept deliberately separate.
+ *
+ * `SNAPSHOT_DIR` is what the reader renders from. The backend writes it
+ * (`uv run python cli.py snapshot`) and it is committed, so `next build` is
+ * hermetic: no database, no network.
+ *
+ * `DATA_DIR` is the pipeline's working corpus. The authoring scripts in
+ * `scripts/` read and write it.
+ *
+ * They hold identical content today. They are not the same directory because
+ * the reader must not depend on a pipeline artifact, and the pipeline must not
+ * write into what the site renders from.
  */
+export const SNAPSHOT_DIR = path.resolve(process.cwd(), "snapshot");
 export const DATA_DIR = path.resolve(process.cwd(), "..", "data");
 export const ESSAYS_DIR = path.join(DATA_DIR, "essays");
 
@@ -65,17 +75,17 @@ export function sortIndex(entries: IndexEntry[]): IndexEntry[] {
 }
 
 export async function getIndex(): Promise<IndexEntry[]> {
-  const raw = await readFile(path.join(DATA_DIR, "index.json"), "utf-8");
+  const raw = await readFile(path.join(SNAPSHOT_DIR, "index.json"), "utf-8");
   return sortIndex(JSON.parse(raw) as IndexEntry[]);
 }
 
 export async function getSlugs(): Promise<string[]> {
-  const files = await readdir(ESSAYS_DIR);
+  const files = await readdir(path.join(SNAPSHOT_DIR, "essays"));
   return files.filter((f) => f.endsWith(".json")).map((f) => f.replace(/\.json$/, ""));
 }
 
 export async function getEssay(slug: string): Promise<Essay> {
-  const raw = await readFile(path.join(ESSAYS_DIR, `${slug}.json`), "utf-8");
+  const raw = await readFile(path.join(SNAPSHOT_DIR, "essays", `${slug}.json`), "utf-8");
   return JSON.parse(raw) as Essay;
 }
 
