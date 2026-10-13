@@ -14,6 +14,11 @@ function yearOf(date: string | null): string {
   return m ? m[1] : "Undated";
 }
 
+const chipBase =
+  "inline-flex min-h-8 items-center gap-1.5 rounded-full border px-3 text-sm transition-colors";
+const chipOn = "border-fg bg-fg font-medium text-surface";
+const chipOff = "border-line-firm text-fg-muted hover:bg-fg/[0.06] hover:text-fg";
+
 export default function EssayIndex({
   entries,
   chips,
@@ -53,73 +58,77 @@ export default function EssayIndex({
     return Number(b) - Number(a);
   });
 
+  const activeLabel = chips.find((c) => c.id === active)?.label;
+
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="font-serif text-2xl font-bold tracking-tight sm:text-3xl" style={{ fontFamily: "Georgia, serif" }}>
+      <div className="mb-8">
+        <h1 className="font-serif text-3xl font-semibold tracking-tight sm:text-[2.1rem] sm:leading-tight">
           Paul Graham&apos;s Essays
         </h1>
-        <p className="mt-1 hidden text-xs text-zinc-400 sm:block">
-          Press <kbd className="rounded border border-black/10 px-1 dark:border-white/15">/</kbd> or{" "}
-          <kbd className="rounded border border-black/10 px-1 dark:border-white/15">⌘K</kbd> to search ·{" "}
-          <kbd className="rounded border border-black/10 px-1 dark:border-white/15">j</kbd>/
-          <kbd className="rounded border border-black/10 px-1 dark:border-white/15">k</kbd> to move between essays
+        <p className="mt-2 max-w-[46ch] text-base leading-relaxed text-fg-muted">
+          {entries.length} essays on startups, writing, and work — searchable, readable in full, and free to
+          export.
         </p>
       </div>
 
       {hero}
 
       {chips.length > 0 && (
-        <div className="mb-6 flex flex-wrap gap-1.5">
-          <button
-            type="button"
-            onClick={() => setActive(null)}
-            aria-pressed={active === null}
-            className={`rounded-full border px-3 py-1 text-xs ${
-              active === null
-                ? "border-zinc-900/25 bg-zinc-900/[0.06] font-medium text-zinc-900 dark:border-white/25 dark:bg-white/10 dark:text-zinc-100"
-                : "border-black/10 text-zinc-600 hover:bg-black/5 dark:border-white/15 dark:text-zinc-300 dark:hover:bg-white/10"
-            }`}
-          >
-            All · <span className="opacity-60">{entries.length}</span>
-          </button>
-          {chips.map((c) => {
-            const isActive = active === c.id;
-            return (
-              <button
-                key={c.id}
-                type="button"
-                onClick={() => setActive(isActive ? null : c.id)}
-                aria-pressed={isActive}
-                className={`rounded-full border px-3 py-1 text-xs ${
-                  isActive
-                    ? "border-zinc-900/25 bg-zinc-900/[0.06] font-medium text-zinc-900 dark:border-white/25 dark:bg-white/10 dark:text-zinc-100"
-                    : "border-black/10 text-zinc-600 hover:bg-black/5 dark:border-white/15 dark:text-zinc-300 dark:hover:bg-white/10"
-                }`}
-              >
-                {c.label} · <span className="opacity-60">{counts.get(c.id) ?? 0}</span>
-              </button>
-            );
-          })}
+        <div className="mb-8">
+          <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Filter essays by stage">
+            <button
+              type="button"
+              onClick={() => setActive(null)}
+              aria-pressed={active === null}
+              className={`${chipBase} ${active === null ? chipOn : chipOff}`}
+            >
+              All
+              <span className="tabular-nums opacity-60">{entries.length}</span>
+            </button>
+            {chips.map((c) => {
+              const isActive = active === c.id;
+              return (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => setActive(isActive ? null : c.id)}
+                  aria-pressed={isActive}
+                  className={`${chipBase} ${isActive ? chipOn : chipOff}`}
+                >
+                  {c.label}
+                  <span className="tabular-nums opacity-60">{counts.get(c.id) ?? 0}</span>
+                </button>
+              );
+            })}
+          </div>
+          <p className="mt-3 text-xs text-fg-subtle" aria-live="polite">
+            {active
+              ? `${filtered.length} ${filtered.length === 1 ? "essay" : "essays"} in ${activeLabel}`
+              : `${entries.length} essays, newest first`}
+          </p>
         </div>
       )}
 
-      {filtered.length === 0 && <p className="text-sm text-zinc-500">No essays tagged for this stage yet.</p>}
+      {filtered.length === 0 && <p className="text-sm text-fg-muted">No essays tagged for this stage yet.</p>}
 
       {years.map((year) => (
-        <section key={year} className="mb-8">
-          <h2 className="mb-2 border-b border-black/10 pb-1 text-xs font-semibold uppercase tracking-widest text-zinc-400 dark:border-white/10">
-            {year} · {groups.get(year)!.length}
+        <section key={year} className="mb-2">
+          <h2 className="sticky top-[var(--header-h,53px)] z-30 -mx-1 mb-1 flex items-baseline gap-2 border-b border-line bg-surface/90 px-1 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-fg-subtle backdrop-blur-sm">
+            <span className="tabular-nums">{year}</span>
+            <span className="font-normal normal-case tracking-normal opacity-70">
+              {groups.get(year)!.length}
+            </span>
           </h2>
-          <ul>
+          <ul className="divide-y divide-line border-b border-line">
             {groups.get(year)!.map((e) => (
               <li key={e.slug}>
                 <Link
                   href={`/essays/${e.slug}`}
-                  className="flex items-baseline justify-between gap-3 rounded-lg px-2 py-2 hover:bg-black/5 dark:hover:bg-white/5"
+                  className="flex flex-col gap-0.5 rounded-lg px-2 py-3 transition-colors hover:bg-fg/[0.04] sm:flex-row sm:items-baseline sm:gap-4 sm:py-2.5"
                 >
-                  <span className="min-w-0 font-medium hover:underline">{e.title}</span>
-                  <span className="shrink-0 text-xs text-zinc-500">
+                  <span className="min-w-0 flex-1 font-medium text-fg">{e.title}</span>
+                  <span className="shrink-0 text-xs tabular-nums text-fg-subtle">
                     {formatDateShort(e.date)} · {e.reading_time_min} min
                   </span>
                 </Link>
@@ -128,6 +137,18 @@ export default function EssayIndex({
           </ul>
         </section>
       ))}
+
+      <p className="mt-8 text-xs text-fg-subtle">
+        Press <Kbd>/</Kbd> or <Kbd>⌘K</Kbd> to search · <Kbd>j</Kbd> <Kbd>k</Kbd> to move between essays
+      </p>
     </div>
+  );
+}
+
+function Kbd({ children }: { children: ReactNode }) {
+  return (
+    <kbd className="rounded border border-line px-1 font-sans text-[11px] leading-4 text-fg-subtle">
+      {children}
+    </kbd>
   );
 }

@@ -21,33 +21,29 @@ export default function FavoritesList({ entries }: { entries: IndexEntry[] }) {
 
   return (
     <div>
-      <h1
-        className="font-serif text-2xl font-bold tracking-tight sm:text-3xl"
-        style={{ fontFamily: "Georgia, serif" }}
-      >
-        Favorites
-      </h1>
-      <p className="mt-1 text-xs text-zinc-500">
-        Saved in this browser only · <span className="opacity-60">{saved.length}</span>
+      <h1 className="font-serif text-3xl font-semibold tracking-tight">Favorites</h1>
+      <p className="mt-2 text-sm text-fg-subtle">
+        Saved in this browser only · <span className="tabular-nums">{saved.length}</span>
       </p>
 
       {saved.length === 0 ? (
-        <p className="mt-6 text-sm text-zinc-600 dark:text-zinc-400">
-          Nothing saved yet. Hit <span className="font-medium">Save</span> on any essay and it will show up here.{" "}
-          <Link href="/" className="underline hover:text-zinc-800 dark:hover:text-zinc-200">
+        <p className="mt-6 max-w-[46ch] text-[0.95rem] leading-relaxed text-fg-muted">
+          Nothing saved yet. Hit <span className="font-medium text-fg">Save</span> on any essay and it will show up
+          here.{" "}
+          <Link href="/" className="text-fg underline underline-offset-2 hover:text-fg-muted">
             Browse all essays
           </Link>
         </p>
       ) : (
-        <ul className="mt-4">
+        <ul className="mt-6 divide-y divide-line border-b border-line">
           {saved.map((e) => (
             <li key={e.slug} className="group flex items-center gap-1">
               <Link
                 href={`/essays/${e.slug}`}
-                className="flex min-w-0 flex-1 items-baseline justify-between gap-3 rounded-lg px-2 py-2 hover:bg-black/5 dark:hover:bg-white/5"
+                className="flex min-w-0 flex-1 flex-col gap-0.5 rounded-lg px-2 py-3 transition-colors hover:bg-fg/[0.04] sm:flex-row sm:items-baseline sm:gap-4"
               >
-                <span className="min-w-0 font-medium hover:underline">{e.title}</span>
-                <span className="shrink-0 text-xs text-zinc-500">
+                <span className="min-w-0 flex-1 font-medium text-fg">{e.title}</span>
+                <span className="shrink-0 text-xs tabular-nums text-fg-subtle">
                   {formatDateShort(e.date)} · {e.reading_time_min} min
                 </span>
               </Link>
@@ -55,9 +51,9 @@ export default function FavoritesList({ entries }: { entries: IndexEntry[] }) {
                 type="button"
                 onClick={() => setFavorite(e.slug, false)}
                 aria-label={`Remove ${e.title} from favorites`}
-                className="shrink-0 rounded p-1.5 text-orange-600 opacity-0 transition-opacity hover:bg-black/5 focus-visible:opacity-100 group-hover:opacity-100 dark:text-orange-400 dark:hover:bg-white/5"
+                className="shrink-0 rounded-md p-2.5 text-accent transition-colors hover:bg-accent/10 focus-visible:opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
               >
-                <BookmarkIcon size={15} filled />
+                <BookmarkIcon size={16} filled />
               </button>
             </li>
           ))}

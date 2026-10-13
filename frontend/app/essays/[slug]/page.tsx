@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import EssayReader from "@/components/essay-reader";
 import { formatDateShort } from "@/lib/dates";
@@ -91,13 +92,24 @@ export default async function EssayPage({ params }: { params: Promise<{ slug: st
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, "\\u003c") }}
       />
-      <header className="mb-8 max-w-[70ch]">
-        <h1 className="font-serif text-2xl font-bold leading-tight tracking-tight sm:text-3xl" style={{ fontFamily: "Georgia, serif" }}>
+      <Link
+        href="/"
+        className="mb-5 inline-flex min-h-9 items-center gap-1.5 text-sm text-fg-muted transition-colors hover:text-fg"
+      >
+        <span aria-hidden="true">←</span> All essays
+      </Link>
+      <header className="mb-7 max-w-[34em]">
+        <h1 className="font-serif text-[1.9rem] font-semibold leading-[1.15] tracking-tight text-balance sm:text-[2.35rem]">
           {essay.title}
         </h1>
-        <p className="mt-2 text-sm text-zinc-500">
+        <p className="mt-2.5 text-sm tabular-nums text-fg-subtle">
           {formatDateShort(essay.date)} · {essay.reading_time_min} min read ·{" "}
-          <a href={essay.url} target="_blank" rel="noopener noreferrer" className="underline hover:text-zinc-700 dark:hover:text-zinc-300">
+          <a
+            href={essay.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-fg-muted underline underline-offset-2 transition-colors hover:text-fg"
+          >
             original ↗
           </a>
         </p>

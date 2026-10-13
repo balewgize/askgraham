@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { Essay, IndexEntry } from "@/lib/essays";
 import type { ResolvedPath } from "@/lib/paths";
 import { CheckIcon, CopyIcon, DownloadIcon } from "./icons";
@@ -15,6 +15,7 @@ import {
   setPathDone,
   setProgress,
   useActivePathId,
+  usePathDone,
   type FontScale,
 } from "./reader-prefs";
 
@@ -35,17 +36,17 @@ function FootnoteRef({ id, text }: { id: string; text: string }) {
         onClick={activate}
         onBlur={() => setPinned(false)}
         aria-label={`Footnote ${id}`}
-        className="mx-0.5 inline-block -translate-y-1 rounded px-0.5 align-super text-[0.7em] font-semibold text-orange-700 hover:bg-orange-100 dark:text-orange-300 dark:hover:bg-orange-950"
+        className="mx-0.5 inline-block -translate-y-1 rounded px-0.5 align-super text-[0.7em] font-semibold text-accent transition-colors hover:bg-accent/15"
       >
         [{id}]
       </button>
       <span
-        className={`absolute left-1/2 z-20 w-[min(16rem,80vw)] -translate-x-1/2 rounded-lg border border-black/10 bg-white p-3 text-left text-[13px] font-normal normal-case leading-relaxed tracking-normal shadow-xl dark:border-white/15 dark:bg-zinc-800 ${
+        className={`absolute left-1/2 z-20 w-[min(18rem,80vw)] -translate-x-1/2 rounded-lg border border-line bg-overlay p-3 text-left font-sans text-[13px] font-normal leading-relaxed tracking-normal text-fg-muted shadow-xl ${
           pinned ? "block" : "hidden sm:group-hover:block sm:group-focus-within:block"
         }`}
         role="note"
       >
-        <span className="mr-1 font-semibold">[{id}]</span>
+        <span className="mr-1 font-semibold text-fg">[{id}]</span>
         {text}
       </span>
     </span>
@@ -61,7 +62,7 @@ function Paragraph({ text, footnotes }: { text: string; footnotes: Map<string, s
           footnotes.has(part) ? (
             <FootnoteRef key={i} id={part} text={footnotes.get(part)!} />
           ) : (
-            <span key={i} className="text-zinc-500">
+            <span key={i} className="text-fg-subtle">
               [{part}]
             </span>
           )
@@ -73,11 +74,15 @@ function Paragraph({ text, footnotes }: { text: string; footnotes: Map<string, s
   );
 }
 
-const SCALES: Record<FontScale, string> = {
-  s: "text-[16.5px] leading-[1.75]",
-  m: "text-[19px] leading-[1.8]",
-  l: "text-[21.5px] leading-[1.85]",
+/** Presets drive the article's own font-size, so `34em` measure tracks along with it. */
+const SIZES: Record<FontScale, { size: string; leading: number }> = {
+  s: { size: "17px", leading: 1.7 },
+  m: { size: "19px", leading: 1.75 },
+  l: { size: "22px", leading: 1.8 },
 };
+
+const controlOff =
+  "border-line-firm text-fg-muted transition-colors hover:bg-fg/[0.06] hover:text-fg";
 
 export default function EssayReader({
   essay,
@@ -95,9 +100,10 @@ export default function EssayReader({
   const router = useRouter();
   const [scale, setScale] = useState<FontScale>(getFontScale);
   const [copied, setCopied] = useState(false);
+  const [readPct, setReadPct] = useState(0);
   const storedPathId = useActivePathId();
   const restored = useRef(false);
-  const footnoteMap = new Map(essay.footnotes.map((f) => [f.id, f.text]));
+  const footnoteMap = useMemo(() => new Map(essay.footnotes.map((f) => [f.id, f.text])), [essay.footnotes]);
 
   // The path this essay belongs to, and this essay's place in it.
   const membership = paths.find((p) => p.steps.some((s) => s.slug === essay.slug)) ?? null;
@@ -114,6 +120,11 @@ export default function EssayReader({
   // Ribbon shows the active path if we're in it, otherwise any path this essay belongs to.
   const ribbonPath = inActivePath ? activePath : membership;
   const ribbonIndex = ribbonPath ? ribbonPath.steps.findIndex((s) => s.slug === essay.slug) : -1;
+  const ribbonDone = usePathDone(ribbonPath?.id ?? "");
+  // Only count slugs still in the path — stale entries can survive a re-scrape.
+  const ribbonCount = ribbonPath
+    ? ribbonPath.steps.filter((s) => ribbonDone.includes(s.slug)).length
+    : 0;
   const navPrev: { slug: string; title: string } | null = inActivePath ? pathPrev : prev;
   const navNext: { slug: string; title: string } | null = inActivePath ? pathNext : next;
 
@@ -160,6 +171,27 @@ export default function EssayReader({
     };
   }, [essay.slug, activePath]);
 
+  // Progress bar — rAF-throttled so it tracks the scrollbar without re-rendering per event.
+  useEffect(() => {
+    let frame = 0;
+    const measure = () => {
+      frame = 0;
+      const span = document.documentElement.scrollHeight - window.innerHeight;
+      setReadPct(span > 0 ? Math.min(100, Math.max(0, (window.scrollY / span) * 100)) : 0);
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(measure);
+    };
+    measure();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [essay.slug]);
+
   // j/k navigation: within the active path when there is one, otherwise by date.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -175,78 +207,103 @@ export default function EssayReader({
     return () => window.removeEventListener("keydown", onKey);
   }, [router, prev, next, inActivePath, pathPrev, pathNext]);
 
+  const { size, leading } = SIZES[scale];
+
   return (
     <div>
-      <div className="mb-6 flex flex-wrap items-center gap-2 text-xs text-zinc-500">
-        <span>Text size:</span>
-        {(["s", "m", "l"] as FontScale[]).map((s) => (
-          <button
-            key={s}
-            type="button"
-            onClick={() => {
-              setScale(s);
-              setFontScale(s);
-            }}
-            aria-pressed={scale === s}
-            className={`rounded border px-2 py-0.5 ${
-              scale === s
-                ? "border-orange-500 font-semibold text-orange-700 dark:text-orange-300"
-                : "border-black/10 hover:bg-black/5 dark:border-white/15 dark:hover:bg-white/10"
-            }`}
+      <div
+        className="fixed inset-x-0 top-[var(--header-h,53px)] z-30 h-0.5"
+        role="progressbar"
+        aria-label="Reading progress"
+        aria-valuenow={Math.round(readPct)}
+        aria-valuemin={0}
+        aria-valuemax={100}
+      >
+        <div className="h-full bg-accent transition-[width] duration-150" style={{ width: `${readPct}%` }} />
+      </div>
+
+      {why && (
+        <div className="mb-6 max-w-[34em] border-l-2 border-line-firm pl-4">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-fg-subtle">Why read this</p>
+          <p className="mt-1 font-serif text-[1.05rem] italic leading-relaxed text-fg-muted">{why}</p>
+        </div>
+      )}
+
+      {ribbonPath && ribbonIndex >= 0 && (
+        <div className="mb-8 max-w-[34em]">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-fg-subtle">Reading path</p>
+            <p className="text-xs tabular-nums text-fg-subtle">
+              Step {ribbonIndex + 1} of {ribbonPath.steps.length} · {ribbonCount} read
+            </p>
+          </div>
+          <Link
+            href={`/paths/${ribbonPath.id}`}
+            className="mt-1 inline-block font-medium text-accent underline decoration-accent/35 underline-offset-4 transition-colors hover:decoration-accent"
           >
-            {s === "s" ? "A−" : s === "m" ? "A" : "A+"}
-          </button>
-        ))}
-        <div className="ml-auto flex items-center gap-2">
+            {ribbonPath.title}
+          </Link>
+          <div className="mt-2.5 h-1 w-full overflow-hidden rounded-full bg-fg/10">
+            <div
+              className="h-full rounded-full bg-accent transition-[width] duration-300"
+              style={{ width: `${Math.round((ribbonCount / ribbonPath.steps.length) * 100)}%` }}
+            />
+          </div>
+        </div>
+      )}
+
+      <div className="mb-7 flex max-w-[34em] flex-wrap items-center justify-between gap-3 border-y border-line py-2.5">
+        <div className="flex items-center gap-1.5">
           <FavoriteButton slug={essay.slug} />
           <button
             type="button"
             onClick={copyMarkdown}
             aria-label="Copy essay as markdown"
-            className="flex items-center gap-1.5 rounded border border-black/10 px-2 py-1 hover:bg-black/5 dark:border-white/15 dark:hover:bg-white/10"
+            className={`flex min-h-9 items-center gap-1.5 rounded-md border px-3 text-sm ${controlOff}`}
           >
-            {copied ? <CheckIcon size={14} /> : <CopyIcon size={14} />}
+            {copied ? <CheckIcon size={15} /> : <CopyIcon size={15} />}
             <span className="hidden sm:inline">{copied ? "Copied" : "Copy"}</span>
           </button>
           <a
             href={`/export/md/${essay.slug}.md`}
             download
             aria-label="Download essay as markdown"
-            className="flex items-center gap-1.5 rounded border border-black/10 px-2 py-1 hover:bg-black/5 dark:border-white/15 dark:hover:bg-white/10"
+            className={`flex min-h-9 items-center gap-1.5 rounded-md border px-3 text-sm ${controlOff}`}
           >
-            <DownloadIcon size={14} />
+            <DownloadIcon size={15} />
             <span className="hidden sm:inline">Download</span>
           </a>
         </div>
+
+        <div className="flex items-center gap-1.5">
+          <span id="text-size-label" className="text-xs text-fg-subtle">
+            Text size
+          </span>
+          <div className="flex overflow-hidden rounded-md border border-line-firm" role="group" aria-labelledby="text-size-label">
+            {(["s", "m", "l"] as FontScale[]).map((s) => (
+              <button
+                key={s}
+                type="button"
+                onClick={() => {
+                  setScale(s);
+                  setFontScale(s);
+                }}
+                aria-pressed={scale === s}
+                className={`min-h-9 min-w-9 px-2 text-sm transition-colors ${
+                  scale === s ? "bg-fg font-semibold text-surface" : "text-fg-muted hover:bg-fg/[0.06] hover:text-fg"
+                }`}
+              >
+                <span aria-hidden="true">{s === "s" ? "A−" : s === "m" ? "A" : "A+"}</span>
+                <span className="sr-only">{s === "s" ? "Small" : s === "m" ? "Medium" : "Large"} text size</span>
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
-      {ribbonPath && ribbonIndex >= 0 && (
-        <div className="mb-6 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg border border-orange-500/30 bg-orange-50/60 px-3 py-2 text-xs dark:border-orange-400/20 dark:bg-orange-950/20">
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-orange-600 dark:text-orange-400">
-            Reading path
-          </span>
-          <Link
-            href={`/paths/${ribbonPath.id}`}
-            className="font-medium text-orange-700 hover:underline dark:text-orange-300"
-          >
-            {ribbonPath.title}
-          </Link>
-          <span className="text-zinc-500">
-            Step {ribbonIndex + 1} of {ribbonPath.steps.length}
-          </span>
-        </div>
-      )}
-
-      {why && (
-        <div className="mb-6 max-w-[70ch] border-l-2 border-orange-500/60 pl-3">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400">Why read this</p>
-          <p className="mt-0.5 text-sm italic text-zinc-600 dark:text-zinc-300">{why}</p>
-        </div>
-      )}
-
       <article
-        className={`max-w-[70ch] font-serif text-zinc-900 dark:text-zinc-100 ${SCALES[scale]} [&>p]:mb-[1.2em]`}
-        style={{ fontFamily: "Georgia, 'Times New Roman', Charter, serif" }}
+        className="max-w-[34em] font-serif text-fg [&>p]:mb-[1.15em]"
+        style={{ fontSize: size, lineHeight: leading }}
       >
         {essay.paragraphs.map((p, i) => (
           <Paragraph key={i} text={p} footnotes={footnoteMap} />
@@ -254,12 +311,15 @@ export default function EssayReader({
       </article>
 
       {essay.footnotes.length > 0 && (
-        <section className="mt-10 max-w-[70ch] border-t border-black/10 pt-4 dark:border-white/10" aria-label="Footnotes">
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-zinc-500">Notes</h2>
-          <ol className="space-y-2 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
+        <section
+          className="mt-12 max-w-[34em] border-t border-line pt-5"
+          aria-label="Footnotes"
+        >
+          <h2 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.12em] text-fg-subtle">Notes</h2>
+          <ol className="space-y-2.5 font-serif text-[0.95rem] leading-relaxed text-fg-muted">
             {essay.footnotes.map((f) => (
-              <li key={f.id} id={`fn-${f.id}`} className="scroll-mt-24">
-                <span className="mr-2 font-semibold">[{f.id}]</span>
+              <li key={f.id} id={`fn-${f.id}`} className="scroll-mt-28">
+                <span className="mr-2 font-semibold text-accent">[{f.id}]</span>
                 {f.text}
               </li>
             ))}
@@ -267,28 +327,46 @@ export default function EssayReader({
         </section>
       )}
 
-      <nav className="mt-10 flex max-w-[70ch] items-stretch justify-between gap-3 border-t border-black/10 pt-4 text-sm dark:border-white/10">
-        <div className="flex-1">
-          {navPrev && (
-            <Link href={`/essays/${navPrev.slug}`} className="group block rounded-lg p-2 hover:bg-black/5 dark:hover:bg-white/5">
-              <span className="text-[11px] uppercase tracking-wide text-zinc-400">
-                {inActivePath ? "← k · previous" : "← k · newer"}
+      <nav className="mt-12 max-w-[34em]" aria-label="Essay navigation">
+        <div className="grid gap-2 border-t border-line pt-4 sm:grid-cols-2">
+          {navPrev ? (
+            <Link
+              href={`/essays/${navPrev.slug}`}
+              className="group min-h-16 rounded-lg border border-line px-4 py-3 transition-colors hover:border-line-firm hover:bg-fg/[0.04]"
+            >
+              <span className="block text-[11px] uppercase tracking-[0.12em] text-fg-subtle">
+                ← Previous <span className="font-sans normal-case tracking-normal opacity-70">k</span>
               </span>
-              <span className="block font-medium group-hover:underline">{navPrev.title}</span>
+              <span className="mt-0.5 block font-medium leading-snug group-hover:underline">{navPrev.title}</span>
             </Link>
+          ) : (
+            <span />
           )}
-        </div>
-        <div className="flex-1 text-right">
           {navNext && (
-            <Link href={`/essays/${navNext.slug}`} className="group block rounded-lg p-2 hover:bg-black/5 dark:hover:bg-white/5">
-              <span className="text-[11px] uppercase tracking-wide text-zinc-400">
-                {inActivePath ? "next · j →" : "older · j →"}
+            <Link
+              href={`/essays/${navNext.slug}`}
+              className="group min-h-16 rounded-lg border border-line px-4 py-3 text-right transition-colors hover:border-line-firm hover:bg-fg/[0.04]"
+            >
+              <span className="block text-[11px] uppercase tracking-[0.12em] text-fg-subtle">
+                Next <span className="font-sans normal-case tracking-normal opacity-70">j</span> →
               </span>
-              <span className="block font-medium group-hover:underline">{navNext.title}</span>
+              <span className="mt-0.5 block font-medium leading-snug group-hover:underline">{navNext.title}</span>
             </Link>
           )}
         </div>
+        <p className="mt-3 text-xs text-fg-subtle">
+          Press <Kbd>j</Kbd> or <Kbd>k</Kbd> to move between essays ·{" "}
+          <Kbd>/</Kbd> to search
+        </p>
       </nav>
     </div>
+  );
+}
+
+function Kbd({ children }: { children: string }) {
+  return (
+    <kbd className="rounded border border-line px-1 font-sans text-[11px] leading-4 text-fg-subtle">
+      {children}
+    </kbd>
   );
 }

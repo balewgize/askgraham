@@ -22,16 +22,17 @@ export default function ThemeToggle() {
   };
 
   const Icon = ICONS[theme];
+  const next = ORDER[(ORDER.indexOf(theme) + 1) % ORDER.length];
 
   return (
     <button
       type="button"
       onClick={cycle}
-      title={`Theme: ${theme} (click to change)`}
-      aria-label={`Theme: ${theme} (click to change)`}
-      className="flex items-center gap-1.5 rounded-md border border-black/10 px-2 py-1.5 text-xs text-zinc-600 hover:bg-black/5 dark:border-white/15 dark:text-zinc-300 dark:hover:bg-white/10"
+      title={`Theme: ${theme} — switch to ${next}`}
+      aria-label={`Theme: ${LABELS[theme]}. Switch to ${LABELS[next].toLowerCase()} theme.`}
+      className="flex items-center gap-1.5 rounded-md border border-line-firm px-2 py-2 text-sm text-fg-muted transition-colors hover:bg-fg/[0.06] hover:text-fg"
     >
-      <Icon size={15} />
+      <Icon size={16} />
       <span className="hidden sm:inline">{LABELS[theme]}</span>
     </button>
   );

@@ -1,7 +1,8 @@
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Source_Serif_4 } from "next/font/google";
 import Link from "next/link";
+import HeaderHeight from "@/components/header-height";
 import SearchPalette from "@/components/search-palette";
 import ThemeToggle from "@/components/theme-toggle";
 import { BookmarkIcon, DownloadIcon, GitHubIcon } from "@/components/icons";
@@ -17,6 +18,19 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+// Reading serif. `opsz` lets the browser pick letterforms tuned to the rendered
+// size, which matters here because the reader offers three text sizes.
+const sourceSerif = Source_Serif_4({
+  variable: "--font-source-serif",
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  axes: ["opsz"],
+  display: "swap",
+});
+
+const navLink =
+  "flex items-center gap-1.5 rounded-md px-2 py-2 text-sm text-fg-muted transition-colors hover:bg-fg/[0.06] hover:text-fg";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -51,8 +65,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#18181b" },
+    { media: "(prefers-color-scheme: light)", color: "#faf9f7" },
+    { media: "(prefers-color-scheme: dark)", color: "#131211" },
   ],
 };
 
@@ -72,39 +86,41 @@ const themeInit = `(function(){try{var t=localStorage.getItem("askgraham:theme")
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} ${sourceSerif.variable} h-full antialiased`}
+      suppressHydrationWarning
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
       </head>
-      <body className="flex min-h-full flex-col bg-white text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100">
+      <body className="flex min-h-full flex-col bg-surface font-sans text-fg">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd).replace(/</g, "\\u003c") }}
         />
-        <header className="sticky top-0 z-40 border-b border-black/10 bg-white/90 backdrop-blur dark:border-white/10 dark:bg-zinc-900/90">
-          <div className="mx-auto flex max-w-3xl items-center justify-between gap-2 px-4 py-2.5">
-            <div className="flex items-center gap-1.5">
+        <a href="#main" className="skip-link">
+          Skip to content
+        </a>
+        <HeaderHeight />
+        <header
+          data-site-header
+          className="sticky top-0 z-40 border-b border-line bg-raised/85 backdrop-blur-md"
+        >
+          <div className="mx-auto flex max-w-3xl items-center justify-between gap-2 px-4 py-2">
+            <div className="flex items-center gap-0.5">
               <Link
                 href="/"
-                className="mr-1 font-serif text-base font-bold tracking-tight sm:text-lg"
-                style={{ fontFamily: "Georgia, serif" }}
+                className="mr-1.5 rounded-md px-1.5 py-1 font-serif text-lg font-semibold tracking-tight transition-colors hover:bg-fg/[0.06]"
               >
                 Ask Graham
               </Link>
-              <Link
-                href="/export"
-                aria-label="Export essays"
-                className="flex items-center gap-1.5 rounded-md px-2 py-1.5 text-xs text-zinc-600 hover:bg-black/5 dark:text-zinc-300 dark:hover:bg-white/10"
-              >
-                <DownloadIcon size={15} />
+              <Link href="/export" aria-label="Export essays" className={navLink}>
+                <DownloadIcon size={16} />
                 <span className="hidden sm:inline">Export</span>
               </Link>
-              <Link
-                href="/favorites"
-                aria-label="Favorites"
-                className="flex items-center gap-1.5 rounded-md px-2 py-1.5 text-xs text-zinc-600 hover:bg-black/5 dark:text-zinc-300 dark:hover:bg-white/10"
-              >
-                <BookmarkIcon size={15} />
+              <Link href="/favorites" aria-label="Favorites" className={navLink}>
+                <BookmarkIcon size={16} />
                 <span className="hidden sm:inline">Favorites</span>
               </Link>
               <a
@@ -112,25 +128,27 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="View source on GitHub"
-                className="flex items-center rounded-md px-2 py-1.5 text-zinc-500 hover:bg-black/5 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-white/10 dark:hover:text-zinc-100"
+                className={navLink}
               >
-                <GitHubIcon size={16} />
+                <GitHubIcon size={17} />
               </a>
             </div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1">
               <SearchPalette />
               <ThemeToggle />
             </div>
           </div>
         </header>
-        <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-6 sm:py-8">{children}</main>
-        <footer className="border-t border-black/10 py-4 text-center text-sm text-zinc-500 dark:border-white/10 dark:text-zinc-400">
+        <main id="main" className="mx-auto w-full max-w-3xl flex-1 px-4 py-6 sm:py-10">
+          {children}
+        </main>
+        <footer className="border-t border-line py-5 text-center text-sm text-fg-subtle">
           Personal learning tool · Essays by Paul Graham ·{" "}
           <a
             href="https://www.paulgraham.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="underline hover:text-zinc-600 dark:hover:text-zinc-200"
+            className="underline underline-offset-2 hover:text-fg-muted"
           >
             paulgraham.com
           </a>{" "}

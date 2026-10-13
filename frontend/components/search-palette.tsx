@@ -163,91 +163,91 @@ export default function SearchPalette() {
       <button
         type="button"
         onClick={openPalette}
-        className="flex items-center gap-1.5 rounded-md border border-black/10 px-2 py-1.5 text-xs text-zinc-600 hover:bg-black/5 dark:border-white/15 dark:text-zinc-300 dark:hover:bg-white/10"
+        className="flex items-center gap-1.5 rounded-md border border-line-firm px-2 py-2 text-sm text-fg-muted transition-colors hover:bg-fg/[0.06] hover:text-fg"
         aria-label="Search essays"
       >
-        <SearchIcon size={15} />
+        <SearchIcon size={16} />
         <span className="hidden sm:inline">Search</span>
-        <kbd className="hidden rounded border border-black/10 px-1 text-[10px] text-zinc-400 md:inline dark:border-white/15">
-          ⌘K
-        </kbd>
+        <kbd className="hidden rounded border border-line px-1 text-[10px] leading-4 text-fg-subtle md:inline">⌘K</kbd>
       </button>
       {open &&
         createPortal(
           <div
-            className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 p-4 pt-[12vh] dark:bg-black/60"
+            className="fixed inset-0 z-50 flex items-start justify-center bg-black/45 p-4 pt-[12vh]"
             onMouseDown={(e) => {
               if (e.target === e.currentTarget) setOpen(false);
             }}
             role="presentation"
           >
-          <div
-            className="flex max-h-full w-full max-w-xl flex-col overflow-hidden rounded-xl border border-black/10 bg-white shadow-2xl dark:border-white/15 dark:bg-zinc-800"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Search essays"
-          >
-            <div className="flex items-center gap-2 border-b border-black/10 px-4 dark:border-white/10">
-              <SearchIcon size={16} className="shrink-0 text-zinc-400" />
-              <input
-                ref={inputRef}
-                value={query}
-                onChange={(e) => {
-                  setQuery(e.target.value);
-                  if (e.target.value.trim().length < 2) setResults([]);
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "ArrowDown") {
-                    e.preventDefault();
-                    setActive((a) => Math.min(a + 1, results.length - 1));
-                  } else if (e.key === "ArrowUp") {
-                    e.preventDefault();
-                    setActive((a) => Math.max(a - 1, 0));
-                  } else if (e.key === "Enter" && results[active]) {
-                    go(results[active].slug);
-                  }
-                }}
-                placeholder="Search all essays… (title + full text)"
-                className="w-full bg-transparent py-3 text-sm outline-none"
-              />
-            </div>
-            <div className="min-h-0 flex-1 overflow-y-auto p-1">
-              {status === "loading" && <p className="px-3 py-4 text-xs text-zinc-500">Loading search index…</p>}
-              {status === "error" && <p className="px-3 py-4 text-xs text-red-500">Search index failed to load.</p>}
-              {status === "ready" && query.trim().length >= 2 && results.length === 0 && (
-                <p className="px-3 py-4 text-xs text-zinc-500">No matches.</p>
-              )}
-              {results.map((r, i) => (
-                <button
-                  key={r.slug}
-                  type="button"
-                  onClick={() => go(r.slug)}
-                  onMouseEnter={() => setActive(i)}
-                  className={`flex w-full items-baseline justify-between gap-3 rounded-lg px-3 py-2 text-left text-sm ${
-                    i === active ? "bg-black/5 dark:bg-white/10" : ""
-                  }`}
-                >
-                  <span className="truncate font-medium">
-                    {r.title}
-                    {r.via === "body" && <span className="ml-2 text-[10px] font-normal text-zinc-400">in text</span>}
-                  </span>
-                  <span className="shrink-0 text-[11px] text-zinc-500">
-                    {formatDateShort(r.date)} · {r.reading_time_min} min
-                  </span>
-                </button>
-              ))}
-            </div>
-            <p
-              className={`px-4 py-2 text-[13px] text-zinc-400 ${
-                resultsAreaVisible ? "border-t border-black/10 dark:border-white/10" : ""
-              }`}
+            <div
+              className="flex max-h-full w-full max-w-xl flex-col overflow-hidden rounded-xl border border-line bg-overlay shadow-2xl"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Search essays"
             >
-              ↑↓ navigate · Enter open · Esc close
-            </p>
-          </div>
-        </div>,
-        document.body,
-      )}
+              <div className="flex items-center gap-2.5 border-b border-line px-4">
+                <SearchIcon size={16} className="shrink-0 text-fg-subtle" />
+                <input
+                  ref={inputRef}
+                  value={query}
+                  onChange={(e) => {
+                    setQuery(e.target.value);
+                    if (e.target.value.trim().length < 2) setResults([]);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "ArrowDown") {
+                      e.preventDefault();
+                      setActive((a) => Math.min(a + 1, results.length - 1));
+                    } else if (e.key === "ArrowUp") {
+                      e.preventDefault();
+                      setActive((a) => Math.max(a - 1, 0));
+                    } else if (e.key === "Enter" && results[active]) {
+                      go(results[active].slug);
+                    }
+                  }}
+                  placeholder="Search all essays… (title + full text)"
+                  className="w-full bg-transparent py-3.5 text-base text-fg outline-none placeholder:text-fg-subtle"
+                />
+              </div>
+              <div className="min-h-0 flex-1 overflow-y-auto p-1.5">
+                {status === "loading" && <p className="px-3 py-4 text-sm text-fg-subtle">Loading search index…</p>}
+                {status === "error" && (
+                  <p className="px-3 py-4 text-sm text-red-700 dark:text-red-400">Search index failed to load.</p>
+                )}
+                {status === "ready" && query.trim().length >= 2 && results.length === 0 && (
+                  <p className="px-3 py-4 text-sm text-fg-subtle">No matches.</p>
+                )}
+                {results.map((r, i) => (
+                  <button
+                    key={r.slug}
+                    type="button"
+                    onClick={() => go(r.slug)}
+                    onMouseEnter={() => setActive(i)}
+                    className={`flex w-full items-baseline justify-between gap-3 rounded-lg px-3 py-2.5 text-left text-[0.95rem] transition-colors ${
+                      i === active ? "bg-fg/[0.07]" : ""
+                    }`}
+                  >
+                    <span className="min-w-0 truncate font-medium">
+                      {r.title}
+                      {r.via === "body" && <span className="ml-2 text-[11px] font-normal text-fg-subtle">in text</span>}
+                    </span>
+                    <span className="shrink-0 text-xs tabular-nums text-fg-subtle">
+                      {formatDateShort(r.date)} · {r.reading_time_min} min
+                    </span>
+                  </button>
+                ))}
+              </div>
+              <p
+                className={`px-4 py-2.5 text-xs text-fg-subtle ${
+                  resultsAreaVisible ? "border-t border-line" : "border-t border-transparent"
+                }`}
+              >
+                ↑↓ navigate · Enter open · Esc close
+              </p>
+            </div>
+          </div>,
+          document.body,
+        )}
     </>
   );
 }
