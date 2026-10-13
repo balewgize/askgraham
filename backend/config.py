@@ -40,9 +40,22 @@ class Settings(BaseSettings):
     db_max_overflow: int = 10
     db_pool_timeout_s: int = 30
 
-    # ── llm (Phase 4+) ─────────────────────────────────────────────────
+    # ── llm ────────────────────────────────────────────────────────────
     openrouter_api_key: str = ""
     openrouter_base_url: str = "https://openrouter.ai/api/v1"
+    # Default matches frontend/scripts/*.ts so a ported run reproduces the same
+    # cache keys. Changing this invalidates cached LLM output by design: the
+    # path cache hash includes the model name.
+    openrouter_model: str = "openai/gpt-oss-120b"
+    # LLM calls are slow; the TypeScript had no timeout, which means a hung
+    # request hangs the run forever.
+    openrouter_timeout_s: float = 120.0
+    llm_max_attempts: int = 3
+    classify_concurrency: int = 4
+
+    @property
+    def llm_configured(self) -> bool:
+        return bool(self.openrouter_api_key)
 
     @property
     def cors_origin_list(self) -> list[str]:
