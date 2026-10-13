@@ -3,11 +3,6 @@
 A fast, distraction-free reader for all 233 of Paul Graham's essays — rebuilt as a
 production-grade RAG application.
 
-**Status:** migration in progress. See [z-PLAN.md](z-PLAN.md) for the roadmap.
-Phases 1–7 are complete — the corpus, hybrid retrieval, cited chat, and a measured
-eval harness — plus the first Phase 9 tool, related essays. Design decisions are
-recorded in [`docs/adr/`](docs/adr/).
-
 ## Features
 
 **Reader** — Next.js 16, statically prerendered from a committed snapshot
