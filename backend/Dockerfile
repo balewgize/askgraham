@@ -1,10 +1,10 @@
 # syntax=docker/dockerfile:1
 
-# Alpine (musl) rather than slim (glibc): ~50MB base vs ~150MB. Every native
-# dependency here ships cp314 musllinux wheels for both x86_64 and aarch64
-# (pydantic-core, asyncpg, sqlalchemy, greenlet, uvloop), so nothing compiles
-# from source at build time.
-FROM python:3.14-alpine
+# Debian slim (glibc) rather than Alpine (musl). Alpine was the original choice
+# for its size, but `onnxruntime` — pulled in by `fastembed` for local
+# embeddings — publishes only manylinux wheels, so `uv sync` cannot satisfy it
+# on musl. The image is a little larger; the alternative is not embedding.
+FROM python:3.14-slim
 
 COPY --from=ghcr.io/astral-sh/uv:0.13 /uv /usr/local/bin/uv
 
@@ -14,10 +14,18 @@ ENV UV_COMPILE_BYTECODE=1 \
     UV_NO_CACHE=1 \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
+    # Model cache. Both fastembed and huggingface_hub read these; the compose
+    # stack mounts a volume here so models survive a container restart.
     HF_HOME=/models \
+    EMBEDDING_CACHE_DIR=/models \
     PATH="/app/.venv/bin:$PATH"
 
 WORKDIR /app
+
+# onnxruntime links against libgomp at runtime; Debian slim does not ship it.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
 
 # Dependency layer first, so editing source never re-resolves packages.
 # --no-cache keeps uv's download cache out of the image; it is the single
@@ -27,10 +35,11 @@ RUN uv sync --locked --no-dev --no-install-project
 
 COPY . .
 
-# Non-root: the service only reads code and talks to Postgres.
-# Alpine ships busybox addgroup/adduser, not the shadow-utils groupadd/useradd.
-RUN addgroup -S -g 1001 app \
-    && adduser -S -u 1001 -G app -h /home/app app \
+# Non-root: the service only reads code, talks to Postgres, and writes models
+# into the cache directory. Plain uid/gid 1001 (not `--system`) because Debian's
+# system uid range stops at 999 and would warn.
+RUN groupadd --gid 1001 app \
+    && useradd --uid 1001 --gid app --home-dir /home/app --create-home app \
     && mkdir -p /models \
     && chown app:app /models
 

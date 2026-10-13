@@ -55,6 +55,9 @@ services:
       # shadow the image's and break every import.
       - ./backend:/app
       - api_venv:/app/.venv
+      # Local ONNX embedding/reranker weights. Kept across restarts so the
+      # ~150MB download happens once.
+      - api_models:/models
       # Read-only corpus, so Phase 5+ can re-index without a rebuild.
       - ./data:/data:ro
     depends_on:
@@ -86,9 +89,6 @@ services:
       - ./frontend:/repo/frontend
       - web_node_modules:/repo/frontend/node_modules
       - web_next:/repo/frontend/.next
-      # lib/essays.ts resolves DATA_DIR as cwd/../data, and cwd is
-      # /repo/frontend, so the corpus has to land at /repo/data.
-      - ./data:/repo/data
     depends_on:
       api:
         condition: service_healthy
@@ -96,5 +96,6 @@ services:
 volumes:
   pgdata:
   api_venv:
+  api_models:
   web_node_modules:
   web_next:
