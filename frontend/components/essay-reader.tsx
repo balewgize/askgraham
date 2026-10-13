@@ -7,6 +7,7 @@ import type { Essay, IndexEntry } from "@/lib/essays";
 import type { ResolvedPath } from "@/lib/paths";
 import { CheckIcon, CopyIcon, DownloadIcon } from "./icons";
 import FavoriteButton from "./favorite-button";
+import RelatedEssays from "./related-essays";
 import {
   getFontScale,
   getProgress,
@@ -367,6 +368,8 @@ export default function EssayReader({
           <Kbd>/</Kbd> to search
         </p>
       </nav>
+
+      <RelatedEssays key={essay.slug} slug={essay.slug} />
     </div>
   );
 }
