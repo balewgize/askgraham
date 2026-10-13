@@ -1,7 +1,8 @@
 # syntax=docker/dockerfile:1
 
-# Build context is the repo root, not frontend/, because the essay corpus in
-# data/ is read during `next build` to prerender all 233 pages.
+# Build context is the repo root so the Dockerfile can address `frontend/`
+# paths directly. The frontend reads only its own committed `snapshot/`; it no
+# longer depends on `data/`.
 
 # ── deps ──────────────────────────────────────────────────────────────
 FROM node:22-alpine AS deps
@@ -34,9 +35,9 @@ WORKDIR /repo/frontend
 
 EXPOSE 3000
 
-# `pnpm dev` (tsx scripts/export-corpus.ts && next dev) rather than bare
-# `next dev`, so the container behaves exactly like the host. `next dev`
-# already defaults to hostname 0.0.0.0, which is what the port map needs.
+# `pnpm dev` instead of bare `next dev`, so the container behaves exactly like
+# the host. `next dev` already defaults to hostname 0.0.0.0, which is what the
+# port map needs.
 CMD ["pnpm", "dev"]
 
 # ── builder ────────────────────────────────────────────────────────────
@@ -52,9 +53,8 @@ WORKDIR /repo/frontend
 COPY --from=deps /repo/frontend/node_modules ./node_modules
 COPY frontend ./
 
-# A missing corpus here fails the build loudly rather than silently emitting
-# an empty site.
-COPY data /repo/data
+# `snapshot/` ships inside `frontend/` and is what the reader prerenders from.
+# `next build` reads nothing outside this directory, so it is hermetic.
 
 # Next's own cache is a BuildKit cache mount: it survives between builds but
 # never lands in a layer, which is where most rebuild time is saved.

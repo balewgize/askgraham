@@ -32,6 +32,13 @@ docker compose up
 The frontend proxies `/api/*` to the backend, so the browser only ever talks to one
 origin and CORS never enters the picture.
 
+The ⌘K palette is served by `GET /api/v1/search`, so build the retrieval index once
+after ingesting:
+
+```bash
+cd backend && uv run python cli.py index
+```
+
 Two compose files:
 
 | File | Use |
@@ -48,6 +55,15 @@ Migrations apply when the container starts, not on reload. After adding one:
 
 ```bash
 docker compose restart api
+```
+
+Dependency changes need more than a restart. `node_modules` and `.venv` are
+named volumes, so a rebuilt image does not replace their contents:
+
+```bash
+docker compose down
+docker volume rm askgraham_api_venv askgraham_web_node_modules
+docker compose up
 ```
 
 Dev runs `next dev` against the full `node_modules`, while production runs
@@ -95,24 +111,26 @@ uv run python cli.py scrape --slugs=say,fix     # a few, for spot checks
 uv run python cli.py ingest            # data/ -> Postgres
 uv run python cli.py classify          # LLM stage tags            (needs OPENROUTER_API_KEY)
 uv run python cli.py paths             # LLM reading paths         (needs OPENROUTER_API_KEY)
+uv run python cli.py index             # chunk + embed             (local ONNX, no API key)
 uv run python cli.py snapshot          # Postgres -> frontend/snapshot/
+uv run python cli.py export            # Postgres -> frontend/public/export/
 ```
 
 `classify` and `paths` are cached on content, so a re-run only pays for essays or
 path specs that actually changed. Both accept `--dry-run` to see what would run
 without spending anything, and `--force` to ignore the cache.
 
+`index` is idempotent the same way: it re-embeds only chunks whose text changed,
+and re-embeds everything if the embedding model or chunk settings change. The
+embedding and reranker models are local ONNX (`fastembed`) — free, offline, no
+API key — and are downloaded to the model cache on first use.
+
 A full scrape is ~233 requests and takes about six minutes. It is only needed
 when Paul Graham publishes something new; the corpus is committed.
 
-Two frontend scripts remain, both about the downloadable corpus exports rather
-than the reader:
-
-```bash
-cd frontend
-pnpm export:corpus    # regenerate public/export bundles
-pnpm index:search     # rebuild the FlexSearch shards
-```
+The frontend has no build scripts of its own. It renders from the committed
+`frontend/snapshot/`, and search calls the backend. There is no client-side
+index to build, and so no generated shard churn in git.
 
 ## Credits
 

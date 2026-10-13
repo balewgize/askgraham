@@ -46,7 +46,10 @@ export default async function ExportPage() {
         <h1 className="font-serif text-3xl font-semibold tracking-tight">Take the essays anywhere</h1>
         <p className="mt-3 max-w-[46ch] text-[0.95rem] leading-relaxed text-fg-muted">
           The export hasn&apos;t been generated yet. Run{" "}
-          <code className="rounded bg-fg/[0.07] px-1.5 py-0.5 font-mono text-[0.85em]">pnpm export:corpus</code>.
+          <code className="rounded bg-fg/[0.07] px-1.5 py-0.5 font-mono text-[0.85em]">
+            uv run python cli.py export
+          </code>{" "}
+          in <code className="font-mono text-[0.85em]">backend/</code>.
         </p>
       </div>
     );

@@ -2,12 +2,13 @@ import path from "node:path";
 import type { NextConfig } from "next";
 
 /**
- * Base URL the server uses to reach the FastAPI backend.
+ * Base URL the Next.js server uses to reach the FastAPI backend for the
+ * server-side `/api/*` proxy (search, and chat from Phase 6).
  *
- * Inside docker-compose this is the service name (`api`). Overriding it lets a
- * build run against a deployed API, e.g. `API_BASE_URL=https://api.example.com`.
+ * Defaults to a locally running API so `pnpm dev` works without Docker.
+ * Inside docker-compose it is overridden with the service name (`api`).
  */
-const apiBaseUrl = process.env.API_BASE_URL ?? "http://api:8000";
+const apiBaseUrl = process.env.API_BASE_URL ?? "http://localhost:8000";
 
 const nextConfig: NextConfig = {
   // Emits .next/standalone with only the runtime files, which keeps the
@@ -19,12 +20,11 @@ const nextConfig: NextConfig = {
   // standalone bundle.
   outputFileTracingRoot: path.join(__dirname, ".."),
 
-  // Both corpus trees are read at build time and baked into the prerendered
-  // HTML; neither is touched at runtime. Tracing them would add ~4MB of JSON to
-  // the image. `data/` is still needed by the prebuild scripts, and
-  // `snapshot/` becomes the reader's input once Phase 3 switches lib/ over.
+  // `snapshot/` is read at build time and baked into the prerendered HTML, so
+  // it is not needed at runtime and tracing it would add ~4MB of JSON to the
+  // image. The frontend never reads `data/`; the pipeline lives in `backend/`.
   outputFileTracingExcludes: {
-    "/*": ["../data/**/*", "../snapshot/**/*"],
+    "/*": ["../snapshot/**/*"],
   },
 
   // Proxy `/api/*` to the backend so the browser only ever talks to one origin.

@@ -3,18 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "tsx scripts/export-corpus.ts && next dev",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "index:search": "tsx scripts/build-search-index.ts",
-    "export:corpus": "tsx scripts/export-corpus.ts",
-    "prebuild": "tsx scripts/build-search-index.ts && tsx scripts/export-corpus.ts"
+    "lint": "eslint"
   },
   "dependencies": {
     "@vercel/speed-insights": "^2.0.0",
-    "fflate": "^0.8.3",
-    "flexsearch": "^0.8.212",
     "next": "16.3.5",
     "react": "19.2.8",
     "react-dom": "19.2.8"
@@ -24,11 +19,9 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "cheerio": "^1.2.0",
     "eslint": "^9",
     "eslint-config-next": "16.3.5",
     "tailwindcss": "^4",
-    "tsx": "^4.23.13",
     "typescript": "^5"
   },
   "packageManager": "pnpm@12.11.2"

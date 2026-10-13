@@ -1,76 +1,49 @@
 "use client";
 
-import { Document } from "flexsearch";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { formatDateShort } from "@/lib/dates";
 import { SearchIcon } from "./icons";
 
-type Meta = { slug: string; title: string; date: string | null; reading_time_min: number };
+/** One backend search hit. Shaped by `GET /api/v1/search`. */
+type Result = {
+  slug: string;
+  title: string;
+  date: string | null;
+  reading_time_min: number;
+  score: number;
+  snippet: string;
+  start_paragraph: number;
+  end_paragraph: number;
+  vector_rank: number | null;
+  lexical_rank: number | null;
+  rerank_score: number | null;
+};
 
-// Must match scripts/build-search-index.ts SEARCH_OPTIONS.
-function createIndex() {
-  return new Document({
-    document: {
-      id: "slug",
-      index: [
-        { field: "title", tokenize: "forward" },
-        { field: "body", tokenize: "strict" },
-      ],
-    },
+// Short queries match almost everything and are not worth a round trip.
+const MIN_QUERY = 2;
+const RESULT_LIMIT = 12;
+const DEBOUNCE_MS = 150;
+
+/** The old palette shipped a FlexSearch shard per key; now it is one request.
+ *
+ * Reranking is off here on purpose. The cross-encoder is the expensive stage
+ * (hundreds of ms to seconds on CPU) and this runs on every debounced
+ * keystroke; RRF fusion alone is ~30ms and good enough for a palette. The
+ * reranker stays on for chat and the evals, where the latency budget is larger.
+ */
+async function searchBackend(query: string, signal: AbortSignal): Promise<Result[]> {
+  const params = new URLSearchParams({
+    q: query,
+    limit: String(RESULT_LIMIT),
+    dedupe: "true",
+    rerank: "false",
   });
-}
-
-type Result = Meta & { via: "title" | "body" };
-
-async function loadIndex(): Promise<{ index: ReturnType<typeof createIndex>; meta: Map<string, Meta> }> {
-  const index = createIndex();
-  const [manifest, metaJson] = await Promise.all([
-    fetch("/search-index/manifest.json").then((r) => r.json() as Promise<{ keys: string[] }>),
-    fetch("/search-index/meta.json").then((r) => r.json() as Promise<Meta[]>),
-  ]);
-  await Promise.all(
-    manifest.keys.map(async (key) => {
-      const data = await fetch(`/search-index/${key}.json`).then((r) => r.json());
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await (index as any).import(key, data);
-    }),
-  );
-  return { index, meta: new Map(metaJson.map((m) => [m.slug, m])) };
-}
-
-let cached: Promise<{ index: ReturnType<typeof createIndex>; meta: Map<string, Meta> }> | null = null;
-
-function searchAll(
-  index: ReturnType<typeof createIndex>,
-  meta: Map<string, Meta>,
-  q: string,
-  limit = 12,
-): Result[] {
-  const raw = index.search(q, { limit }) as unknown as
-    | string[]
-    | { field?: string; result: string[] }[];
-  const titleHits: string[] = [];
-  const bodyHits: string[] = [];
-  if (Array.isArray(raw) && raw.length > 0 && typeof raw[0] === "string") {
-    bodyHits.push(...(raw as string[]));
-  } else {
-    for (const group of raw as { field?: string; result: string[] }[]) {
-      if (group.field === "title") titleHits.push(...group.result);
-      else bodyHits.push(...group.result);
-    }
-  }
-  const seen = new Set<string>();
-  const out: Result[] = [];
-  for (const slug of [...titleHits, ...bodyHits]) {
-    if (seen.has(slug)) continue;
-    seen.add(slug);
-    const m = meta.get(slug);
-    if (m) out.push({ ...m, via: titleHits.includes(slug) ? "title" : "body" });
-    if (out.length >= limit) break;
-  }
-  return out;
+  const response = await fetch(`/api/v1/search?${params}`, { signal });
+  if (!response.ok) throw new Error(`search failed: HTTP ${response.status}`);
+  const payload = (await response.json()) as { results: Result[] };
+  return payload.results;
 }
 
 export default function SearchPalette() {
@@ -82,37 +55,20 @@ export default function SearchPalette() {
   const [status, setStatus] = useState<"idle" | "loading" | "ready" | "error">("idle");
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const ensureLoaded = useCallback(() => {
-    if (!cached) {
-      setStatus("loading");
-      cached = loadIndex()
-        .then((v) => {
-          setStatus("ready");
-          return v;
-        })
-        .catch((e) => {
-          console.warn("search index load failed", e);
-          setStatus("error");
-          cached = null;
-          throw e;
-        });
-    }
-    return cached;
-  }, []);
-
   const openPalette = useCallback(() => {
     setQuery("");
     setResults([]);
     setActive(0);
+    setStatus("idle");
     setOpen(true);
-    ensureLoaded().catch(() => {});
-  }, [ensureLoaded]);
+  }, []);
 
   // Global shortcuts: Cmd/Ctrl+K toggles, "/" opens (outside inputs).
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null;
-      const typing = target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable);
+      const typing =
+        target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable);
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
         if (open) setOpen(false);
@@ -133,19 +89,36 @@ export default function SearchPalette() {
     requestAnimationFrame(() => inputRef.current?.focus());
   }, [open]);
 
-  // Debounced search.
+  // Debounced search against the backend. The cleanup aborts the in-flight
+  // request, so a fast typist never sees a stale response overwrite a newer one.
+  // All synchronous state changes happen in the input handler; the effect only
+  // touches state from async callbacks, which the React lint rules require.
   useEffect(() => {
-    if (!open || query.trim().length < 2) return;
-    const t = setTimeout(() => {
-      ensureLoaded()
-        .then(({ index, meta }) => {
-          setResults(searchAll(index, meta, query.trim()));
+    if (!open) return;
+    const q = query.trim();
+    if (q.length < MIN_QUERY) return;
+
+    const controller = new AbortController();
+    const timer = setTimeout(() => {
+      searchBackend(q, controller.signal)
+        .then((hits) => {
+          setResults(hits);
           setActive(0);
+          setStatus("ready");
         })
-        .catch(() => {});
-    }, 120);
-    return () => clearTimeout(t);
-  }, [query, open, ensureLoaded]);
+        .catch((error) => {
+          if (controller.signal.aborted) return;
+          console.warn("search failed", error);
+          setResults([]);
+          setStatus("error");
+        });
+    }, DEBOUNCE_MS);
+
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [query, open]);
 
   const go = useCallback(
     (slug: string) => {
@@ -156,7 +129,7 @@ export default function SearchPalette() {
   );
 
   // The footer only needs its own top border when something sits between it and the input.
-  const resultsAreaVisible = status === "loading" || status === "error" || query.trim().length >= 2;
+  const resultsAreaVisible = status === "loading" || status === "error" || query.trim().length >= MIN_QUERY;
 
   return (
     <>
@@ -191,8 +164,14 @@ export default function SearchPalette() {
                   ref={inputRef}
                   value={query}
                   onChange={(e) => {
-                    setQuery(e.target.value);
-                    if (e.target.value.trim().length < 2) setResults([]);
+                    const value = e.target.value;
+                    setQuery(value);
+                    if (value.trim().length < MIN_QUERY) {
+                      setResults([]);
+                      setStatus("idle");
+                    } else {
+                      setStatus("loading");
+                    }
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "ArrowDown") {
@@ -205,16 +184,16 @@ export default function SearchPalette() {
                       go(results[active].slug);
                     }
                   }}
-                  placeholder="Search all essays… (title + full text)"
+                  placeholder="Search all essays… (hybrid: meaning + exact words)"
                   className="w-full bg-transparent py-3.5 text-base text-fg outline-none placeholder:text-fg-subtle"
                 />
               </div>
               <div className="min-h-0 flex-1 overflow-y-auto p-1.5">
-                {status === "loading" && <p className="px-3 py-4 text-sm text-fg-subtle">Loading search index…</p>}
+                {status === "loading" && <p className="px-3 py-4 text-sm text-fg-subtle">Searching…</p>}
                 {status === "error" && (
-                  <p className="px-3 py-4 text-sm text-red-700 dark:text-red-400">Search index failed to load.</p>
+                  <p className="px-3 py-4 text-sm text-red-700 dark:text-red-400">Search is unavailable.</p>
                 )}
-                {status === "ready" && query.trim().length >= 2 && results.length === 0 && (
+                {status === "ready" && query.trim().length >= MIN_QUERY && results.length === 0 && (
                   <p className="px-3 py-4 text-sm text-fg-subtle">No matches.</p>
                 )}
                 {results.map((r, i) => (
@@ -223,17 +202,19 @@ export default function SearchPalette() {
                     type="button"
                     onClick={() => go(r.slug)}
                     onMouseEnter={() => setActive(i)}
-                    className={`flex w-full items-baseline justify-between gap-3 rounded-lg px-3 py-2.5 text-left text-[0.95rem] transition-colors ${
+                    className={`flex w-full flex-col gap-0.5 rounded-lg px-3 py-2.5 text-left transition-colors ${
                       i === active ? "bg-fg/[0.07]" : ""
                     }`}
                   >
-                    <span className="min-w-0 truncate font-medium">
-                      {r.title}
-                      {r.via === "body" && <span className="ml-2 text-[11px] font-normal text-fg-subtle">in text</span>}
+                    <span className="flex w-full items-baseline justify-between gap-3">
+                      <span className="min-w-0 truncate text-[0.95rem] font-medium">{r.title}</span>
+                      <span className="shrink-0 text-xs tabular-nums text-fg-subtle">
+                        {formatDateShort(r.date)} · {r.reading_time_min} min
+                      </span>
                     </span>
-                    <span className="shrink-0 text-xs tabular-nums text-fg-subtle">
-                      {formatDateShort(r.date)} · {r.reading_time_min} min
-                    </span>
+                    {r.snippet && (
+                      <span className="line-clamp-1 text-xs text-fg-subtle">{r.snippet}</span>
+                    )}
                   </button>
                 ))}
               </div>

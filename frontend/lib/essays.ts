@@ -23,22 +23,15 @@ export type IndexEntry = {
 };
 
 /**
- * Two corpora, two audiences — kept deliberately separate.
- *
- * `SNAPSHOT_DIR` is what the reader renders from. The backend writes it
- * (`uv run python cli.py snapshot`) and it is committed, so `next build` is
+ * The reader renders from `snapshot/`, written by the backend
+ * (`uv run python cli.py snapshot`) and committed, so `next build` is
  * hermetic: no database, no network.
  *
- * `DATA_DIR` is the pipeline's working corpus. The authoring scripts in
- * `scripts/` read and write it.
- *
- * They hold identical content today. They are not the same directory because
- * the reader must not depend on a pipeline artifact, and the pipeline must not
- * write into what the site renders from.
+ * The corpus pipeline that fills `data/` lives entirely in `backend/` now.
+ * Nothing here reads `data/`, which is why the frontend no longer needs a
+ * build step before `next build`.
  */
 export const SNAPSHOT_DIR = path.resolve(process.cwd(), "snapshot");
-export const DATA_DIR = path.resolve(process.cwd(), "..", "data");
-export const ESSAYS_DIR = path.join(DATA_DIR, "essays");
 
 const MONTHS: Record<string, number> = {
   January: 1,
