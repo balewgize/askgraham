@@ -56,6 +56,36 @@ def ingest(
 
 
 @app.command()
+def scrape(
+    slugs: str | None = typer.Option(
+        None, "--slugs", help="Comma-separated slugs. Defaults to the whole catalogue."
+    ),
+    limit: int | None = typer.Option(None, "--limit", help="Only the first N essays."),
+    data_dir: Path | None = typer.Option(
+        None, "--data-dir", help="Corpus directory. Defaults to the repo's data/."
+    ),
+) -> None:
+    """Fetch the catalogue from paulgraham.com into data/.
+
+    Polite by design: one request every 1.5s, and a descriptive User-Agent.
+    """
+    configure_logging()
+    from rag.scrape import scrape_catalog
+
+    stats = scrape_catalog(
+        data_dir or settings.data_dir,
+        slugs=[s.strip() for s in slugs.split(",")] if slugs else None,
+        limit=limit,
+    )
+    typer.echo(
+        f"index: {stats.index_entries} essays\n"
+        f"wrote: {stats.written}/{stats.requested}  ({stats.words:,} words)"
+    )
+    if stats.skipped:
+        typer.echo(f"skipped: {', '.join(stats.skipped)}", err=True)
+
+
+@app.command()
 def snapshot(
     out_dir: Path | None = typer.Option(
         None, "--out-dir", help="Destination. Defaults to frontend/snapshot."

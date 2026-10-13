@@ -86,14 +86,24 @@ pnpm build
 pnpm lint
 ```
 
-Data pipeline (LLM scripts need `OPENROUTER_API_KEY`), run from `frontend/`:
+Data pipeline. Scraping has moved to the backend; the remaining LLM scripts
+still run from `frontend/` and need `OPENROUTER_API_KEY`:
 
 ```bash
-pnpm scrape         # re-scrape essays -> data/
-pnpm classify       # LLM stage tags
-pnpm paths          # LLM reading paths
-pnpm export:corpus  # regenerate downloadable bundles
+cd backend
+uv run python cli.py scrape          # paulgraham.com -> data/  (1.5s between requests)
+uv run python cli.py scrape --slugs=say,fix    # a few, for spot checks
+uv run python cli.py ingest          # data/ -> Postgres
+uv run python cli.py snapshot        # Postgres -> frontend/snapshot/
+
+cd frontend
+pnpm classify        # LLM stage tags       (not yet migrated)
+pnpm paths           # LLM reading paths    (not yet migrated)
+pnpm export:corpus   # downloadable bundles (not yet migrated)
 ```
+
+A full scrape is ~233 requests and takes about six minutes. It is only needed
+when Paul Graham publishes something new; the corpus is committed.
 
 ## Credits
 

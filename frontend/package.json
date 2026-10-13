@@ -7,8 +7,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "scrape": "tsx scripts/scrape-essays.ts",
-    "scrape:sample": "tsx scripts/scrape-essays.ts --slugs=say,ramenprofitable,foundermode",
     "index:search": "tsx scripts/build-search-index.ts",
     "export:corpus": "tsx scripts/export-corpus.ts",
     "classify": "tsx scripts/classify-essays.ts",
