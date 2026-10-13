@@ -9,8 +9,6 @@
     "lint": "eslint",
     "index:search": "tsx scripts/build-search-index.ts",
     "export:corpus": "tsx scripts/export-corpus.ts",
-    "classify": "tsx scripts/classify-essays.ts",
-    "paths": "tsx scripts/generate-paths.ts",
     "prebuild": "tsx scripts/build-search-index.ts && tsx scripts/export-corpus.ts"
   },
   "dependencies": {

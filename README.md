@@ -86,24 +86,33 @@ pnpm build
 pnpm lint
 ```
 
-Data pipeline. Scraping has moved to the backend; the remaining LLM scripts
-still run from `frontend/` and need `OPENROUTER_API_KEY`:
+Data pipeline. All of it lives in the backend now; `data/` has one writer.
 
 ```bash
 cd backend
-uv run python cli.py scrape          # paulgraham.com -> data/  (1.5s between requests)
-uv run python cli.py scrape --slugs=say,fix    # a few, for spot checks
-uv run python cli.py ingest          # data/ -> Postgres
-uv run python cli.py snapshot        # Postgres -> frontend/snapshot/
-
-cd frontend
-pnpm classify        # LLM stage tags       (not yet migrated)
-pnpm paths           # LLM reading paths    (not yet migrated)
-pnpm export:corpus   # downloadable bundles (not yet migrated)
+uv run python cli.py scrape            # paulgraham.com -> data/   (1.5s between requests)
+uv run python cli.py scrape --slugs=say,fix     # a few, for spot checks
+uv run python cli.py ingest            # data/ -> Postgres
+uv run python cli.py classify          # LLM stage tags            (needs OPENROUTER_API_KEY)
+uv run python cli.py paths             # LLM reading paths         (needs OPENROUTER_API_KEY)
+uv run python cli.py snapshot          # Postgres -> frontend/snapshot/
 ```
+
+`classify` and `paths` are cached on content, so a re-run only pays for essays or
+path specs that actually changed. Both accept `--dry-run` to see what would run
+without spending anything, and `--force` to ignore the cache.
 
 A full scrape is ~233 requests and takes about six minutes. It is only needed
 when Paul Graham publishes something new; the corpus is committed.
+
+Two frontend scripts remain, both about the downloadable corpus exports rather
+than the reader:
+
+```bash
+cd frontend
+pnpm export:corpus    # regenerate public/export bundles
+pnpm index:search     # rebuild the FlexSearch shards
+```
 
 ## Credits
 
