@@ -6,7 +6,7 @@ re-run freely in CI or after re-scraping the corpus.
 
 import asyncio
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import typer
 
@@ -162,6 +162,85 @@ def index(
                 )
         except Exception as exc:
             log.exception("cli.index_failed")
+            raise typer.Exit(code=1) from exc
+        finally:
+            await db.dispose_engine()
+
+    asyncio.run(main())
+
+
+@app.command("eval")
+def evaluate(
+    dataset: Path | None = typer.Option(
+        None, "--dataset", help="JSONL eval cases. Defaults to eval/datasets/qa.jsonl."
+    ),
+    out: Path | None = typer.Option(
+        None, "--out", help="Report path. Defaults to eval/results/baseline.md."
+    ),
+    k: int = typer.Option(settings.eval_k, "--k", help="Cutoff for recall@k and nDCG@k."),
+    mode: str = typer.Option("hybrid", "--mode", help="hybrid | vector | lexical."),
+    rerank: bool | None = typer.Option(
+        None, "--rerank/--no-rerank", help="Override RERANK_ENABLED for the primary variant."
+    ),
+    limit: int | None = typer.Option(None, "--limit", help="Only the first N cases."),
+    answers: bool = typer.Option(
+        False,
+        "--answers/--no-answers",
+        help="Also generate and judge answers. Costs money; retrieval alone is free.",
+    ),
+    model: str | None = typer.Option(
+        None, "--model", help="Generation model. Defaults to OPENROUTER_MODEL."
+    ),
+    judge_model: str | None = typer.Option(
+        None, "--judge-model", help="Judge model. Defaults to the generation model."
+    ),
+) -> None:
+    """Measure retrieval (and optionally answers) against the gold dataset.
+
+    Retrieval runs every question through several variants, so the report prices
+    the reranker and hybrid fusion instead of asserting they help. `--answers`
+    adds the LLM-as-judge pass and the deterministic quote/citation checks.
+    """
+    configure_logging()
+    from eval.runner import DEFAULT_DATASET, DEFAULT_REPORT, run_eval, write_report
+    from rag.retrieval import RetrievalMode
+
+    chosen = mode.strip().lower()
+    if chosen not in ("hybrid", "vector", "lexical"):
+        typer.echo(f"invalid --mode {mode!r}: choose hybrid, vector or lexical", err=True)
+        raise typer.Exit(code=2)
+
+    async def main() -> None:
+        try:
+            async with db.session_scope() as session:
+                report = await run_eval(
+                    session,
+                    dataset=dataset or DEFAULT_DATASET,
+                    k=k,
+                    mode=cast(RetrievalMode, chosen),
+                    rerank=rerank,
+                    limit=limit,
+                    answers=answers,
+                    generation_model=model,
+                    judge_model=judge_model,
+                )
+            path = write_report(report, out or DEFAULT_REPORT)
+            overall = report.primary.overall()
+            typer.echo(f"cases     : {report.config.cases}")
+            typer.echo(
+                f"retrieval : recall@{k} {overall.recall:.3f}  "
+                f"MRR {overall.mrr:.3f}  nDCG@{k} {overall.ndcg:.3f}"
+            )
+            if report.answers is not None:
+                typer.echo(
+                    f"answers   : faithfulness {report.answers.faithfulness:.3f}  "
+                    f"relevance {report.answers.relevance:.3f}  "
+                    f"citation {report.answers.citation_correctness:.3f}  "
+                    f"quote-grounding {report.answers.quote_grounding:.3f}"
+                )
+            typer.echo(f"report    : {path}")
+        except Exception as exc:
+            log.exception("cli.eval_failed")
             raise typer.Exit(code=1) from exc
         finally:
             await db.dispose_engine()

@@ -91,8 +91,15 @@ async def stream_answer(
     sources: Sequence[Source],
     client: OpenRouterClient | None = None,
     usage: dict[str, int] | None = None,
+    temperature: float | None = None,
+    seed: int | None = None,
 ) -> AsyncIterator[str]:
-    """Stream a cited answer. Yields text deltas."""
+    """Stream a cited answer. Yields text deltas.
+
+    `temperature` is passed straight to the provider and left unset for chat,
+    where the default sampling is part of the feel. The eval sets it to 0 so an
+    answer is reproducible rather than merely plausible.
+    """
     openrouter = client or OpenRouterClient()
     if not openrouter.configured:
         raise LLMError("OPENROUTER_API_KEY is not set")
@@ -106,6 +113,8 @@ async def stream_answer(
             client=http,
             app_title="Ask Graham chat",
             usage=usage,
+            temperature=temperature,
+            seed=seed,
         ):
             yield delta
 

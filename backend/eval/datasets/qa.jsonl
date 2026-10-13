@@ -1,0 +1,40 @@
+{"id": "do-things-title", "question": "do things that don't scale", "slug": "ds", "group": "title", "paragraphs": [0], "notes": "The case that motivated the title arm: a title query the body barely contains."}
+{"id": "do-things-why", "question": "why should a startup do things that don't scale?", "slug": "ds", "group": "paraphrase", "paragraphs": [1, 2], "notes": "Same essay as the title case via meaning, not words."}
+{"id": "ramen-profitable", "question": "what does it mean to be ramen profitable?", "slug": "ramenprofitable", "group": "concept", "paragraphs": [0], "notes": "Definitional; also the essay title."}
+{"id": "makers-schedule", "question": "maker's schedule versus manager's schedule", "slug": "makersschedule", "group": "title", "paragraphs": [0, 1], "notes": "Title-ish query; the distinction is set up early."}
+{"id": "schlep-blindness", "question": "what is schlep blindness?", "slug": "schlep", "group": "concept", "paragraphs": [0, 1], "notes": "Coinage defined in the opening."}
+{"id": "startup-ideas", "question": "how do I come up with startup ideas?", "slug": "startupideas", "group": "paraphrase", "notes": "Distinguish from 'How to Get New Ideas' (getideas)."}
+{"id": "new-ideas", "question": "how do you get new ideas?", "slug": "getideas", "group": "paraphrase", "notes": "The companion essay to startupideas; a near-synonym query."}
+{"id": "nerds-unpopular", "question": "why are nerds unpopular in school?", "slug": "nerds", "group": "paraphrase", "notes": "The essay's central question."}
+{"id": "great-work", "question": "how do I do great work?", "slug": "greatwork", "group": "paraphrase", "notes": "Longest essay in the corpus; tests retrieval at scale."}
+{"id": "good-writing", "question": "what makes writing good?", "slug": "goodwriting", "group": "paraphrase", "paragraphs": [0], "notes": "Overlaps with simply and useful; goodwriting is the primary."}
+{"id": "disagree-hierarchy", "question": "what is the hierarchy of disagreement?", "slug": "disagree", "group": "concept", "notes": "Named framework inside the essay."}
+{"id": "startups-america", "question": "why do so many startups start in America?", "slug": "america", "group": "paraphrase", "notes": "Conceptual, no title words."}
+{"id": "default-alive", "question": "what does default alive or default dead mean?", "slug": "aord", "group": "title", "paragraphs": [0], "notes": "Term defined in the opening paragraph."}
+{"id": "fatal-pinch", "question": "what is the fatal pinch?", "slug": "pinch", "group": "concept", "paragraphs": [0], "notes": "Term in the title and defined early."}
+{"id": "ambitious-ideas", "question": "what are frighteningly ambitious startup ideas?", "slug": "ambitious", "group": "title", "notes": "Adjectival title match."}
+{"id": "startup-hub", "question": "should founders move to a startup hub?", "slug": "startuphubs", "group": "paraphrase", "notes": "Overlaps with cities and siliconvalley."}
+{"id": "present-investors", "question": "how should I present to investors?", "slug": "investors", "group": "paraphrase", "notes": "Advice-shaped question."}
+{"id": "equity-equation", "question": "how much equity should I give an early employee?", "slug": "equity", "group": "paraphrase", "notes": "The equity equation, stated as a question."}
+{"id": "founder-mode", "question": "what is founder mode?", "slug": "foundermode", "group": "title", "paragraphs": [0], "notes": "Recent term; title match."}
+{"id": "determination", "question": "what makes founders determined?", "slug": "determination", "group": "paraphrase", "notes": "The essay's three ingredients."}
+{"id": "think-yourself", "question": "how do I think for myself?", "slug": "think", "group": "paraphrase", "notes": "Direct rephrasing of the title."}
+{"id": "good-taste", "question": "what is good taste?", "slug": "goodtaste", "group": "title", "notes": "Title match; also novelty/heresy territory."}
+{"id": "write-simply", "question": "how do I write simply?", "slug": "simply", "group": "paraphrase", "notes": "Advice with title words reversed."}
+{"id": "top-idea", "question": "how do I keep the top idea in my mind?", "slug": "top", "group": "paraphrase", "notes": "Near-title phrasing."}
+{"id": "bus-ticket-genius", "question": "what is the bus ticket theory of genius?", "slug": "genius", "group": "concept", "notes": "Coinage; strong lexical signal."}
+{"id": "safe-nice", "question": "why is it safe for founders to be nice?", "slug": "safe", "group": "paraphrase", "notes": "Longer version of the title."}
+{"id": "lesson-unlearn", "question": "what is the lesson to unlearn?", "slug": "lesson", "group": "concept", "notes": "Title-shaped but conceptual."}
+{"id": "earn-billion", "question": "how does one earn a billion dollars?", "slug": "earn", "group": "paraphrase", "notes": "2026 essay."}
+{"id": "brand-age", "question": "what is the brand age?", "slug": "brandage", "group": "title", "paragraphs": [53], "notes": "Recent 2026 essay; the term is coined late (para 53), not in the opening."}
+{"id": "superlinear", "question": "what are superlinear returns?", "slug": "superlinear", "group": "concept", "notes": "Term defined in the essay."}
+{"id": "resourceful", "question": "what does it mean to be relentlessly resourceful?", "slug": "relres", "group": "concept", "notes": "Coinage plus a filler phrase."}
+{"id": "python-paradox", "question": "what is the Python paradox?", "slug": "pypar", "group": "concept", "notes": "Named paradox."}
+{"id": "beating-averages", "question": "why did Viaweb use Lisp?", "slug": "avg", "group": "entity", "notes": "Named company; no title words."}
+{"id": "microsoft-dead", "question": "why is Microsoft dead?", "slug": "microsoft", "group": "paraphrase", "notes": "Provocative title; entity query."}
+{"id": "lose-time-money", "question": "how do I lose time and money?", "slug": "selfindulgence", "group": "title", "notes": "Title paraphrased as advice."}
+{"id": "identity-small", "question": "why should I keep my identity small?", "slug": "identity", "group": "paraphrase", "notes": "Title-adjacent."}
+{"id": "not-not-startup", "question": "why should I not not start a startup?", "slug": "notnot", "group": "paraphrase", "notes": "Double negative; lexical arm may stumble."}
+{"id": "expert-changing", "question": "how do I stay an expert in a changing world?", "slug": "ecw", "group": "paraphrase", "notes": "Advice framing."}
+{"id": "hacker-news", "question": "what did Graham learn from running Hacker News?", "slug": "hackernews", "group": "entity", "notes": "Named site; entity query."}
+{"id": "do-what-you-love", "question": "how do I do what I love?", "slug": "love", "group": "paraphrase", "notes": "Title rephrased as a question."}

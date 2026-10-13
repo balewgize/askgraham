@@ -149,11 +149,18 @@ class OpenRouterClient:
         app_title: str,
         client: httpx.AsyncClient,
         validate: Validator | None = None,
+        temperature: float | None = None,
+        seed: int | None = None,
     ) -> Any:
         """One structured completion, retried until it is usable.
 
         Transport failures back off and resend. Validation failures resend with
         the rejection appended, so the model can fix the specific problem.
+
+        `temperature` and `seed` are sent only when set. The eval passes
+        `temperature=0` and a fixed seed to make answers and judgments
+        reproducible; the authoring commands leave them unset so their requests
+        are unchanged.
         """
         if not self.api_key:
             raise LLMError("OPENROUTER_API_KEY is not set")
@@ -174,6 +181,8 @@ class OpenRouterClient:
                     schema_name=schema_name,
                     app_title=app_title,
                     client=client,
+                    temperature=temperature,
+                    seed=seed,
                 )
                 return validate(parsed) if validate else parsed
             except RetryableLLMError as exc:
@@ -205,6 +214,8 @@ class OpenRouterClient:
         schema_name: str,
         app_title: str,
         client: httpx.AsyncClient,
+        temperature: float | None = None,
+        seed: int | None = None,
     ) -> tuple[Any, str]:
         """One request. Returns the parsed object and the raw content.
 
@@ -212,17 +223,23 @@ class OpenRouterClient:
         retry needs it, and one client serves many concurrent requests, so
         instance state would be shared between them.
         """
+        payload: dict[str, Any] = {
+            "model": self.model,
+            "messages": messages,
+            "response_format": {
+                "type": "json_schema",
+                "json_schema": {"name": schema_name, "strict": True, "schema": schema},
+            },
+        }
+        if temperature is not None:
+            payload["temperature"] = temperature
+        if seed is not None:
+            payload["seed"] = seed
+
         response = await client.post(
             f"{self.base_url}/chat/completions",
             headers=self._headers(app_title),
-            json={
-                "model": self.model,
-                "messages": messages,
-                "response_format": {
-                    "type": "json_schema",
-                    "json_schema": {"name": schema_name, "strict": True, "schema": schema},
-                },
-            },
+            json=payload,
             timeout=self.timeout,
         )
 
@@ -247,6 +264,8 @@ class OpenRouterClient:
         client: httpx.AsyncClient,
         app_title: str,
         usage: dict[str, int] | None = None,
+        temperature: float | None = None,
+        seed: int | None = None,
     ) -> AsyncIterator[str]:
         """Stream a chat completion, yielding content deltas as they arrive.
 
@@ -261,16 +280,22 @@ class OpenRouterClient:
         if not self.api_key:
             raise LLMError("OPENROUTER_API_KEY is not set")
 
+        payload: dict[str, Any] = {
+            "model": self.model,
+            "messages": messages,
+            "stream": True,
+            "stream_options": {"include_usage": True},
+        }
+        if temperature is not None:
+            payload["temperature"] = temperature
+        if seed is not None:
+            payload["seed"] = seed
+
         async with client.stream(
             "POST",
             f"{self.base_url}/chat/completions",
             headers=self._headers(app_title),
-            json={
-                "model": self.model,
-                "messages": messages,
-                "stream": True,
-                "stream_options": {"include_usage": True},
-            },
+            json=payload,
             timeout=self.timeout,
         ) as response:
             if response.status_code >= 400:

@@ -149,6 +149,49 @@ async def test_chat_json_sends_a_strict_json_schema(monkeypatch: pytest.MonkeyPa
     assert fmt["json_schema"]["schema"] == SCHEMA
 
 
+async def test_chat_json_forwards_temperature_and_seed(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Reproducibility knobs travel on the request when the eval sets them."""
+    seen: dict[str, Any] = {}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        seen.update(json.loads(request.content))
+        return ok_response()
+
+    client, transport, _ = make_client(handler, monkeypatch)
+    async with httpx.AsyncClient(transport=transport) as http:
+        await client.chat_json(
+            system="s",
+            user="u",
+            schema=SCHEMA,
+            schema_name="x",
+            app_title="t",
+            client=http,
+            temperature=0.0,
+            seed=7,
+        )
+    assert seen["temperature"] == 0.0
+    assert seen["seed"] == 7
+
+
+async def test_chat_json_omits_sampling_knobs_by_default(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Authoring commands keep their exact request shape: no temperature, no seed."""
+    seen: dict[str, Any] = {}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        seen.update(json.loads(request.content))
+        return ok_response()
+
+    client, transport, _ = make_client(handler, monkeypatch)
+    async with httpx.AsyncClient(transport=transport) as http:
+        await client.chat_json(
+            system="s", user="u", schema=SCHEMA, schema_name="x", app_title="t", client=http
+        )
+    assert "temperature" not in seen
+    assert "seed" not in seen
+
+
 async def test_chat_json_sends_attribution_headers(monkeypatch: pytest.MonkeyPatch) -> None:
     seen: dict[str, Any] = {}
 

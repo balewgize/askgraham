@@ -4,6 +4,8 @@ A fast, distraction-free reader for all 233 of Paul Graham's essays — rebuilt 
 production-grade RAG application.
 
 **Status:** migration in progress. See [z-PLAN.md](z-PLAN.md) for the roadmap.
+Phases 1–7 are complete: the corpus, hybrid retrieval, cited chat, and a measured
+eval harness. Design decisions are recorded in [`docs/adr/`](docs/adr/).
 
 ## Layout
 
@@ -118,7 +120,25 @@ uv run python cli.py paths             # LLM reading paths         (needs OPENRO
 uv run python cli.py index             # chunk + embed             (local ONNX, no API key)
 uv run python cli.py snapshot          # Postgres -> frontend/snapshot/
 uv run python cli.py export            # Postgres -> frontend/public/export/
+uv run python cli.py eval              # retrieval metrics vs the gold dataset (free)
+uv run python cli.py eval --answers    # + generate and judge answers    (needs OPENROUTER_API_KEY)
 ```
+
+### Evals
+
+`eval` runs 40 hand-authored questions from [`eval/datasets/qa.jsonl`](backend/eval/datasets/qa.jsonl)
+through the retrieval variants and reports recall@k, MRR and nDCG@k — at the
+essay level, plus paragraph coverage against the hand-labelled gold paragraphs.
+It sweeps the ablations (reranker on/off, vector-only, lexical-only) in one pass,
+so the report's before/after table prices the heuristics that Phases 5–6 shipped
+unmeasured. Retrieval needs only Postgres and the local ONNX models, so it is
+free and key-less; `--answers` adds LLM-as-judge faithfulness, relevance and
+citation correctness, plus exact quote-grounding and citation-precision checks.
+Every run is reproducible: temperature 0, a fixed seed, and the models, cutoff
+and git revision recorded in the report.
+
+The committed baseline is [`eval/results/baseline.md`](backend/eval/results/baseline.md);
+the design is [ADR 0004](docs/adr/0004-evals.md).
 
 `classify` and `paths` are cached on content, so a re-run only pays for essays or
 path specs that actually changed. Both accept `--dry-run` to see what would run

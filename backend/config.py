@@ -93,9 +93,35 @@ class Settings(BaseSettings):
     llm_max_attempts: int = 3
     classify_concurrency: int = 4
 
+    # ── eval ───────────────────────────────────────────────────────────
+    # Reproducibility is the whole point of an eval, so the sampler is pinned
+    # here rather than left to the provider default. Temperature 0 plus a fixed
+    # seed means a re-run reproduces the same answers, given the same model.
+    eval_temperature: float = 0.0
+    eval_seed: int = 7
+    # cutoff for recall@k / nDCG@k. 10 matches the chat context budget and the
+    # palette's default result count.
+    eval_k: int = 10
+    # Empty means reuse `openrouter_model`. Kept separate because a stronger
+    # judge than the generator is the usual setup: the judged model must not
+    # grade its own work when a better judge is available.
+    eval_judge_model: str = ""
+    # Answers are generated and judged concurrently; each answer is three extra
+    # judge calls, so this is the cost dial.
+    eval_concurrency: int = 4
+    # Hard ceiling on a single judge call. httpx's own read timeout does not
+    # always fire when a provider stalls mid-response, and an eval that hangs
+    # forever is worse than one that records a failed judge and moves on. A
+    # stall is retried once before it is recorded.
+    eval_request_timeout_s: float = 120.0
+
     @property
     def llm_configured(self) -> bool:
         return bool(self.openrouter_api_key)
+
+    @property
+    def eval_judge_model_name(self) -> str:
+        return self.eval_judge_model or self.openrouter_model
 
     @property
     def cors_origin_list(self) -> list[str]:
