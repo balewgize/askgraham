@@ -4,8 +4,44 @@ A fast, distraction-free reader for all 233 of Paul Graham's essays — rebuilt 
 production-grade RAG application.
 
 **Status:** migration in progress. See [z-PLAN.md](z-PLAN.md) for the roadmap.
-Phases 1–7 are complete: the corpus, hybrid retrieval, cited chat, and a measured
-eval harness. Design decisions are recorded in [`docs/adr/`](docs/adr/).
+Phases 1–7 are complete — the corpus, hybrid retrieval, cited chat, and a measured
+eval harness — plus the first Phase 9 tool, related essays. Design decisions are
+recorded in [`docs/adr/`](docs/adr/).
+
+## Features
+
+**Reader** — Next.js 16, statically prerendered from a committed snapshot
+- All 233 essays; content needs no runtime service (fast, SEO-friendly)
+- ⌘K palette over the server-side hybrid search
+- Related essays on every essay page, nearest by chunk-vector centroid
+- Curated reading paths and startup-stage tags
+- Favorites, reading-position memory, text-size presets, light/dark theme
+- Copy or download any essay as Markdown
+
+**Retrieval** — Postgres + pgvector
+- Three first-stage arms — dense (HNSW), body lexical (`ts_rank_cd`), and a
+  boosted title arm — fused with weighted Reciprocal Rank Fusion
+- Optional cross-encoder reranker
+- One `GET /api/v1/search` serves the palette, chat, and the evals
+
+**Chat** — cited answers, streamed
+- `POST /api/v1/chat` over SSE: `sources`, then tokens, then `done`
+- Inline `[slug#paragraph]` citations that resolve back to the source text
+
+**Related essays**
+- `GET /api/v1/essays/{slug}/related` — nearest essays by the mean of an essay's
+  chunk vectors; no model call in the read path
+
+**Evals** — the measured part
+- 40-case hand-authored gold set; recall@k, MRR, nDCG@k and paragraph coverage
+- LLM-as-judge faithfulness / relevance / citation correctness, plus exact
+  quote-grounding and citation-precision checks
+- Reproducible runs (temperature 0, fixed seed) and a committed baseline
+
+**Corpus pipeline** — one writer, `data/`
+- scrape → ingest → classify → paths → index → snapshot/export, all idempotent
+  and content-hashed
+- Local ONNX embeddings and reranker: free, offline, no API key
 
 ## Layout
 
