@@ -9,11 +9,11 @@ export const metadata: Metadata = {
 };
 
 export default function ChatPage() {
-  // Break out of the reader's narrow column so chat and the citation panel can
-  // sit side by side on large screens. `overflow-x-clip` on the body keeps the
-  // wider child from producing a horizontal scrollbar.
+  // Pin the whole chat below the sticky header so the composer stays at the
+  // bottom of the viewport and only the message list scrolls. `--header-h` is
+  // measured by HeaderHeight; the fixed layer sits below the header (z-40).
   return (
-    <div className="relative left-1/2 w-[min(100dvw-2rem,84rem)] -translate-x-1/2">
+    <div className="fixed inset-x-0 bottom-0 top-[var(--header-h)] z-10">
       <Chat />
     </div>
   );

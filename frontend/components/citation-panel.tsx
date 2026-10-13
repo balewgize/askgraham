@@ -58,14 +58,18 @@ export default function CitationPanel({ slug, start, end, onClose }: Props) {
     };
   }, [slug]);
 
-  // Scroll to the cited paragraph once it is on screen.
+  // Scroll to the cited paragraph once it is on screen. `relative` on the
+  // scroll container makes `offsetTop` relative to it (not the fixed panel),
+  // and the rAF lets fonts settle so the paragraph lands at the top, not under it.
   useEffect(() => {
     if (status !== "ready") return;
     const container = scrollRef.current;
     const target = container?.querySelector<HTMLElement>(`#cite-p-${start}`);
-    if (container && target) {
-      container.scrollTo({ top: Math.max(0, target.offsetTop - 16), behavior: "smooth" });
-    }
+    if (!container || !target) return;
+    const frame = requestAnimationFrame(() =>
+      container.scrollTo({ top: Math.max(0, target.offsetTop - 12), behavior: "smooth" }),
+    );
+    return () => cancelAnimationFrame(frame);
   }, [status, slug, start]);
 
   useEffect(() => {
@@ -80,7 +84,7 @@ export default function CitationPanel({ slug, start, end, onClose }: Props) {
     <aside
       role="dialog"
       aria-label={`Source: ${essay?.title ?? slug}`}
-      className="fixed inset-y-0 right-0 z-50 flex w-full flex-col border-l border-line bg-surface shadow-2xl sm:max-w-xl lg:sticky lg:top-20 lg:right-auto lg:bottom-auto lg:h-[calc(100dvh-5rem)] lg:w-[38rem] lg:shrink-0 lg:rounded-xl lg:border lg:shadow-lg"
+      className="absolute inset-0 z-20 flex flex-col bg-surface lg:static lg:z-auto lg:w-80 lg:shrink-0 lg:border-l lg:border-line xl:w-[26rem] 2xl:w-[30rem]"
     >
       <header className="flex items-center justify-between gap-3 border-b border-line px-5 py-3">
         <div className="min-w-0">
@@ -113,7 +117,7 @@ export default function CitationPanel({ slug, start, end, onClose }: Props) {
         </div>
       </header>
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-5 py-4 sm:px-8">
+      <div ref={scrollRef} className="relative flex-1 overflow-y-auto px-5 py-4 sm:px-8">
         {status === "loading" && <p className="text-sm text-fg-subtle">Loading the essay…</p>}
         {status === "error" && (
           <p className="text-sm text-red-700 dark:text-red-400">Couldn&apos;t load this essay.</p>
