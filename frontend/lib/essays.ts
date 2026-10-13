@@ -22,8 +22,13 @@ export type IndexEntry = {
   reading_time_min: number;
 };
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const ESSAYS_DIR = path.join(DATA_DIR, "essays");
+/**
+ * Repo-root `data/`, resolved from the frontend package root.
+ * The backend owns this data; the frontend reads it only until Phase 3,
+ * when `lib/` switches from fs to the HTTP API.
+ */
+export const DATA_DIR = path.resolve(process.cwd(), "..", "data");
+export const ESSAYS_DIR = path.join(DATA_DIR, "essays");
 
 const MONTHS: Record<string, number> = {
   January: 1,

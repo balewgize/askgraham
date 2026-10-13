@@ -1,0 +1,10 @@
+# pnpm build-script policy. pnpm 12 only reads `allowBuilds` from this file,
+# not from package.json, so it has to live here.
+#
+# esbuild is the only dependency that legitimately needs its postinstall to run
+# (it resolves the platform binary used by tsx). sharp and unrs-resolver ship
+# prebuilt platform packages and must NOT run build scripts.
+allowBuilds:
+  esbuild: true
+  sharp: false
+  unrs-resolver: false

@@ -15,11 +15,10 @@
 import { zipSync, strToU8 } from "fflate";
 import { mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { sortIndex, type Essay } from "../lib/essays";
+import { ESSAYS_DIR, sortIndex, type Essay } from "../lib/essays";
 import { getPaths } from "../lib/paths";
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const ESSAYS_DIR = path.join(DATA_DIR, "essays");
+
 const OUT_DIR = path.join(process.cwd(), "public", "export");
 const SOURCE = "https://www.paulgraham.com/articles.html";
 

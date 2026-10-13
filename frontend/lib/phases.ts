@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { DATA_DIR } from "./essays";
 
 export type Phase = {
   id: string;
@@ -25,8 +26,6 @@ export type PhasesFile = {
   generated: string;
   essays: Record<string, EssayPhase>;
 };
-
-const DATA_DIR = path.join(process.cwd(), "data");
 
 export async function getTaxonomy(): Promise<Taxonomy> {
   const raw = await readFile(path.join(DATA_DIR, "taxonomy.json"), "utf-8");

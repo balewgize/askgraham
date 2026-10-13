@@ -1,5 +1,5 @@
 {
-  "name": "askgraham",
+  "name": "frontend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -35,5 +35,5 @@
     "tsx": "^4.23.13",
     "typescript": "^5"
   },
-  "packageManager": "pnpm@11.5.2"
+  "packageManager": "pnpm@12.11.2"
 }

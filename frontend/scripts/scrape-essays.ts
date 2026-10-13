@@ -13,6 +13,7 @@
 import * as cheerio from "cheerio";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { DATA_DIR, ESSAYS_DIR } from "../lib/essays";
 
 const BASE = "https://www.paulgraham.com";
 const INDEX_URL = `${BASE}/articles.html`;
@@ -283,7 +284,7 @@ async function main() {
     list = all.slice(0, limitArg);
   }
 
-  const outDir = path.join(process.cwd(), "data", "essays");
+  const outDir = ESSAYS_DIR;
   await mkdir(outDir, { recursive: true });
 
   const index: EssayJson[] = [];
@@ -303,7 +304,7 @@ async function main() {
     if (i < list.length - 1) await sleep(DELAY_MS);
   }
 
-  await writeFile(path.join(process.cwd(), "data", "index.json"), JSON.stringify(indexRows, null, 2));
+  await writeFile(path.join(DATA_DIR, "index.json"), JSON.stringify(indexRows, null, 2));
   console.log(`done: ${index.length}/${list.length} written. data/index.json updated.`);
 }
 

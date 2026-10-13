@@ -15,7 +15,7 @@
 import { createHash } from "node:crypto";
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
-import type { IndexEntry } from "../lib/essays";
+import { DATA_DIR, type IndexEntry } from "../lib/essays";
 import type { PathsFile, ReadingPath } from "../lib/paths";
 import type { PhasesFile } from "../lib/phases";
 
@@ -25,7 +25,6 @@ try {
   /* no .env file */
 }
 
-const DATA_DIR = path.join(process.cwd(), "data");
 const OUT_PATH = path.join(DATA_DIR, "paths.json");
 
 const BASE_URL = (process.env.OPENROUTER_BASE_URL ?? "https://openrouter.ai/api/v1").replace(/\/$/, "");

@@ -11,6 +11,7 @@
 import { Document } from "flexsearch";
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { ESSAYS_DIR } from "../lib/essays";
 
 export const SEARCH_OPTIONS = {
   document: {
@@ -20,7 +21,7 @@ export const SEARCH_OPTIONS = {
 };
 
 async function main() {
-  const essaysDir = path.join(process.cwd(), "data", "essays");
+  const essaysDir = ESSAYS_DIR;
   const outDir = path.join(process.cwd(), "public", "search-index");
   await mkdir(outDir, { recursive: true });
 

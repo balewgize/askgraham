@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { getIndex } from "./essays";
+import { DATA_DIR, getIndex } from "./essays";
 
 export type PathStep = {
   slug: string;
@@ -52,8 +52,6 @@ export type ResolvedPath = {
   order: number;
   steps: ResolvedStep[];
 };
-
-const DATA_DIR = path.join(process.cwd(), "data");
 
 /** Null until `pnpm paths` has produced data/paths.json. */
 export async function getPathsFile(): Promise<PathsFile | null> {
