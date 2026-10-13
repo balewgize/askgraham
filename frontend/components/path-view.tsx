@@ -18,13 +18,7 @@ export default function PathView({ path }: { path: ResolvedPath }) {
 
   return (
     <div>
-      <Link
-        href="/"
-        className="mb-5 inline-flex min-h-9 items-center gap-1.5 text-sm text-fg-muted transition-colors hover:text-fg"
-      >
-        <span aria-hidden="true">←</span> All essays
-      </Link>
-      <header className="mb-7 max-w-[46ch]">
+      <header className="mb-7">
         <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-fg-subtle">Reading path</p>
         <h1 className="mt-1.5 font-serif text-3xl font-semibold tracking-tight">{path.title}</h1>
         <p className="mt-2 text-sm text-fg-subtle">{path.subtitle}</p>
@@ -94,10 +88,6 @@ export default function PathView({ path }: { path: ResolvedPath }) {
           );
         })}
       </ol>
-
-      <p className="mt-10 border-t border-line pt-4 text-xs text-fg-subtle">
-        Curated automatically from the full catalog, like the stage tags. Feedback welcome.
-      </p>
     </div>
   );
 }
