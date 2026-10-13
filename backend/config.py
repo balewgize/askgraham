@@ -72,6 +72,11 @@ class Settings(BaseSettings):
     search_default_limit: int = 10
     search_max_limit: int = 50
 
+    # Related-essays endpoint. A reader sees a short list; the cap bounds the
+    # overfetch before results are deduped to one chunk per essay.
+    related_default_limit: int = 5
+    related_max_limit: int = 20
+
     # ── chat ───────────────────────────────────────────────────────────
     # Passages put in front of the model. More context helps until it starts
     # burying the useful chunk; eight is a paragraph budget, not a token one.

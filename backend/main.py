@@ -297,6 +297,47 @@ async def get_essay(
     return EssayResponse(**await load_essay(session, slug))
 
 
+class RelatedEssayModel(BaseModel):
+    slug: str
+    title: str
+    date: str | None
+    reading_time_min: int
+    similarity: float
+    start_paragraph: int
+    end_paragraph: int
+
+
+class RelatedEssaysResponse(BaseModel):
+    slug: str
+    count: int
+    results: list[RelatedEssayModel]
+
+
+@essay_router.get("/essays/{slug}/related", response_model=RelatedEssaysResponse)
+async def related_essays(
+    slug: str,
+    limit: int = Query(
+        default=settings.related_default_limit,
+        ge=1,
+        le=settings.related_max_limit,
+    ),
+    session: AsyncSession = Depends(db.get_session),
+) -> RelatedEssaysResponse:
+    """Essays most similar to this one, by the mean of its chunk vectors.
+
+    No model runs here: the chunk embeddings already exist, so the whole feature
+    is one aggregate query. A missing index is an empty list, not an error.
+    """
+    from rag.related import find_related_essays
+
+    hits = await find_related_essays(session, slug, limit=limit)
+    return RelatedEssaysResponse(
+        slug=slug,
+        count=len(hits),
+        results=[RelatedEssayModel(**hit.as_dict()) for hit in hits],
+    )
+
+
 # ── chat ──────────────────────────────────────────────────────────
 
 chat_router = APIRouter(tags=["chat"])

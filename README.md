@@ -45,6 +45,10 @@ Chat lives at `/chat` and streams from `POST /api/v1/chat`. It needs
 `OPENROUTER_API_KEY`; inside the container stack set it in `backend/.env` (the
 api service mounts `backend/`, not the repo root).
 
+Related essays are served by `GET /api/v1/essays/{slug}/related` — the essays
+nearest in embedding space to a given one, computed from the chunk vectors with
+no model call.
+
 Two compose files:
 
 | File | Use |
