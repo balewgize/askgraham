@@ -1,0 +1,25 @@
+# virtualenv
+.venv/
+venv/
+
+# python caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# tooling caches
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# packaging
+*.egg-info/
+build/
+dist/
+
+# local env
+.env
+.env.*
+!.env.example

@@ -1,0 +1,86 @@
+[project]
+name = "askgraham-backend"
+version = "0.1.0"
+requires-python = ">=3.14"
+dependencies = [
+    "alembic>=1.14",
+    "asyncpg>=0.30",
+    "fastapi>=0.115",
+    "httpx>=0.28",
+    "pgvector>=0.3.6",
+    "pydantic>=2.9",
+    "pydantic-settings>=2.6",
+    "python-multipart>=0.0.20",
+    "sqlalchemy[asyncio]>=2.0.36",
+    "structlog>=24.4",
+    "typer>=0.15",
+    "uvicorn[standard]>=0.34",
+]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.14",
+    "pytest>=8.3",
+    "pytest-asyncio>=0.25",
+    "ruff>=0.9",
+]
+
+# This is an application, not a library: `uv sync` installs dependencies but never
+# builds/installs the project itself. Modules are imported top-level (`import config`)
+# because `backend/` is the working root for both uvicorn and alembic.
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle
+    "W",    # warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "N",    # pep8-naming
+    "UP",   # pyupgrade
+    "ASYNC",
+    "B",    # bugbear
+    "C4",   # comprehensions
+    "SIM",  # simplify
+    "RUF",
+]
+ignore = [
+    "B008",  # FastAPI Depends() in defaults is idiomatic
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Alembic env.py legitimately imports alembic.context at module scope
+"alembic/*" = ["E402"]
+
+[tool.ruff.lint.isort]
+# First-party modules are imported as top-level names (`from config import ...`,
+# `from core.db import ...`) because `backend/` is on sys.path — see the note on
+# `[tool.uv]` above. Without this list isort treats them as third-party and sorts
+# them in with fastapi/sqlalchemy.
+known-first-party = ["config", "core", "llm", "main", "rag"]
+
+[tool.mypy]
+python_version = "3.14"
+strict = true
+warn_unreachable = true
+disallow_untyped_defs = true
+# NOTE: pydantic's mypy plugin is intentionally NOT enabled. It crashes with
+# "AssertionError: All arguments must be fully typed." while synthesising
+# __init__ for a BaseSettings subclass that overrides env_file. Attribute
+# types are still inferred from class-level annotations without it; the only
+# loss is the generated constructor signature. Re-enable when upstream fixes it.
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+disallow_untyped_defs = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+addopts = "-q --strict-markers"

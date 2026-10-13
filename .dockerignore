@@ -1,0 +1,39 @@
+# Build context for the frontend image (context: repo root).
+# Without this, every build uploads node_modules, .next and .git as context.
+
+# git
+.git
+.gitignore
+
+# dependencies — the Dockerfile installs its own from the lockfile
+node_modules
+**/node_modules
+.pnpm-store
+
+# python
+.venv
+**/.venv
+__pycache__
+**/__pycache__
+*.pyc
+.ruff_cache
+.mypy_cache
+.pytest_cache
+*.egg-info
+
+# build output
+.next
+**/.next
+out
+dist
+*.tsbuildinfo
+next-env.d.ts
+
+# scratch docs — not needed to build
+z-*.md
+docs
+
+# secrets
+.env
+.env.*
+!.env.example
