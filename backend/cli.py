@@ -101,7 +101,8 @@ def classify(
     result for a complete one.
     """
     configure_logging()
-    from llm.classify import ClassifyStats, classify_essays, sync_phases_to_db
+    from llm.classify import ClassifyStats, classify_essays
+    from rag.ingest import IngestStats, upsert_essay_phases
 
     source = data_dir or settings.data_dir
     outcome: ClassifyStats | None = None
@@ -119,11 +120,65 @@ def classify(
                 f"{outcome.classified} classified · {len(outcome.failures)} failed"
             )
             if push:
+                # Reuses the ingest upsert rather than a second code path, so a
+                # tag written here cannot drift from one written by `ingest`.
                 async with db.session_scope() as session:
-                    rows = await sync_phases_to_db(session, source)
-                typer.echo(f"pushed {rows} phase tags to Postgres")
+                    stats = IngestStats()
+                    await upsert_essay_phases(session, source, stats)
+                typer.echo(f"pushed {stats.phase_tags_written} phase tags to Postgres")
         except Exception as exc:
             log.exception("cli.classify_failed")
+            raise typer.Exit(code=1) from exc
+        finally:
+            await db.dispose_engine()
+
+    asyncio.run(main())
+
+    if outcome and outcome.failures:
+        typer.echo(f"{len(outcome.failures)} failed — rerun to retry them", err=True)
+        raise typer.Exit(code=1)
+
+
+@app.command()
+def paths(
+    only: str | None = typer.Option(None, "--only", help="Regenerate a single path by id."),
+    force: bool = typer.Option(False, "--force", help="Ignore the cache and regenerate."),
+    dry_run: bool = typer.Option(False, "--dry-run", help="Show what would run. No API calls."),
+    push: bool = typer.Option(True, "--push/--no-push", help="Also write results into Postgres."),
+    data_dir: Path | None = typer.Option(
+        None, "--data-dir", help="Corpus directory. Defaults to the repo's data/."
+    ),
+) -> None:
+    """Curate reading paths. Only pays for specs whose intent changed."""
+    configure_logging()
+    from llm.paths import PathsStats, generate_paths
+    from rag.ingest import IngestStats, upsert_paths
+
+    source = data_dir or settings.data_dir
+    outcome: PathsStats | None = None
+
+    async def main() -> None:
+        nonlocal outcome
+        try:
+            outcome = await generate_paths(source, only=only, force=force, dry_run=dry_run)
+            if dry_run:
+                typer.echo(f"dry run — {outcome.selected - outcome.cached} would be generated")
+                return
+            typer.echo(
+                f"model: {outcome.model}\n"
+                f"{outcome.total} paths · {outcome.selected} selected · "
+                f"{outcome.generated} generated · {len(outcome.failures)} failed"
+            )
+            if push:
+                async with db.session_scope() as session:
+                    stats = IngestStats()
+                    await upsert_paths(session, source, stats)
+                typer.echo(
+                    f"pushed {stats.paths_written} paths, "
+                    f"{stats.paths_skipped} unchanged to Postgres"
+                )
+        except Exception as exc:
+            log.exception("cli.paths_failed")
             raise typer.Exit(code=1) from exc
         finally:
             await db.dispose_engine()

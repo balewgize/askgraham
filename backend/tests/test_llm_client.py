@@ -5,6 +5,7 @@ the response handling are pinned down. Both matter financially: a retry policy
 that retries too little loses work, and one that retries too much costs money.
 """
 
+import asyncio
 import json
 from collections.abc import Callable
 from typing import Any
@@ -13,6 +14,7 @@ import httpx
 import pytest
 
 from llm.client import (
+    InvalidResponseError,
     LLMError,
     OpenRouterClient,
     RetryableLLMError,
@@ -280,7 +282,7 @@ async def test_unexpected_response_shape_is_reported(monkeypatch: pytest.MonkeyP
             )
 
 
-async def test_null_content_is_retried(monkeypatch: pytest.MonkeyPatch) -> None:
+async def test_null_content_is_an_invalid_response(monkeypatch: pytest.MonkeyPatch) -> None:
     def handler(request: httpx.Request) -> httpx.Response:
         return httpx.Response(
             200, json={"choices": [{"message": {"content": None}}]}, request=request
@@ -288,10 +290,155 @@ async def test_null_content_is_retried(monkeypatch: pytest.MonkeyPatch) -> None:
 
     client, transport, _ = make_client(handler, monkeypatch)
     async with httpx.AsyncClient(transport=transport) as http:
-        with pytest.raises(RetryableLLMError):
+        with pytest.raises(InvalidResponseError):
             await client.chat_json(
                 system="s", user="u", schema=SCHEMA, schema_name="x", app_title="t", client=http
             )
+
+
+# ── repair retries ────────────────────────────────────────────────────
+# The improvement over the TypeScript, which resent the identical request and
+# usually reproduced the same mistake.
+
+
+async def test_repair_retry_feeds_the_rejection_back_to_the_model(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The second request must carry the previous answer and the reason."""
+    payloads: list[dict[str, Any]] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        payloads.append(json.loads(request.content))
+        return ok_response(content='{"ok": false}')
+
+    client, transport, _ = make_client(handler, monkeypatch)
+
+    def reject_anything(parsed: Any) -> Any:
+        raise InvalidResponseError("`ok` must be true")
+
+    async with httpx.AsyncClient(transport=transport) as http:
+        with pytest.raises(InvalidResponseError):
+            await client.chat_json(
+                system="s",
+                user="u",
+                schema=SCHEMA,
+                schema_name="x",
+                app_title="t",
+                client=http,
+                validate=reject_anything,
+            )
+
+    assert len(payloads) == client.max_attempts
+    first, second = payloads[0]["messages"], payloads[1]["messages"]
+    # First attempt is just the prompt.
+    assert [m["role"] for m in first] == ["system", "user"]
+    # The repair attempt replays the bad answer and says what was wrong.
+    assert [m["role"] for m in second] == ["system", "user", "assistant", "user"]
+    assert second[2]["content"] == '{"ok": false}'
+    assert "`ok` must be true" in second[3]["content"]
+    assert "corrected" in second[3]["content"]
+
+
+async def test_repair_retry_recovers_when_the_model_corrects_itself(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls = {"n": 0}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        calls["n"] += 1
+        body = json.loads(request.content)
+        # Correct only once the repair instruction is present.
+        corrected = len(body["messages"]) > 2
+        return ok_response(content=f'{{"ok": {str(corrected).lower()}}}')
+
+    client, transport, slept = make_client(handler, monkeypatch)
+    validate = lambda parsed: (  # noqa: E731
+        parsed if parsed.get("ok") else (_ for _ in ()).throw(InvalidResponseError("not ok"))
+    )
+    async with httpx.AsyncClient(transport=transport) as http:
+        result = await client.chat_json(
+            system="s",
+            user="u",
+            schema=SCHEMA,
+            schema_name="x",
+            app_title="t",
+            client=http,
+            validate=validate,
+        )
+    assert result == {"ok": True}
+    assert calls["n"] == 2
+    assert slept == [], "a repair retry is not a transport backoff"
+
+
+async def test_repair_attempts_are_bounded(monkeypatch: pytest.MonkeyPatch) -> None:
+    calls = {"n": 0}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        calls["n"] += 1
+        return ok_response(content='{"ok": false}')
+
+    client, transport, _ = make_client(handler, monkeypatch, max_attempts=2)
+
+    def always_reject(parsed: Any) -> Any:
+        raise InvalidResponseError("never good enough")
+
+    async with httpx.AsyncClient(transport=transport) as http:
+        with pytest.raises(InvalidResponseError):
+            await client.chat_json(
+                system="s",
+                user="u",
+                schema=SCHEMA,
+                schema_name="x",
+                app_title="t",
+                client=http,
+                validate=always_reject,
+            )
+    assert calls["n"] == 2
+
+
+async def test_concurrent_repairs_do_not_share_state(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Regression: the raw content must not be stashed on the client.
+
+    One client serves many concurrent requests, so an instance attribute holding
+    the last response would surface one request's content in another's repair.
+    """
+    seen: list[str] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        body = json.loads(request.content)
+        marker = body["messages"][1]["content"]
+        if len(body["messages"]) > 2:
+            seen.append(body["messages"][2]["content"])
+            return ok_response(content='{"ok": true}')
+        return ok_response(content=f'{{"ok": false, "who": "{marker}"}}')
+
+    client, transport, _ = make_client(handler, monkeypatch)
+
+    def need_ok(parsed: Any) -> Any:
+        if not parsed.get("ok"):
+            raise InvalidResponseError("not ok")
+        return parsed
+
+    async with httpx.AsyncClient(transport=transport) as http:
+        await asyncio.gather(
+            *(
+                client.chat_json(
+                    system="s",
+                    user=f"req-{i}",
+                    schema=SCHEMA,
+                    schema_name="x",
+                    app_title="t",
+                    client=http,
+                    validate=need_ok,
+                )
+                for i in range(5)
+            )
+        )
+
+    assert len(seen) == 5
+    for excerpt in seen:
+        who = json.loads(excerpt)["who"]
+        assert who in excerpt, f"repair showed the wrong request: {excerpt}"
 
 
 # ── map_bounded ───────────────────────────────────────────────────────

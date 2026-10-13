@@ -26,14 +26,17 @@ from pathlib import Path
 from typing import Any
 
 import httpx
-from sqlalchemy import delete, insert, select
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from config import settings
 from core.errors import ValidationError
 from core.logging_config import log
-from core.models import Essay, EssayPhase, Phase
-from llm.client import LLMError, OpenRouterClient, collapse_whitespace, map_bounded
+from llm.client import (
+    InvalidResponseError,
+    OpenRouterClient,
+    collapse_whitespace,
+    map_bounded,
+    pick_allowed,
+)
 from rag.ingest import date_key, read_essay_files
 
 PHASES_FILENAME = "phases.json"
@@ -95,21 +98,28 @@ def response_schema(taxonomy: dict[str, Any]) -> dict[str, Any]:
 
 
 def validate_result(parsed: Any, taxonomy: dict[str, Any]) -> dict[str, Any]:
-    """Keep only known phase ids, deduped, and require a usable `why`."""
-    valid = {p["id"] for p in taxonomy["phases"]}
-    raw_phases = parsed.get("phases") if isinstance(parsed, dict) else None
-    phases: list[str] = []
-    if isinstance(raw_phases, list):
-        for value in raw_phases:
-            if isinstance(value, str) and value in valid and value not in phases:
-                phases.append(value)
-    if not phases:
-        raise LLMError("no valid phases returned")
+    """Accept only known phase ids, and require a usable one-line `why`.
 
-    raw_why = parsed.get("why") if isinstance(parsed, dict) else None
+    The rejection message names the offending ids. That matters because it is fed
+    back to the model on a repair retry, and "use the allowed values" beats a
+    generic failure it cannot act on.
+    """
+    if not isinstance(parsed, dict):
+        raise InvalidResponseError("response was not a JSON object")
+
+    allowed = {p["id"] for p in taxonomy["phases"]}
+    phases, rejected = pick_allowed(parsed.get("phases"), allowed)
+    if rejected:
+        raise InvalidResponseError(
+            f"unknown phase ids {rejected}; allowed ids are {sorted(allowed)}"
+        )
+    if not phases:
+        raise InvalidResponseError("no phases returned")
+
+    raw_why = parsed.get("why")
     why = collapse_whitespace(raw_why) if isinstance(raw_why, str) else ""
     if not why:
-        raise LLMError("empty why returned")
+        raise InvalidResponseError("empty `why`")
 
     return {"phases": phases, "why": why}
 
@@ -216,15 +226,17 @@ async def classify_essays(
 
         async def one(essay: dict[str, Any]) -> dict[str, Any]:
             system, user = build_prompt(essay, taxonomy)
-            parsed = await client.chat_json(
+            result: dict[str, Any] = await client.chat_json(
                 system=system,
                 user=user,
                 schema=schema,
                 schema_name="essay_phases",
                 app_title="Ask Graham classifier",
                 client=http,
+                # The client owns retrying; this only decides what is acceptable.
+                validate=lambda parsed: validate_result(parsed, taxonomy),
             )
-            return validate_result(parsed, taxonomy)
+            return result
 
         results = await map_bounded(todo, one, concurrency=max(1, settings.classify_concurrency))
 
@@ -254,56 +266,3 @@ async def classify_essays(
         )
 
     return stats
-
-
-# ── database path ─────────────────────────────────────────────────────
-# The snapshot reads `essay_phases` from Postgres, so classification has to land
-# there too. `ingest` also reads data/phases.json directly; this exists so a
-# classify run can be followed immediately by a snapshot without a full ingest.
-
-
-async def sync_phases_to_db(session: AsyncSession, data_dir: Path) -> int:
-    """Replace `essay_phases` with the contents of data/phases.json."""
-    payload = json.loads((data_dir / PHASES_FILENAME).read_text(encoding="utf-8"))
-    tags = payload.get("essays") or {}
-
-    known_essays = set((await session.execute(select(Essay.slug))).scalars().all())
-    known_phases = set((await session.execute(select(Phase.id))).scalars().all())
-
-    await session.execute(delete(EssayPhase))
-    rows: list[dict[str, Any]] = []
-    skipped = 0
-    for slug, value in tags.items():
-        if slug not in known_essays:
-            continue
-        for rank, phase_id in enumerate(value.get("phases", [])):
-            if phase_id not in known_phases:
-                skipped += 1
-                continue
-            rows.append(
-                {
-                    "slug": slug,
-                    "phase_id": phase_id,
-                    "rank": rank,
-                    "why": value.get("why", ""),
-                    "content_hash": value.get("hash"),
-                }
-            )
-    if rows:
-        await session.execute(insert(EssayPhase), rows)
-    if skipped:
-        log.warning("classify.unknown_phases", count=skipped)
-    return len(rows)
-
-
-__all__ = [
-    "ClassifyStats",
-    "build_prompt",
-    "classify_essays",
-    "essay_cache_hash",
-    "load_existing",
-    "response_schema",
-    "sync_phases_to_db",
-    "validate_result",
-    "write_phases",
-]

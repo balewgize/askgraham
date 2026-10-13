@@ -257,8 +257,14 @@ async def _upsert_taxonomy(session: AsyncSession, data_dir: Path, stats: IngestS
     await session.flush()
 
 
-async def _upsert_essay_phases(session: AsyncSession, data_dir: Path, stats: IngestStats) -> None:
-    """`phases.json` is LLM output and optional — absent means 'not classified yet'."""
+async def upsert_essay_phases(session: AsyncSession, data_dir: Path, stats: IngestStats) -> None:
+    """`phases.json` is LLM output and optional — absent means 'not classified yet'.
+
+    Replaced per slug rather than merged per (slug, phase). A merged insert only
+    adds rows, so if an essay's tags change from [a, b] to [a] the stale (slug, b)
+    row survives and the essay keeps a tag it no longer has. Comparing the whole
+    list per essay is both simpler and correct.
+    """
     phases_file = _read_optional(data_dir, "phases.json")
     if phases_file is None:
         log.warning("phases.missing", file="phases.json")
@@ -266,41 +272,47 @@ async def _upsert_essay_phases(session: AsyncSession, data_dir: Path, stats: Ing
 
     known_slugs = set((await session.execute(select(Essay.slug))).scalars().all())
     known_phases = set((await session.execute(select(Phase.id))).scalars().all())
-    known_hashes: dict[tuple[str, str], str | None] = {
-        (slug, phase_id): content_hash
-        for slug, phase_id, content_hash in (
-            await session.execute(
-                select(EssayPhase.slug, EssayPhase.phase_id, EssayPhase.content_hash)
-            )
-        ).all()
-    }
+
+    existing: dict[str, tuple[list[tuple[int, str]], str | None]] = {}
+    for slug, phase_id, rank, content_hash in (
+        await session.execute(
+            select(EssayPhase.slug, EssayPhase.phase_id, EssayPhase.rank, EssayPhase.content_hash)
+        )
+    ).all():
+        ranks, _hash = existing.setdefault(slug, ([], content_hash))
+        ranks.append((rank, phase_id))
+        ranks.sort()
 
     rows: list[dict[str, Any]] = []
     for slug, value in (phases_file.get("essays") or {}).items():
         if slug not in known_slugs:
             continue  # stale tag for an essay that no longer exists
-        body_hash = value.get("hash") or _sha256(json.dumps(value.get("phases", [])))
-        for rank, phase_id in enumerate(value.get("phases", [])):
-            if phase_id not in known_phases:
-                continue  # model emitted an id outside the taxonomy
-            if known_hashes.get((slug, phase_id)) == body_hash:
-                continue
-            rows.append(
-                {
-                    "slug": slug,
-                    "phase_id": phase_id,
-                    "rank": rank,
-                    "why": value.get("why", ""),
-                    "content_hash": body_hash,
-                }
-            )
+        wanted = [p for p in value.get("phases", []) if p in known_phases]
+        if not wanted:
+            continue
+        body_hash = value.get("hash") or _sha256(json.dumps(wanted))
+        current, current_hash = existing.get(slug, ([], None))
+        if [p for _r, p in current] == wanted and current_hash == body_hash:
+            continue
+        # Replace the whole set for this essay.
+        await session.execute(delete(EssayPhase).where(EssayPhase.slug == slug))
+        rows.extend(
+            {
+                "slug": slug,
+                "phase_id": phase_id,
+                "rank": rank,
+                "why": value.get("why", ""),
+                "content_hash": body_hash,
+            }
+            for rank, phase_id in enumerate(wanted)
+        )
 
     if rows:
         await session.execute(insert(EssayPhase), rows)
         stats.phase_tags_written += len(rows)
 
 
-async def _upsert_paths(session: AsyncSession, data_dir: Path, stats: IngestStats) -> None:
+async def upsert_paths(session: AsyncSession, data_dir: Path, stats: IngestStats) -> None:
     paths_file = _read_optional(data_dir, "paths.json")
     if paths_file is None:
         log.warning("paths.missing", file="paths.json")
@@ -368,8 +380,8 @@ async def ingest_corpus(session: AsyncSession, data_dir: Path | None = None) -> 
         payloads = read_essay_files(source)
         await _upsert_essays(session, payloads, stats)
         await _upsert_taxonomy(session, source, stats)
-        await _upsert_essay_phases(session, source, stats)
-        await _upsert_paths(session, source, stats)
+        await upsert_essay_phases(session, source, stats)
+        await upsert_paths(session, source, stats)
 
         await session.flush()
 
@@ -395,4 +407,6 @@ __all__ = [
     "essay_meta_hash",
     "ingest_corpus",
     "read_essay_files",
+    "upsert_essay_phases",
+    "upsert_paths",
 ]

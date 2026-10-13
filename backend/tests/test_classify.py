@@ -22,6 +22,7 @@ from llm.classify import (
     validate_result,
     write_phases,
 )
+from llm.client import InvalidResponseError
 
 TAXONOMY = {
     "version": 1,
@@ -117,9 +118,21 @@ def test_schema_enumerates_known_phase_ids_only() -> None:
     assert schema["additionalProperties"] is False
 
 
-def test_validate_keeps_only_known_ids() -> None:
-    result = validate_result({"phases": ["ideas", "invented"], "why": "ok"}, TAXONOMY)
-    assert result["phases"] == ["ideas"]
+def test_validate_rejects_unknown_ids_and_names_them() -> None:
+    """Silently dropping an invented id hides a broken prompt.
+
+    Rejecting it also produces the message a repair retry feeds back, so the
+    model is told which id was wrong rather than asked to guess.
+    """
+    with pytest.raises(InvalidResponseError, match="invented"):
+        validate_result({"phases": ["ideas", "invented"], "why": "ok"}, TAXONOMY)
+
+
+def test_validate_rejection_message_lists_the_allowed_ids() -> None:
+    with pytest.raises(InvalidResponseError) as excinfo:
+        validate_result({"phases": ["invented"], "why": "ok"}, TAXONOMY)
+    message = str(excinfo.value)
+    assert "ideas" in message and "any" in message
 
 
 def test_validate_dedupes_preserving_order() -> None:
@@ -134,25 +147,19 @@ def test_validate_collapses_whitespace_in_why() -> None:
 
 
 def test_validate_rejects_no_valid_phases() -> None:
-    from llm.client import LLMError
-
-    with pytest.raises(LLMError, match="no valid phases"):
-        validate_result({"phases": ["nonsense"], "why": "ok"}, TAXONOMY)
+    with pytest.raises(InvalidResponseError, match="no phases returned"):
+        validate_result({"phases": [], "why": "ok"}, TAXONOMY)
 
 
 def test_validate_rejects_empty_why() -> None:
-    from llm.client import LLMError
-
-    with pytest.raises(LLMError, match="empty why"):
+    with pytest.raises(InvalidResponseError, match="empty `why`"):
         validate_result({"phases": ["ideas"], "why": "   "}, TAXONOMY)
 
 
 def test_validate_tolerates_wrong_types() -> None:
-    from llm.client import LLMError
-
-    with pytest.raises(LLMError):
+    with pytest.raises(InvalidResponseError):
         validate_result("not a dict", TAXONOMY)
-    with pytest.raises(LLMError):
+    with pytest.raises(InvalidResponseError):
         validate_result({"phases": "ideas", "why": "ok"}, TAXONOMY)
 
 
