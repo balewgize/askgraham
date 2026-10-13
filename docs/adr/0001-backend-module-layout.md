@@ -2,20 +2,14 @@
 
 - **Status:** Accepted
 - **Date:** 2026-10-13
-- **Phase:** 2 (Backend foundation)
 
 ## Context
 
-The original plan put every Python module directly in `backend/`. With Phase 2
-finished that was 6 files; Phases 3–7 add `schemas`, `api`, `cli`, `ingest`,
-`snapshot`, `chunking`, `embeddings`, `retrieval`, `generation`, `summarization`
-and `llm` — 17 `.py` files in one flat directory.
-
-The plan deliberately chose a flat, non-packaged layout: `[tool.uv] package = false`
-with `backend/` as the working root for both uvicorn and alembic. That constraint
-is what makes the whole decision delicate — the usual advice ("adopt `src/` layout,
-make it a real package") would have contradicted a choice already made for good
-reasons.
+The backend deliberately uses a flat, non-packaged layout: `[tool.uv] package =
+false` with `backend/` as the working root for both uvicorn and alembic. Left
+flat, the retrieval, chat and eval work would put every module in one directory.
+The usual fix — adopt a `src/` layout and make it a real package — would
+contradict a choice made for good reasons.
 
 The question was whether to introduce folders without giving that up.
 
@@ -31,8 +25,8 @@ backend/
 ├── cli.py           batch commands
 ├── core/            db · models · logging_config · errors
 ├── rag/             ingest · chunking · embeddings · retrieval · snapshot
-├── llm/             llm · generation · summarization
-└── eval/            runner · metrics · judges
+├── llm/             client · classify · generation · paths
+└── eval/            metrics · judges · runner
 ```
 
 Dependencies flow one way only:
@@ -65,8 +59,7 @@ Embeddings are local ONNX: free, offline, reproducible, and their failure mode i
 a missing model file. Everything in `llm/` talks to a remote API: it costs money
 per call, needs network, and fails with rate limits and timeouts. The split makes
 the cost and failure boundary visible in the directory tree instead of only in
-import graphs. The plan had already drawn this line for the modules themselves;
-this encodes it structurally.
+import graphs.
 
 ### Why every package has an `__init__.py`
 
@@ -89,9 +82,8 @@ Each one carries a docstring rather than re-exports — re-exporting from
   `fastapi` and `sqlalchemy`. That was a latent bug independent of this change.
 - No infrastructure moved. The Dockerfile still runs `uvicorn main:app`, the
   Makefile is unchanged, `alembic.ini` keeps `prepend_sys_path = .`.
-- Imports were cheap to rewrite *now* — 7 lines, because `api`, `cli` and the
-  whole `rag`/`llm` surface did not exist yet. After Phase 3 the same move would
-  have been a cross-cutting refactor.
+- Imports were cheap to rewrite while the surface was small — 7 lines; later the
+  same move would have been a cross-cutting refactor.
 - `tests/test_health.py` monkeypatches the string `"core.db.get_sessionmaker"`.
   String targets do not show up in a search for `import`, and a missed one makes
   the test pass while asserting nothing.
@@ -103,4 +95,4 @@ Each one carries a docstring rather than re-exports — re-exporting from
 | `src/` layout, make it a real package | Contradicts the non-packaged decision; a larger change than the problem needed |
 | Namespace packages, no `__init__.py` | Breaks `mypy --strict` (above) |
 | Move `config.py` into `core/` | Silently corrupts `BACKEND_DIR` / `REPO_ROOT` |
-| Keep flat, reorganize in Phase 7 | The cost of moving grows every phase; doing it now cost 7 lines |
+| Keep flat, reorganize later | The cost of the move grows with the surface; doing it while it was 7 lines was cheapest |

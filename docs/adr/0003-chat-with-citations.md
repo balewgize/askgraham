@@ -2,11 +2,10 @@
 
 - **Status:** Accepted
 - **Date:** 2026-10-13
-- **Phase:** 6 (Chat with citations)
 
 ## Context
 
-Phase 6 turns retrieval into a conversation: stream an answer grounded in the
+Chat turns retrieval into a conversation: stream an answer grounded in the
 corpus, with citations that resolve to a specific essay and paragraph. The
 pieces exist — `hybrid_search` already returns `slug` and a paragraph range.
 The open questions were where orchestration lives, how the answer streams, and
@@ -51,16 +50,16 @@ here. A mid-stream failure becomes an `error` event.
 A follow-up ("what about the second point?") is resolved by the *model*, which
 sees the history, but not by the *retriever*, which sees only the latest
 message. That is the known gap. Rewriting with a second LLM call would close it
-at the cost of an extra round trip on every turn; that is a Phase 8 decision
-made against eval numbers, not one to guess now.
+at the cost of an extra round trip on every turn; that is a decision to make
+against eval numbers, not to guess.
 
 ## Consequences
 
 - **Answer latency is dominated by generation**, not retrieval: ~30ms to
   retrieve, seconds to stream. The `done` event carries token usage from
   OpenRouter (`stream_options`), so cost per query is logged as it happens.
-- **Rate limiting is deferred to Phase 10.** The endpoint is unauthenticated
-  and spends money per call; that is acceptable locally and not in production.
+- **Rate limiting is not implemented.** The endpoint is unauthenticated and
+  spends money per call; that is acceptable locally and not in production.
 - **Citations point at an essay, not yet an anchor.** The reader has no
   per-paragraph DOM id, so a citation links to `/essays/<slug>` and shows the
   paragraph range as text. Paragraph anchors are a small reader change for

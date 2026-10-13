@@ -2,14 +2,13 @@
 
 - **Status:** Accepted
 - **Date:** 2026-10-13
-- **Phase:** 5 (Chunking, embeddings, hybrid retrieval)
 
 ## Context
 
-Phase 5 adds retrieval. The plan committed to Postgres + pgvector, local ONNX
-embeddings, and "RRF fusion of both, then optional reranker". It left open how
-chunks are stored, how lexical search is indexed, and — because the frontend
-already had a working ⌘K palette — whether search stays client-side.
+Retrieval is committed to Postgres + pgvector, local ONNX embeddings, and RRF
+fusion of a dense and a lexical arm with an optional reranker. The open questions
+were how chunks are stored, how lexical search is indexed, and — because the
+frontend already had a working ⌘K palette — whether search stays client-side.
 
 That last question mattered more than it looked. The palette ran on a
 build-time FlexSearch index committed to `frontend/public/search-index/`. One
@@ -47,9 +46,9 @@ live there is now `rag/export.py` + `uv run python cli.py export`.
 The client index could only match words, had to be shipped to every visitor,
 and churned in git. Moving it to the backend is what makes hybrid retrieval
 possible at all: the dense arm needs the vectors, and the lexical arm needs
-Postgres. It also means one ranking implementation serves the palette, the chat
-in Phase 6, and the evals in Phase 7 — instead of a client approximation that
-can silently disagree with the measured one.
+Postgres. It also means one ranking implementation serves the palette, chat, and
+the evals — instead of a client approximation that can silently disagree with the
+measured one.
 
 ### Why RRF, not score normalization
 
@@ -57,8 +56,9 @@ Cosine distance and `ts_rank_cd` are not on the same scale, and any fixed
 normalization is a guess that has to be re-tuned whenever either changes.
 Reciprocal Rank Fusion uses only the *ranks*: `Σ w_i/(k + rank)`. It is a few
 lines, has one constant (`k=60`, the paper's default), and a document that
-ranks respectably in both arms beats one that wins a single arm. Phase 8 sweeps
-`k` and the weights rather than hand-tuning score normalizations.
+ranks respectably in both arms beats one that wins a single arm. The constant
+and the weights are settings, so they can be swept against the eval rather than
+hand-tuned.
 
 ### Why the title is a separate, boosted arm
 
@@ -83,8 +83,8 @@ it behave:
   lost to documents that hit two other arms. This is the BM25F field-boost idea,
   expressed in RRF weights.
 
-The knobs are `TITLE_BOOST` and `RRF_K`, both settings, so Phase 8 can measure
-them like everything else.
+The knobs are `TITLE_BOOST` and `RRF_K`, both settings, so they can be measured
+like everything else.
 
 ### Why a generated `tsvector`
 
@@ -99,8 +99,8 @@ thing that can be wrong in exactly the case that matters (a re-index).
 expensive path. But a hash match is only meaningful if the vectors came from
 the same model. So `generation_meta` stores the model name and the chunking
 parameters under the `chunks` artifact, and any change there invalidates the
-whole index. Without that, swapping to `bge-base` in Phase 8 would silently
-mix 384- and 768-dimensional vectors.
+whole index. Without that, swapping to a different-width model would silently
+mix vectors that are not comparable.
 
 ### Why chunks live below the model limit
 
@@ -112,7 +112,7 @@ something the user never wrote, and the citation still looks correct.
 ### Why the reranker is optional
 
 A cross-encoder is far more accurate than the bi-encoder and far more
-expensive. It is a config flag (`RERANK_ENABLED`) precisely so Phase 8 can
+expensive. It is a config flag (`RERANK_ENABLED`) precisely so the eval can
 measure what it buys; RRF order is a valid, cheaper answer.
 
 The ⌘K palette passes `rerank=false` explicitly: it fires on every debounced
@@ -125,8 +125,7 @@ bounds the cost independently of the requested result count.
 ## Consequences
 
 - **The backend base image changed from Alpine to Debian slim.** `onnxruntime`
-  ships only manylinux wheels, so `uv sync` cannot resolve it on musl. This is
-  the one place Phase 5 reached outside `rag/`.
+  ships only manylinux wheels, so `uv sync` cannot resolve it on musl.
 - **The index is a build step, not a service.** `cli.py index` is idempotent
   and safe to re-run; search assumes it has been run and returns an empty list
   rather than erroring when it has not.
@@ -145,10 +144,10 @@ bounds the cost independently of the requested result count.
 
 | Option | Why not |
 |---|---|
-| Keep FlexSearch, ignore Phase 5 search | No dense arm, no citations, per-visitor download, git churn |
+| Keep the client-side FlexSearch index | No dense arm, no citations, per-visitor download, git churn |
 | Single SQL statement doing fusion | RRF in SQL is unreadable and untestable; two queries plus a pure function is clearer at this scale |
 | IVFFlat instead of HNSW | Needs a training step and a rebuild as rows change; HNSW has no such cliff |
 | Add a trigger for `tsv` | A generated column is strictly simpler and cannot be skipped |
 | Score normalization instead of RRF | Needs retuning whenever either arm's scale changes |
-| Ship the reranker on by default with no flag | Phase 8 cannot price it without an ablation switch |
+| Ship the reranker on by default with no flag | The eval cannot price it without an ablation switch |
 | Commit the export bundles | ~15MB of regenerated artifacts with a timestamp in every file |

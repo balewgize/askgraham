@@ -2,15 +2,13 @@
 
 - **Status:** Accepted
 - **Date:** 2026-10-13
-- **Phase:** 7 (Evals harness)
 
 ## Context
 
-Phases 5 and 6 shipped two retrieval heuristics — the boosted title arm
-(`TITLE_BOOST=3`) and the cross-encoder reranker — without a number to justify
-either. The plan's section 6 says why that cannot stand: tuning retrieval without
-metrics means a change cannot be proven to have helped, and Phase 8 is *only*
-tuning. So Phase 7 builds the ruler before anyone reaches for the dials.
+Retrieval ships two heuristics — the boosted title arm (`TITLE_BOOST=3`) and the
+cross-encoder reranker — without a number to justify either. Tuning retrieval
+without metrics means a change cannot be proven to have helped, so the harness is
+built before anything is tuned.
 
 The open questions were what to measure, how to score an answer, and how to keep
 a run reproducible enough that "before" and "after" mean something.
@@ -48,15 +46,15 @@ cannot: retrieving the right essay in the wrong place.
 
 ### Why deterministic checks sit next to the judge
 
-The strongest interview answer to "how do you know the model isn't inventing
-quotes?" is not "we asked another model". It is "we check each quoted span
-against the source and report the rate". So quotes are checked for free and with
-no room to argue. The comparison is deliberately narrow: a quote is split into
-fragments on `...` elisions and on the app's own inline citation tokens, trimmed
-of boundary punctuation, normalized for typography and case, and then each
-fragment must appear verbatim in the retrieved sources. Those tolerances cover
-formatting — typography, elision, and the citation syntax the model was told to
-use — and nothing else. A reworded phrase still fails.
+"How do you know the model isn't inventing quotes?" is not answered by "we
+asked another model". It is answered by checking each quoted span against the
+source and reporting the rate — free, and with no room to argue. The comparison
+is deliberately narrow: a quote is split into fragments on `...` elisions and on
+the app's own inline citation tokens, trimmed of boundary punctuation, normalized
+for typography and case, and then each fragment must appear verbatim in the
+retrieved sources. Those tolerances cover formatting — typography, elision, and
+the citation syntax the model was told to use — and nothing else. A reworded
+phrase still fails.
 
 Citation tokens are checked separately and for an *exact* `[slug#start-end]`
 match, because the range is the claim. A near miss (`ds#0-3` for `ds#0-4`) is an
@@ -113,10 +111,10 @@ report says plainly when the answer section was not run.
   `data/index.json` and every paragraph index is in range.
 - **The baseline already shows the reranker is nearly free of gain**: on the
   40-case set it moves MRR by +0.01. That is a real, deflating result and exactly
-  what the harness exists to surface. Phase 8 can now decide whether to keep it.
+  what the harness exists to surface, so it can be decided whether to keep it.
 - **The title boost is not yet priced.** It is a single shared setting, so
-  ablating it needs a `hybrid_search` parameter that does not exist yet. Phase 8
-  adds it; the baseline records the value so the diff is visible.
+  ablating it needs a parameter `hybrid_search` does not expose. The baseline
+  records the value so a future diff is visible.
 - **Answer numbers depend on the judge.** The judge runs on the same model as the
   generator by default (`EVAL_JUDGE_MODEL` can separate them). A stronger judge
    is the obvious upgrade once one is available.
