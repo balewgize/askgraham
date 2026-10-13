@@ -20,7 +20,7 @@ askgraham/
 Everything — Postgres+pgvector, the API, and the frontend — starts with one command:
 
 ```bash
-docker compose up --build
+docker compose up
 ```
 
 | Service | URL |
@@ -32,28 +32,56 @@ docker compose up --build
 The frontend proxies `/api/*` to the backend, so the browser only ever talks to one
 origin and CORS never enters the picture.
 
+Two compose files:
+
+| File | Use |
+|---|---|
+| `docker-compose.yml` | local dev — bind-mounted source, both services hot-reload |
+| `docker-compose.prod.yml` | production — no mounts, no `--reload`, standalone frontend |
+
 ## Working on it
 
-For fast iteration, run the backend natively against the compose database:
+`docker compose up` runs in development mode: the API hot-reloads on save and the
+frontend recompiles as you edit. **No `--build`, ever** — source is bind-mounted.
+
+Migrations apply when the container starts, not on reload. After adding one:
 
 ```bash
-docker compose up -d db                       # just Postgres
-cd backend && uv sync
-uv run uvicorn main:app --reload              # hot reload
+docker compose restart api
 ```
 
-Backend checks:
+Dev runs `next dev` against the full `node_modules`, while production runs
+`next build` and the standalone server. Before shipping, check the real build:
+
+```bash
+docker compose -f docker-compose.prod.yml up --build   # production-shaped, exact
+```
+
+### Running natively instead
+
+Faster if Turbopack feels sluggish through a bind mount, and useful for the
+tooling below. Only Postgres needs to be a container:
+
+```bash
+docker compose up -d db                  # just Postgres
+cd frontend && pnpm install && pnpm dev  # http://localhost:3000
+cd backend && uv sync
+uv run uvicorn main:app --reload         # hot reload, http://localhost:8000
+```
+
+### Checks
+
+Backend:
 
 ```bash
 cd backend
 uv run ruff check . && uv run ruff format --check . && uv run mypy . && uv run pytest
 ```
 
-Frontend checks:
+Frontend:
 
 ```bash
 cd frontend
-pnpm install
 pnpm build
 pnpm lint
 ```

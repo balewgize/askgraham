@@ -1,7 +1,19 @@
 name: askgraham
 
-# One command brings up everything: `docker compose up --build`
+# LOCAL DEVELOPMENT. One command, and you never need `--build` again:
 #
+#   docker compose up
+#
+# Source is bind-mounted and both services hot-reload on save. The frontend
+# runs `next dev` against the full node_modules; the API runs uvicorn --reload.
+#
+# Production:
+#
+#   docker compose -f docker-compose.prod.yml up --build
+#
+# Shares this project name with prod on purpose. The port bindings collide, so
+# the two stacks cannot run side by side against different databases.
+
 #   web -> http://localhost:3000      (only origin the browser talks to)
 #   api -> http://localhost:8000/docs (exposed for API docs/evals convenience)
 #   db  -> localhost:5433             (local psql access)
@@ -39,30 +51,50 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      # Read-only corpus. The API serves derived data from Postgres; this exists
-      # so Phase 5+ can re-index without rebuilding the image.
+      # Live source. api_venv re-hides the host's .venv, which would otherwise
+      # shadow the image's and break every import.
+      - ./backend:/app
+      - api_venv:/app/.venv
+      # Read-only corpus, so Phase 5+ can re-index without a rebuild.
       - ./data:/data:ro
     depends_on:
       db:
         condition: service_healthy
-    # Idempotent: re-running applies any pending migrations, then starts the app.
+    # Migrations apply at container start only, not on reload. After adding
+    # one, run `docker compose restart api`.
     command: >
       sh -c "alembic upgrade head &&
-             exec uvicorn main:app --host 0.0.0.0 --port 8000"
+             exec uvicorn main:app --reload --host 0.0.0.0 --port 8000
+             --reload-exclude .venv --reload-exclude __pycache__"
 
   web:
     build:
       context: .
       dockerfile: frontend/Dockerfile
+      target: dev
     environment:
       # Server-side rewrite target. Unreachable from the browser by design.
       API_BASE_URL: http://api:8000
       NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      NODE_ENV: development
     ports:
       - "3000:3000"
+    # Same three-masks-the-bind-mount trick as api: node_modules and .next come
+    # from the volumes, not the host checkout. Keeping .next on a volume also
+    # preserves the Turbopack dev cache across container restarts.
+    volumes:
+      - ./frontend:/repo/frontend
+      - web_node_modules:/repo/frontend/node_modules
+      - web_next:/repo/frontend/.next
+      # lib/essays.ts resolves DATA_DIR as cwd/../data, and cwd is
+      # /repo/frontend, so the corpus has to land at /repo/data.
+      - ./data:/repo/data
     depends_on:
       api:
         condition: service_healthy
 
 volumes:
   pgdata:
+  api_venv:
+  web_node_modules:
+  web_next:

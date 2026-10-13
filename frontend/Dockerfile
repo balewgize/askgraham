@@ -20,6 +20,25 @@ COPY frontend/package.json frontend/pnpm-lock.yaml frontend/pnpm-workspace.yaml 
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
     pnpm install --frozen-lockfile
 
+# ── dev ─────────────────────────────────────────────────────────────────
+# Reuses `deps`, which has full node_modules *including* devDependencies —
+# the `runner` stage does not. Nothing is COPYed here: source arrives via the
+# bind mounts in docker-compose.yml, so no rebuild is needed on edit.
+#
+# Must stay above `runner`, not below it: the last stage is the implicit
+# default --target, and `runner` has to remain that.
+FROM deps AS dev
+
+ENV NEXT_TELEMETRY_DISABLED=1
+WORKDIR /repo/frontend
+
+EXPOSE 3000
+
+# `pnpm dev` (tsx scripts/export-corpus.ts && next dev) rather than bare
+# `next dev`, so the container behaves exactly like the host. `next dev`
+# already defaults to hostname 0.0.0.0, which is what the port map needs.
+CMD ["pnpm", "dev"]
+
 # ── builder ────────────────────────────────────────────────────────────
 FROM node:22-alpine AS builder
 
