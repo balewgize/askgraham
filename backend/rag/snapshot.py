@@ -16,9 +16,9 @@ Layout mirrors `data/` exactly, so the frontend switch is a single path change:
 Written to a sibling temp directory and swapped into place, so an interrupted
 export can never leave the frontend reading half a corpus.
 
-Known gap: `model`/`generated` provenance for `phases.json` and `paths.json` is
-not stored in the database yet and is emitted as null. It lands in Phase 4 with
-the LLM client, which needs generation metadata for cache invalidation anyway.
+Provenance (`model`, `generated`, `version`) comes from the `generation_meta`
+table, which `ingest` fills from the source JSON. It exists so the files this
+writes say which model produced them, rather than reporting null.
 """
 
 import json
@@ -38,10 +38,10 @@ from core.models import (
     EssayFootnote,
     EssayParagraph,
     EssayPhase,
+    GenerationMeta,
     PathStep,
     Phase,
     ReadingPath,
-    TaxonomyMeta,
 )
 
 SNAPSHOT_DIR = BACKEND_DIR.parent / "frontend" / "snapshot"
@@ -152,11 +152,18 @@ async def _load_index(session: AsyncSession, essays: list[dict[str, Any]]) -> li
     ]
 
 
-async def _load_taxonomy(session: AsyncSession) -> dict[str, Any]:
+async def _load_generation_meta(session: AsyncSession) -> dict[str, GenerationMeta]:
+    rows = (await session.execute(select(GenerationMeta))).scalars().all()
+    return {row.artifact: row for row in rows}
+
+
+async def _load_taxonomy(
+    session: AsyncSession, meta_by_artifact: dict[str, GenerationMeta]
+) -> dict[str, Any]:
     phases = (await session.execute(select(Phase).order_by(Phase.order))).scalars().all()
-    meta = await session.get(TaxonomyMeta, 1)
+    taxonomy_meta = meta_by_artifact.get("taxonomy")
     return {
-        "version": meta.version if meta else 1,
+        "version": taxonomy_meta.version if taxonomy_meta and taxonomy_meta.version else 1,
         "phases": [
             {
                 "id": p.id,
@@ -169,7 +176,9 @@ async def _load_taxonomy(session: AsyncSession) -> dict[str, Any]:
     }
 
 
-async def _load_phases(session: AsyncSession) -> dict[str, Any]:
+async def _load_phases(
+    session: AsyncSession, meta_by_artifact: dict[str, GenerationMeta]
+) -> dict[str, Any]:
     """Rebuild the per-essay phase map from the rank-ordered rows.
 
     `rank` is preserved because the reader's filter chips key off rank 0 — the
@@ -193,17 +202,19 @@ async def _load_phases(session: AsyncSession) -> dict[str, Any]:
         entry = essays.setdefault(slug, {"phases": [], "why": why, "hash": content_hash})
         entry["phases"].append(phase_id)
 
-    meta = await session.get(TaxonomyMeta, 1)
+    taxonomy_meta = meta_by_artifact.get("taxonomy")
+    phases_meta = meta_by_artifact.get("phases")
     return {
-        "taxonomyVersion": meta.version if meta else 1,
-        # See module docstring: provenance lands in Phase 4.
-        "model": None,
-        "generated": None,
+        "taxonomyVersion": taxonomy_meta.version if taxonomy_meta and taxonomy_meta.version else 1,
+        "model": phases_meta.model if phases_meta else None,
+        "generated": phases_meta.generated if phases_meta else None,
         "essays": essays,
     }
 
 
-async def _load_paths(session: AsyncSession) -> dict[str, Any]:
+async def _load_paths(
+    session: AsyncSession, meta_by_artifact: dict[str, GenerationMeta]
+) -> dict[str, Any]:
     paths = (await session.execute(select(ReadingPath).order_by(ReadingPath.order))).scalars().all()
 
     steps: dict[str, list[dict[str, str]]] = {}
@@ -216,11 +227,11 @@ async def _load_paths(session: AsyncSession) -> dict[str, Any]:
     ).all():
         steps.setdefault(path_id, []).append({"slug": slug, "note": note})
 
+    paths_meta = meta_by_artifact.get("paths")
     return {
-        "version": 1,
-        # See module docstring: provenance lands in Phase 4.
-        "model": None,
-        "generated": None,
+        "version": paths_meta.version if paths_meta and paths_meta.version else 1,
+        "model": paths_meta.model if paths_meta else None,
+        "generated": paths_meta.generated if paths_meta else None,
         "paths": [
             {
                 "id": p.id,
@@ -249,11 +260,12 @@ async def export_snapshot(session: AsyncSession, out_dir: Path | None = None) ->
     staging.mkdir(parents=True)
 
     try:
+        meta_by_artifact = await _load_generation_meta(session)
         essays = await _load_essays(session)
         index = await _load_index(session, essays)
-        taxonomy = await _load_taxonomy(session)
-        phases = await _load_phases(session)
-        paths = await _load_paths(session)
+        taxonomy = await _load_taxonomy(session, meta_by_artifact)
+        phases = await _load_phases(session, meta_by_artifact)
+        paths = await _load_paths(session, meta_by_artifact)
 
         for essay in essays:
             _write_json(staging / "essays" / f"{essay['slug']}.json", essay)
@@ -278,7 +290,7 @@ async def export_snapshot(session: AsyncSession, out_dir: Path | None = None) ->
                 "generated": generated,
                 "essays": stats.essays,
                 "words": stats.words,
-                "model": None,
+                "model": paths["model"],
             },
         )
 

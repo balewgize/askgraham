@@ -120,14 +120,27 @@ class EssayFootnote(Base):
     essay: Mapped[Essay] = relationship(back_populates="footnotes")
 
 
-class TaxonomyMeta(Base):
-    """Version row. One table so the version is a real column, not a magic value."""
+class GenerationMeta(Base):
+    """Where each derived artefact came from.
 
-    __tablename__ = "taxonomy_meta"
+    One row per artefact rather than a column on each table, because the values
+    are file-level, not row-level: `data/phases.json` has one model and one
+    timestamp covering all 233 essays.
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, default=1)
-    version: Mapped[int] = mapped_column(Integer, nullable=False)
+    This exists so the snapshot can report real provenance instead of null. It
+    matters for two reasons: the README should be able to say which model
+    produced the reading paths, and a cache key that includes the model needs
+    the model recorded somewhere durable.
+    """
+
+    __tablename__ = "generation_meta"
+
+    # 'taxonomy' | 'phases' | 'paths'
+    artifact: Mapped[str] = mapped_column(Text, primary_key=True)
+    model: Mapped[str | None] = mapped_column(Text)
+    version: Mapped[int | None] = mapped_column(Integer)
     generated: Mapped[str | None] = mapped_column(Text)
+    source: Mapped[str | None] = mapped_column(Text)
 
 
 class Phase(Base):
@@ -232,9 +245,9 @@ __all__ = [
     "EssayFootnote",
     "EssayParagraph",
     "EssayPhase",
+    "GenerationMeta",
     "IngestRun",
     "PathStep",
     "Phase",
     "ReadingPath",
-    "TaxonomyMeta",
 ]

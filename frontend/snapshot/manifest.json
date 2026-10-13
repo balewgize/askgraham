@@ -1,6 +1,6 @@
 {
-  "generated": "2026-10-13T08:59:19.035158Z",
+  "generated": "2026-10-13T09:58:29.640894Z",
   "essays": 233,
   "words": 508677,
-  "model": null
+  "model": "deepseek/deepseek-v4.1-flash"
 }

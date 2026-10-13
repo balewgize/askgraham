@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "model": null,
-  "generated": null,
+  "model": "deepseek/deepseek-v4.1-flash",
+  "generated": "2026-09-18T14:16:20.894Z",
   "paths": [
     {
       "id": "start-here",

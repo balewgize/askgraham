@@ -1,7 +1,7 @@
 {
   "taxonomyVersion": 1,
-  "model": null,
-  "generated": null,
+  "model": "deepseek/deepseek-v4.1-flash",
+  "generated": "2026-09-16T06:53:33.602Z",
   "essays": {
     "13sentences": {
       "phases": [

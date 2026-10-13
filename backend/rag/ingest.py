@@ -28,11 +28,11 @@ from core.models import (
     EssayFootnote,
     EssayParagraph,
     EssayPhase,
+    GenerationMeta,
     IngestRun,
     PathStep,
     Phase,
     ReadingPath,
-    TaxonomyMeta,
 )
 
 _MONTHS: dict[str, int] = {
@@ -252,9 +252,35 @@ async def _upsert_taxonomy(session: AsyncSession, data_dir: Path, stats: IngestS
             )
             stats.taxonomy_phases_written += 1
 
-    await session.execute(delete(TaxonomyMeta).where(TaxonomyMeta.id == 1))
-    session.add(TaxonomyMeta(id=1, version=int(taxonomy.get("version", 1)), generated=None))
+    await _set_generation_meta(
+        session,
+        artifact="taxonomy",
+        version=int(taxonomy.get("version", 1)),
+        source="taxonomy.json",
+    )
     await session.flush()
+
+
+async def _set_generation_meta(
+    session: AsyncSession,
+    *,
+    artifact: str,
+    model: str | None = None,
+    version: int | None = None,
+    generated: str | None = None,
+    source: str | None = None,
+) -> None:
+    """Upsert one provenance row. Replaces rather than merges."""
+    await session.execute(delete(GenerationMeta).where(GenerationMeta.artifact == artifact))
+    session.add(
+        GenerationMeta(
+            artifact=artifact,
+            model=model,
+            version=version,
+            generated=generated,
+            source=source,
+        )
+    )
 
 
 async def upsert_essay_phases(session: AsyncSession, data_dir: Path, stats: IngestStats) -> None:
@@ -311,6 +337,15 @@ async def upsert_essay_phases(session: AsyncSession, data_dir: Path, stats: Inge
         await session.execute(insert(EssayPhase), rows)
         stats.phase_tags_written += len(rows)
 
+    await _set_generation_meta(
+        session,
+        artifact="phases",
+        model=phases_file.get("model"),
+        version=phases_file.get("taxonomyVersion"),
+        generated=phases_file.get("generated"),
+        source="phases.json",
+    )
+
 
 async def upsert_paths(session: AsyncSession, data_dir: Path, stats: IngestStats) -> None:
     paths_file = _read_optional(data_dir, "paths.json")
@@ -362,6 +397,15 @@ async def upsert_paths(session: AsyncSession, data_dir: Path, stats: IngestStats
     ]
     if steps:
         await session.execute(insert(PathStep), steps)
+
+    await _set_generation_meta(
+        session,
+        artifact="paths",
+        model=paths_file.get("model"),
+        version=paths_file.get("version"),
+        generated=paths_file.get("generated"),
+        source="paths.json",
+    )
 
 
 # ── entry point ───────────────────────────────────────────────────────
